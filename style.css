@@ -1,0 +1,23 @@
+body {
+    background-color: black;
+    overflow-x: hidden;
+
+}
+
+.titolo {
+    
+    right: 50%;
+    width: 100%;
+    display: flex;
+    opacity: 0;
+    color: white;
+    font-size: 120px;
+}
+
+.container {
+    
+    position: absolute;
+    width: 100vw;
+}
+
+    
