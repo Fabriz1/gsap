@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP ScrollTrigger - Esempi Pratici</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+        }
+        nav {
+            margin-top: 10px;
+        }
+        nav a {
+            color: #ecf0f1;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+
+        .spacer {
+            height: 150px; /* Spazio per non sovrapporre il contenuto con l'header fisso */
+        }
+        .spacer-small {
+            height: 50vh;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #777;
+        }
+        .spacer-large {
+            height: 100vh;
+            background-color: #d0d0d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #666;
+        }
+
+        section {
+            padding: 60px 20px;
+            margin-bottom: 20px;
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+        }
+        section h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        section p {
+            margin-bottom: 20px;
+        }
+
+        /* --- STILI MIGLIORATI PER I BLOCCHI DI CODICE --- */
+        .code-block {
+            background-color: #2d2d2d; /* Sfondo scuro tipo editor */
+            color: #f0f0f0; /* Testo chiaro */
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto; /* Scroll orizzontale se il codice è lungo */
+            font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .code-block pre {
+            margin: 0; /* Rimuove margini di default del <pre> */
+            white-space: pre-wrap; /* Va a capo se necessario, ma preserva spazi */
+            word-break: break-all; /* Forza il break per parole molto lunghe */
+        }
+        .code-block code {
+            display: block; /* Occupa tutta la larghezza */
+        }
+        .code-block strong { /* Per evidenziare parole chiave, metodi GSAP etc. */
+            color: #569cd6; /* Blu chiaro */
+            font-weight: normal; /* Il font monospace è già "bold" di suo */
+        }
+        .code-block .comment { /* Per i commenti */
+            color: #6a9955; /* Verde */
+            font-style: italic;
+        }
+        .code-block .string { /* Per le stringhe */
+            color: #ce9178; /* Arancione/Marrone */
+        }
+        .code-block .number { /* Per i numeri */
+            color: #b5cea8; /* Verde chiaro */
+        }
+        .code-block .property { /* Per le proprietà degli oggetti */
+            color: #9cdcfe; /* Celeste */
+        }
+        /* --- FINE STILI BLOCCHI DI CODICE --- */
+
+
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #e74c3c;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        .box-small {
+            width: 60px;
+            height: 60px;
+            font-size: 0.8em;
+        }
+
+        /* Stili specifici per gli esempi */
+        #basic-trigger .box { background-color: #e74c3c; }
+        #start-end .box { background-color: #9b59b6; }
+        #pinning .pin-container {
+            height: 300vh;
+            position: relative;
+        }
+        #pinning .box {
+            background-color: #2ecc71;
+            margin: 50px auto;
+        }
+        #scrub .box { background-color: #f1c40f; transform: scale(0.5) rotate(0deg); }
+        #toggle-actions .box { background-color: #1abc9c; opacity: 0.3; }
+        
+        #batch .batch-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        #batch .box {
+            background-color: #3498db;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        #horizontal-scroll {
+            overflow: hidden;
+        }
+        .horizontal-container {
+            width: 400%; 
+            height: 100vh;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        .horizontal-section {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            border-right: 2px solid #fff;
+        }
+        .horizontal-section:nth-child(1) { background-color: #e67e22; }
+        .horizontal-section:nth-child(2) { background-color: #d35400; }
+        .horizontal-section:nth-child(3) { background-color: #c0392b; }
+        .horizontal-section:nth-child(4) { background-color: #e74c3c; }
+        .horizontal-section h3 { color: white; }
+        .horizontal-section .box { background-color: rgba(255,255,255,0.3); }
+
+        #timeline-integration .box {
+            background-color: #8e44ad;
+            margin: 10px;
+        }
+
+        #pin-spacing .pin-me {
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        #pin-spacing .content-after-pin {
+            background-color: #bdc3c7;
+            padding: 20px;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GSAP ScrollTrigger: Esempi Pratici</h1>
+        <p>Una guida one-page per esplorare le funzionalità di ScrollTrigger.</p>
+        <nav>
+            <a href="#basic-trigger">Base</a>
+            <a href="#start-end">Start/End</a>
+            <a href="#pinning">Pinning</a>
+            <a href="#scrub">Scrub</a>
+            <a href="#toggle-actions">Toggle Actions</a>
+            <a href="#batch">Batch</a>
+            <a href="#horizontal-scroll">Horizontal</a>
+            <a href="#timeline-integration">Timeline</a>
+            <a href="#pin-spacing">Pin Spacing</a>
+        </nav>
+    </header>
+
+    <div class="spacer"></div>
+
+    <section id="intro">
+        <h2>Introduzione a ScrollTrigger</h2>
+        <p>
+            ScrollTrigger è un plugin potentissimo di GSAP (GreenSock Animation Platform) che permette di creare animazioni
+            basate sullo scroll della pagina. Puoi far apparire elementi, fissarli (pin), far avanzare animazioni
+            in sincrono con lo scroll e molto altro.
+        </p>
+        <p>
+            In questa pagina vedremo alcuni degli usi più comuni e pratici di ScrollTrigger.
+            Per ogni esempio, vedrai l'effetto e un blocco di codice che lo realizza.
+            È consigliabile aprire la console del browser (F12) per osservare eventuali log o errori.
+        </p>
+        <p>
+            <strong>Importante:</strong> Per visualizzare i "markers" (utili per il debug), GSAP offre l'opzione <code>markers: true</code>
+            all'interno della configurazione di ScrollTrigger. In questi esempi, li attiveremo spesso per chiarezza.
+        </p>
+    </section>
+
+    <div class="spacer-small">Scrolla per iniziare!</div>
+
+    <section id="basic-trigger">
+        <h2>1. Trigger Base: Animazione all'Entrata</h2>
+        <p>
+            Questo è l'uso più semplice. Un elemento viene animato (es. fade in, slide up) quando
+            entra nella viewport durante lo scroll.
+        </p>
+        <div class="box" id="box1">Box 1</div>
+        <div class="code-block"><pre><code><strong>gsap.from</strong>(<span class="string">"#box1"</span>, {
+  <strong>scrollTrigger</strong>: {
+    <span class="property">trigger</span>: <span class="string">"#box1"</span>, <span class="comment">// L'elemento che attiva l'animazione</span>
+    <span class="property">start</span>: <span class="string">"top 80%"</span>, <span class="comment">// Inizia quando la cima di #box1 è all'80% della viewport</span>
+    <span class="property">markers</span>: <span class="keyword">true</span>, <span class="comment">// Mostra i marcatori per debug</span>
+    <span class="property">toggleActions</span>: <span class="string">"play none none reverse"</span> <span class="comment">// Azioni: onEnter, onLeave, onEnterBack, onLeaveBack</span>
+  },
+  <span class="property">opacity</span>: <span class="number">0</span>,
+  <span class="property">y</span>: <span class="number">50</span>, <span class="comment">// Parte da 50px più in basso</span>
+  <span class="property">duration</span>: <span class="number">1</span>
+});</code></pre></div>
+    </section>
+
+    <div class="spacer-large">Scrolla ancora...</div>
+
+    <section id="start-end">
+        <h2>2. Controllo Start/End Personalizzato</h2>
+        <p>
+            Puoi definire con precisione quando un'animazione deve iniziare e finire,
+            relativamente alla posizione del trigger e della viewport (scroller).
+            Qui, l'animazione avviene mentre il box è visibile.
+        </p>
+        <div class="box" id="box2">Box 2</div>
+        <div class="code-block"><pre><code><strong>gsap.to</strong>(<span class="string">"#box2"</span>, {
+  <strong>scrollTrigger</strong>: {
+    <span class="property">trigger</span>: <span class="string">"#box2"</span>,
+    <span class="property">start</span>: <span class="string">"top center"</span>, <span class="comment">// Inizia quando la cima di #box2 raggiunge il centro della viewport</span>
+    <span class="property">end</span>: <span class="string">"bottom center"</span>, <span class="comment">// Finisce quando il fondo di #box2 raggiunge il centro della viewport</span>
+    <span class="property">markers</span>: <span class="keyword">true</span>,
+    <span class="property">scrub</span>: <span class="keyword">true</span> <span class="comment">// Lega l'animazione allo scroll (vedi esempio Scrub)</span>
+  },
+  <span class="property">x</span>: <span class="number">300</span>,
+  <span class="property">rotation</span>: <span class="number">360</span>,
+  <span class="property">duration</span>: <span class="number">3</span> <span class="comment">// La durata è relativa alla distanza di scroll definita da start/end con scrub</span>
+});</code></pre></div>
+    </section>
+
+    <div class="spacer-large">Continua a scrollare...</div>
+
+    <section id="pinning">
+        <h2>3. Pinning: Fissare un Elemento</h2>
+        <p>
+            Il pinning permette di "fissare" un elemento sullo schermo mentre si continua a scrollare
+            altro contenuto. Molto utile per sezioni importanti o navigazioni.
+            L'elemento .box verrà pinnato quando la sua cima tocca la cima della viewport,
+            e rimarrà pinnato per 500px di scroll.
+        </p>
+        <div class="pin-container">
+            <div class="box" id="box3">PINNAMI</div>
+        </div>
+        <div class="code-block"><pre><code><strong>ScrollTrigger.create</strong>({
+  <span class="property">trigger</span>: <span class="string">"#box3"</span>,
+  <span class="property">start</span>: <span class="string">"top 150px"</span>, <span class="comment">// Inizia a pinnare considerando l'header fisso</span>
+  <span class="property">end</span>: <span class="string">"+=500"</span>, <span class="comment">// Rimane pinnato per 500px di scroll</span>
+  <span class="property">pin</span>: <span class="keyword">true</span>, <span class="comment">// Attiva il pinning</span>
+  <span class="property">markers</span>: <span class="keyword">true</span>,
+  <span class="property">pinSpacing</span>: <span class="keyword">true</span> <span class="comment">// Aggiunge padding per evitare salti di layout (default true)</span>
+});</code></pre></div>
+    </section>
+
+    <div class="spacer-large">Ancora un po'...</div>
+
+    <section id="scrub">
+        <h2>4. Scrub: Animazione Sincronizzata con lo Scroll</h2>
+        <p>
+            Con <code>scrub: true</code>, l'avanzamento dell'animazione è direttamente collegato alla posizione
+            dello scroll. Se si scrolla avanti e indietro, l'animazione seguirà.
+            Puoi usare un numero (es. <code>scrub: 1</code>) per un effetto "ammortizzato".
+        </p>
+        <div class="box" id="box4">Scrub Box</div>
+        <div class="code-block"><pre><code><strong>gsap.to</strong>(<span class="string">"#box4"</span>, {
+  <strong>scrollTrigger</strong>: {
+    <span class="property">trigger</span>: <span class="string">"#box4"</span>,
+    <span class="property">start</span>: <span class="string">"top 80%"</span>,
+    <span class="property">end</span>: <span class="string">"bottom 20%"</span>,
+    <span class="property">scrub</span>: <span class="number">1</span>, <span class="comment">// Lega l'animazione allo scroll con "ammortizzazione"</span>
+    <span class="property">markers</span>: <span class="keyword">true</span>,
+  },
+  <span class="property">scale</span>: <span class="number">2</span>,
+  <span class="property">rotation</span>: <span class="number">720</span>,
+  <span class="property">backgroundColor</span>: <span class="string">"#2980b9"</span>
+});</code></pre></div>
+    </section>
+
+    <div class="spacer-large">Stai andando alla grande!</div>
+
+    <section id="toggle-actions">
+        <h2>5. Toggle Actions: Azioni Diverse per Eventi di Scroll</h2>
+        <p>
+            <code>toggleActions</code> definisce cosa succede all'animazione quando il trigger entra/esce dalla viewport,
+            sia scrollando in giù (<code>onEnter</code>, <code>onLeave</code>) sia scrollando in su (<code>onEnterBack</code>, <code>onLeaveBack</code>).
+            Le azioni possibili sono: <code>play</code>, <code>pause</code>, <code>resume</code>, <code>reverse</code>, <code>restart</code>, <code>reset</code>, <code>complete</code>, <code>none</code>.
+        </p>
+        <div class="box" id="box5">Toggle Me</div>
+        <div class="code-block"><pre><code><span class="comment">// L'animazione in sé</span>
+<span class="keyword">const</span> box5Anim = <strong>gsap.to</strong>(<span class="string">"#box5"</span>, { 
+  <span class="property">opacity</span>: <span class="number">1</span>,
+  <span class="property">scale</span>: <span class="number">1.2</span>,
+  <span class="property">duration</span>: <span class="number">0.5</span>,
+  <span class="property">paused</span>: <span class="keyword">true</span> <span class="comment">// Importante: l'animazione parte in pausa</span>
+});
+
+<strong>ScrollTrigger.create</strong>({
+  <span class="property">trigger</span>: <span class="string">"#box5"</span>,
+  <span class="property">start</span>: <span class="string">"top center"</span>,
+  <span class="property">end</span>: <span class="string">"bottom center"</span>,
+  <span class="property">markers</span>: <span class="keyword">true</span>,
+  <span class="property">onEnter</span>: () => box5Anim.play(),
+  <span class="property">onLeave</span>: () => box5Anim.pause(), 
+  <span class="property">onEnterBack</span>: () => box5Anim.play(), 
+  <span class="property">onLeaveBack</span>: () => box5Anim.reverse()
+  <span class="comment">// Alternativa con toggleActions: "play pause play reverse"</span>
+});</code></pre></div>
+        <p>In questo esempio, abbiamo separato la tween dall'istanza ScrollTrigger per un maggiore controllo tramite le callback (<code>onEnter</code>, <code>onLeave</code>, ecc.).</p>
+    </section>
+    
+    <div class="spacer-large">Quasi alla fine!</div>
+
+    <section id="batch">
+        <h2>6. Batch Processing: Animare Multipli Elementi</h2>
+        <p>
+            <code>ScrollTrigger.batch()</code> è perfetto per animare gruppi di elementi (es. card, immagini in una galleria)
+            quando entrano nella viewport, con la possibilità di applicare uno <code>stagger</code> (ritardo).
+        </p>
+        <div class="batch-container">
+            <div class="box box-small">B1</div> <div class="box box-small">B2</div> <div class="box box-small">B3</div> <div class="box box-small">B4</div>
+            <div class="box box-small">B5</div> <div class="box box-small">B6</div> <div class="box box-small">B7</div> <div class="box box-small">B8</div>
+        </div>
+        <div class="code-block"><pre><code><strong>ScrollTrigger.batch</strong>(<span class="string">".batch-container .box"</span>, {
+  <span class="property">markers</span>: <span class="keyword">false</span>, <span class="comment">// Markers possono diventare affollati con batch</span>
+  <span class="property">start</span>: <span class="string">"top 85%"</span>,
+  <span class="property">onEnter</span>: batch => <strong>gsap.to</strong>(batch, {
+    <span class="property">opacity</span>: <span class="number">1</span>, 
+    <span class="property">y</span>: <span class="number">0</span>, 
+    <span class="property">stagger</span>: <span class="number">0.15</span>, <span class="comment">// Applica un ritardo tra le animazioni</span>
+    <span class="property">duration</span>: <span class="number">0.5</span>,
+    <span class="property">overwrite</span>: <span class="keyword">true</span>
+  }),
+  <span class="property">onLeaveBack</span>: batch => <strong>gsap.to</strong>(batch, { <span class="comment">// Azione quando si scrolla indietro</span>
+    <span class="property">opacity</span>: <span class="number">0</span>,
+    <span class="property">y</span>: <span class="number">50</span>,
+    <span class="property">stagger</span>: <span class="number">0.1</span>,
+    <span class="property">duration</span>: <span class="number">0.3</span>,
+    <span class="property">overwrite</span>: <span class="keyword">true</span>
+  }),
+  <span class="comment">// toggleActions: "play none none reset" // Un modo alternativo semplice</span>
+});</code></pre></div>
+        <p>Nota: Per <code>batch</code>, l'animazione viene definita nelle callback <code>onEnter</code>, <code>onLeave</code>, etc.</p>
+    </section>
+
+    <div class="spacer-small">Ultimi esempi!</div>
+
+    <section id="horizontal-scroll">
+        <h2>7. Horizontal Scrolling</h2>
+        <p>
+            ScrollTrigger può essere usato per creare sezioni a scorrimento orizzontale.
+            Il trucco è animare la proprietà <code>xPercent</code> di un container.
+        </p>
+        <div class="horizontal-container-wrapper">
+            <div class="horizontal-container" id="horizontalContainer">
+                <div class="horizontal-section"><h3>Sezione 1</h3><p>Contenuto</p><div class="box">H-Box 1</div></div>
+                <div class="horizontal-section"><h3>Sezione 2</h3><p>Altro</p><div class="box">H-Box 2</div></div>
+                <div class="horizontal-section"><h3>Sezione 3</h3><p>Scorri!</p><div class="box">H-Box 3</div></div>
+                <div class="horizontal-section"><h3>Sezione 4</h3><p>Ultima</p><div class="box">H-Box 4</div></div>
+            </div>
+        </div>
+        <div class="code-block"><pre><code><span class="keyword">let</span> sections = <strong>gsap.utils.toArray</strong>(<span class="string">".horizontal-section"</span>);
+<span class="keyword">let</span> hContainer = document.querySelector(<span class="string">"#horizontalContainer"</span>);
+
+<strong>gsap.to</strong>(sections, {
+  <span class="property">xPercent</span>: -<span class="number">100</span> * (sections.length - <span class="number">1</span>), <span class="comment">// Sposta a sinistra</span>
+  <span class="property">ease</span>: <span class="string">"none"</span>, <span class="comment">// Movimento lineare</span>
+  <strong>scrollTrigger</strong>: {
+    <span class="property">trigger</span>: hContainer,
+    <span class="property">pin</span>: <span class="keyword">true</span>, <span class="comment">// Pinna il container</span>
+    <span class="property">scrub</span>: <span class="number">1</span>, <span class="comment">// Ammorbidisce lo scrub</span>
+    <span class="comment">// snap: 1 / (sections.length - 1), // Snap opzionale</span>
+    <span class="property">end</span>: () => <span class="string">"+="</span> + (hContainer.offsetWidth - window.innerWidth), <span class="comment">// Fine precisa</span>
+    <span class="property">markers</span>: {<span class="property">startColor</span>: <span class="string">"purple"</span>, <span class="property">endColor</span>: <span class="string">"fuchsia"</span>}
+  }
+});
+
+<span class="comment">// Bonus: animare un box all'interno di una sezione orizzontale</span>
+<strong>gsap.to</strong>(<span class="string">".horizontal-section .box"</span>, {
+    <span class="property">rotation</span>: <span class="number">360</span>,
+    <span class="property">scale</span>: <span class="number">1.5</span>,
+    <strong>scrollTrigger</strong>: {
+        <span class="property">trigger</span>: <span class="string">".horizontal-section .box"</span>,
+        <span class="property">containerAnimation</span>: ScrollTrigger.sortByIndex(gsap.timeline().to(sections))[<span class="number">0</span>],
+        <span class="property">start</span>: <span class="string">"left 80%"</span>,
+        <span class="property">end</span>: <span class="string">"right 20%"</span>,
+        <span class="property">scrub</span>: <span class="keyword">true</span>,
+        <span class="property">markers</span>: {<span class="property">startColor</span>: <span class="string">"cyan"</span>, <span class="property">endColor</span>: <span class="string">"blue"</span>, <span class="property">indent</span>: <span class="number">80</span>}
+    }
+});
+</code></pre></div>
+    </section>
+
+    <div class="spacer-large">Ancora uno...</div>
+
+    <section id="timeline-integration">
+        <h2>8. Integrazione con GSAP Timeline</h2>
+        <p>
+            Usa una <code>gsap.timeline()</code> con ScrollTrigger per sequenze di animazioni complesse.
+        </p>
+        <div class="box" id="tlBox1">TL 1</div>
+        <div class="box" id="tlBox2">TL 2</div>
+        <div class="box" id="tlBox3">TL 3</div>
+        <div class="code-block"><pre><code><span class="keyword">let</span> tl = <strong>gsap.timeline</strong>({
+  <strong>scrollTrigger</strong>: {
+    <span class="property">trigger</span>: <span class="string">"#timeline-integration"</span>, 
+    <span class="property">start</span>: <span class="string">"top center"</span>,
+    <span class="property">end</span>: <span class="string">"bottom top+=100"</span>,
+    <span class="property">scrub</span>: <span class="number">1</span>,
+    <span class="property">markers</span>: <span class="keyword">true</span>
+  }
+});
+
+tl.<strong>fromTo</strong>(<span class="string">"#tlBox1"</span>, {<span class="property">x</span>: -<span class="number">100</span>, <span class="property">opacity</span>: <span class="number">0</span>}, { <span class="property">x</span>: <span class="number">200</span>, <span class="property">opacity</span>:<span class="number">1</span>, <span class="property">rotation</span>: <span class="number">360</span> })
+  .<strong>fromTo</strong>(<span class="string">"#tlBox2"</span>, {<span class="property">x</span>: <span class="number">100</span>, <span class="property">opacity</span>: <span class="number">0</span>}, { <span class="property">x</span>: -<span class="number">150</span>, <span class="property">opacity</span>:<span class="number">1</span>, <span class="property">rotation</span>: -<span class="number">360</span>, <span class="property">scale</span>: <span class="number">0.5</span> }, <span class="string">"<50%"</span>) 
+  .<strong>fromTo</strong>(<span class="string">"#tlBox3"</span>, {<span class="property">y</span>: -<span class="number">50</span>, <span class="property">opacity</span>: <span class="number">0</span>}, { <span class="property">y</span>: <span class="number">100</span>, <span class="property">opacity</span>:<span class="number">1</span>, <span class="property">scale</span>: <span class="number">1.5</span>, <span class="property">backgroundColor</span>: <span class="string">"#e67e22"</span> }, <span class="string">"-=0.3"</span>);</code></pre></div>
+    </section>
+    
+    <div class="spacer-small">E per finire...</div>
+
+    <section id="pin-spacing">
+        <h2>9. Pin Spacing e Layout Shift</h2>
+        <p>
+            <code>pinSpacing</code> previene il "salto" del contenuto quando un elemento viene pinnato.
+        </p>
+        <div class="pin-me" id="pinElementWithSpacing">Pin con pinSpacing: true (default)</div>
+        <div class="content-after-pin">Contenuto dopo.</div>
+        
+        <div class="spacer-small" style="margin-top: 50px;">Senza pinSpacing:</div>
+        
+        <div class="pin-me" id="pinElementWithoutSpacing">Pin con pinSpacing: false</div>
+        <div class="content-after-pin">Contenuto dopo (notare il "salto").</div>
+
+        <div class="code-block"><pre><code><span class="comment">// Con pinSpacing (default)</span>
+<strong>ScrollTrigger.create</strong>({
+  <span class="property">trigger</span>: <span class="string">"#pinElementWithSpacing"</span>,
+  <span class="property">pin</span>: <span class="keyword">true</span>,
+  <span class="property">start</span>: <span class="string">"top 150px"</span>, <span class="comment">// Offset per header</span>
+  <span class="property">end</span>: <span class="string">"+=200"</span>,
+  <span class="property">markers</span>: {<span class="property">startColor</span>: <span class="string">"green"</span>, <span class="property">endColor</span>: <span class="string">"darkgreen"</span>},
+  <span class="property">pinSpacing</span>: <span class="keyword">true</span> <span class="comment">// Default, previene il salto</span>
+});
+
+<span class="comment">// Senza pinSpacing</span>
+<strong>ScrollTrigger.create</strong>({
+  <span class="property">trigger</span>: <span class="string">"#pinElementWithoutSpacing"</span>,
+  <span class="property">pin</span>: <span class="keyword">true</span>,
+  <span class="property">start</span>: <span class="string">"top 150px"</span>, <span class="comment">// Offset per header</span>
+  <span class="property">end</span>: <span class="string">"+=200"</span>,
+  <span class="property">markers</span>: {<span class="property">startColor</span>: <span class="string">"red"</span>, <span class="property">endColor</span>: <span class="string">"darkred"</span>},
+  <span class="property">pinSpacing</span>: <span class="keyword">false</span> <span class="comment">// Il contenuto sottostante "salterà"</span>
+});</code></pre></div>
+    </section>
+
+    <footer>
+        <section style="text-align:center; background-color: #2c3e50; color:white;">
+            <h2>Conclusione</h2>
+            <p>
+                Questi sono solo alcuni esempi delle incredibili possibilità offerte da GSAP ScrollTrigger.
+                Sperimenta con i valori, combina le tecniche e consulta la <a href="https://greensock.com/docs/v3/Plugins/ScrollTrigger" target="_blank" style="color: #3498db;">documentazione ufficiale di ScrollTrigger</a>
+                per approfondire ulteriormente.
+            </p>
+            <p>Buon divertimento con le animazioni scroll!</p>
+        </section>
+    </footer>
+
+    <!-- GSAP Core e ScrollTrigger Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        // È buona pratica registrare il plugin
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Esempio 1: Basic Trigger
+            gsap.from("#box1", {
+                scrollTrigger: {
+                    trigger: "#box1",
+                    start: "top 80%", 
+                    markers: true,
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 0,
+                y: 50,
+                duration: 1
+            });
+
+            // Esempio 2: Start/End Control
+            gsap.to("#box2", {
+                scrollTrigger: {
+                    trigger: "#box2",
+                    start: "top center",
+                    end: "bottom center",
+                    markers: true,
+                    scrub: true 
+                },
+                x: () => (document.documentElement.clientWidth / 2) - 100, // Più o meno al centro-sinistra
+                rotation: 360,
+                ease: "none"
+            });
+
+            // Esempio 3: Pinning
+            ScrollTrigger.create({
+                trigger: "#box3",
+                start: "top 150px", // Considera l'header fisso (altezza header + un po' di margine)
+                end: "+=500", 
+                pin: true, 
+                markers: true,
+                pinSpacing: true 
+            });
+
+            // Esempio 4: Scrub
+            gsap.to("#box4", {
+                scrollTrigger: {
+                    trigger: "#box4",
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    scrub: 1,
+                    markers: true,
+                },
+                scale: 2,
+                rotation: 720,
+                backgroundColor: "#2980b9",
+                ease: "power1.inOut"
+            });
+
+            // Esempio 5: Toggle Actions
+            const box5Anim = gsap.to("#box5", {
+                opacity: 1,
+                scale: 1.2,
+                duration: 0.5,
+                paused: true 
+            });
+
+            ScrollTrigger.create({
+                trigger: "#box5",
+                start: "top center",
+                end: "bottom center",
+                markers: true,
+                onEnter: () => box5Anim.play(),
+                onLeave: () => box5Anim.pause(), 
+                onEnterBack: () => box5Anim.play(), 
+                onLeaveBack: () => box5Anim.reverse()
+            });
+            
+            // Esempio 6: Batch Processing
+            ScrollTrigger.batch(".batch-container .box", {
+                start: "top 85%",
+                onEnter: batch => gsap.to(batch, {
+                    opacity: 1, 
+                    y: 0, 
+                    stagger: { each: 0.15, from: "start" }, 
+                    duration: 0.5,
+                    overwrite: true
+                }),
+                onLeaveBack: batch => gsap.to(batch, { 
+                    opacity: 0, y: 50, stagger: 0.1, duration: 0.3, overwrite: true
+                }),
+            });
+
+            // Esempio 7: Horizontal Scrolling
+            let horizontalSections = gsap.utils.toArray(".horizontal-section");
+            let horizontalContainer = document.querySelector("#horizontalContainer");
+
+            if (horizontalContainer && horizontalSections.length > 0) {
+                gsap.to(horizontalSections, {
+                    xPercent: -100 * (horizontalSections.length - 1),
+                    ease: "none", 
+                    scrollTrigger: {
+                        trigger: horizontalContainer,
+                        pin: true, 
+                        scrub: 1,
+                        end: () => "+=" + (horizontalContainer.offsetWidth - window.innerWidth),
+                        markers: {startColor: "purple", endColor: "fuchsia"}
+                    }
+                });
+
+                // Bonus animazione interna (solo se i box esistono)
+                const horizontalBoxes = gsap.utils.toArray(".horizontal-section .box");
+                if (horizontalBoxes.length > 0) {
+                    // Creiamo una timeline fittizia per ottenere l'animazione del container
+                    // Questo è un modo per ottenere il riferimento corretto per containerAnimation
+                    let containerAnim = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: horizontalContainer,
+                            pin: true,
+                            scrub: 1,
+                            end: () => "+=" + (horizontalContainer.offsetWidth - window.innerWidth),
+                            // markers: true // Potrebbe essere utile per debug
+                        }
+                    }).to(horizontalSections, { // Aggiungiamo la stessa animazione
+                        xPercent: -100 * (horizontalSections.length - 1),
+                        ease: "none",
+                    });
+
+                    horizontalBoxes.forEach(hBox => {
+                         gsap.to(hBox, {
+                            rotation: 360,
+                            scale: 1.5,
+                            scrollTrigger: {
+                                trigger: hBox,
+                                containerAnimation: containerAnim, // Usa la timeline del container
+                                start: "left 80%", 
+                                end: "right 20%",
+                                scrub: true,
+                                markers: {startColor: "cyan", endColor: "blue", indent: 80}
+                            }
+                        });
+                    });
+                }
+            }
+
+
+            // Esempio 8: Timeline Integration
+            let tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#timeline-integration", 
+                    start: "top center",
+                    end: "bottom top+=100", 
+                    scrub: 1,
+                    markers: true
+                }
+            });
+
+            tl.fromTo("#tlBox1", {x: -100, opacity: 0}, { x: 200, opacity:1, rotation: 360 })
+              .fromTo("#tlBox2", {x: 100, opacity: 0}, { x: -150, opacity:1, rotation: -360, scale: 0.5 }, "<50%")
+              .fromTo("#tlBox3", {y: -50, opacity: 0}, { y: 100, opacity:1, scale: 1.5, backgroundColor: "#e67e22" }, "-=0.3");
+
+            // Esempio 9: Pin Spacing
+            ScrollTrigger.create({
+                trigger: "#pinElementWithSpacing",
+                pin: true,
+                start: "top 150px",
+                end: "+=200",
+                markers: {startColor: "green", endColor: "darkgreen", indent: 20},
+                pinSpacing: true
+            });
+
+            ScrollTrigger.create({
+                trigger: "#pinElementWithoutSpacing",
+                pin: true,
+                start: "top 150px",
+                end: "+=200",
+                markers: {startColor: "red", endColor: "darkred", indent: 20},
+                pinSpacing: false
+            });
+
+            // Smooth scroll per i link di navigazione interna
+            document.querySelectorAll('header nav a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const headerOffset = document.querySelector('header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset - 20; 
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
+                });
+            });
+
+        }); // Fine DOMContentLoaded
+    </script>
+</body>
+</html>

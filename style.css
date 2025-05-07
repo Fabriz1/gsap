@@ -1,23 +1,63 @@
-body {
-    background-color: black;
-    overflow-x: hidden;
+@font-face {
+    font-family: 'font_titolo'; /* Scegli un nome per il tuo font */
+    src: url('./fonts/CelsiusFlower.otf') format('opentype');
+    /* Puoi aggiungere font-weight e font-style se il file .otf è specifico per un peso/stile */
+    /* Esempio: font-weight: normal; font-style: normal; */
+    font-display: swap; /* Importante per le prestazioni e l'esperienza utente */
+}
+html {
+    /* 1. Assicura che lo scroll sia abilitato se il contenuto eccede */
+    overflow-y: scroll;
+    overflow-x: hidden; /* Nasconde lo scroll orizzontale se non necessario */
 
+    /* 2. Nasconde la scrollbar su Firefox */
+    scrollbar-width: none;
+
+    /* 3. Nasconde la scrollbar su IE e Edge (vecchio) - per completezza */
+    -ms-overflow-style: none;
 }
 
-.titolo {
+/* 4. Nasconde la scrollbar su browser WebKit (Chrome, Safari, Edge moderno, Opera) */
+html::-webkit-scrollbar {
+    display: none;
+}
+body {
+    /* 1. Assicura che lo scroll sia abilitato se il contenuto eccede */
     
-    right: 50%;
+    background-color: black;
+    /* 2. Nasconde la scrollbar su Firefox */
+    margin: 0;
+  
+    /* 3. Nasconde la scrollbar su IE e Edge (vecchio) */
+    
+  }
+  
+  
+ 
+
+
+.titolo {
+    position: absolute;
+    top: 0%;
     width: 100%;
     display: flex;
-    opacity: 0;
+    opacity: 1;
     color: white;
     font-size: 120px;
+    font-family: serif;
 }
 
 .container {
     
     position: absolute;
+    top: 0%;
     width: 100vw;
 }
 
+.sito{
+    height: 400vh;
+}
+.pin-spacer{
+    position: static !important;
+}
     
