@@ -34,7 +34,11 @@ body {
   
   
  
-
+#materia1, #materia2, #materia3, #materia4, #materia5, #materia6, #materia7, #materia8, #materia9, #materia10, #materia11, #materia12, #materia13, #materia14, #materia15, #materia16, #materia17, #materia18, #materia19, #materia20 {
+    color: white;
+    font-family: "font_titolo"
+    
+}
 
 .titolo {
     position: absolute;
@@ -44,9 +48,14 @@ body {
     opacity: 1;
     color: white;
     font-size: 120px;
-    font-family: serif;
+    font-family: 'font_titolo', sans-serif;
 }
-
+.icona{
+    
+    position: absolute;
+    right: 32%;
+    fill: white;
+}
 .container {
     
     position: absolute;
@@ -57,7 +66,5 @@ body {
 .sito{
     height: 400vh;
 }
-.pin-spacer{
-    position: static !important;
-}
+
     
