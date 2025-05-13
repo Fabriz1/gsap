@@ -42,6 +42,20 @@ gsap.to("#path-libro",
     ease: "power2.out",
     scrub: 1,
     scrollTrigger: {
+      trigger: "#path-libro",
+      start: "bottom",
+      end: "+=2000", // L'animazione dura per 1000px di scroll
+      scrub: 1, // Sincronizza l'animazione con lo scroll
+      
+    },
+  });
+
+  gsap.to(".blob-container",
+  {
+    duration: 1, 
+    ease: "power2.out",
+    opacity: 1,
+    scrollTrigger: {
       trigger: ".icona",
       start: "bottom",
       end: "+=2000", // L'animazione dura per 1000px di scroll
@@ -72,11 +86,8 @@ ScrollTrigger.create({
   pin: true,
   pinSpacing: true, // Mantiene lo spazio del pinning
   //markers: true,      // Lascia i marcatori per il debug
-
-
-
 });
-// Assicurati di aver incluso GSAP e ScrollTrigger nel tuo progetto
+
 
 
 
