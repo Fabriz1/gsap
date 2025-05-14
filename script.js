@@ -18,13 +18,13 @@ gsap.fromTo(".titolo", {
 )
 
 gsap.fromTo(".icona", {
-  
+
   scale: 1.5,
   y: "30%",
   x: "0%",
 },
   {
-    
+
     duration: 4,
     rotation: 360,
     ease: "elastic.out(1, 0.5)",
@@ -73,9 +73,44 @@ ScrollTrigger.create({
   //markers: true,
 });
 
+ScrollTrigger.create({
+  trigger: ".opzioni", // CAMBIATO: usa il contenitore come trigger
+  pin: true,               // CAMBIATO: questo pinnerà .titoloeicona
+  scrub: 2,
+  start: "top 45%",        // Assicurati che il punto di start sia corretto per .titoloeicona
+  end: "+=500",
+  pinSpacing: true,
+  //markers: true,
+});
 
-
-
+gsap.fromTo(".nuovo",
+  { scale: 0.5 },
+  {
+    opacity: 1,
+    scale: 1,
+    scrollTrigger: {
+      trigger: ".opzioni",
+      start: "top 45%",
+      end: "+=0", // L'animazione dura per 1000px di scroll
+      scrub: 2, // Sincronizza l'animazione con lo scroll
+      //markers: true,
+    }
+  }
+)
+gsap.fromTo(".continua",
+  { scale: 0.5 },
+  {
+    opacity: 1,
+    scale: 1,
+    scrollTrigger: {
+      trigger: ".opzioni",
+      start: "top 45%",
+      end: "+=0", // L'animazione dura per 1000px di scroll
+      scrub: 2, // Sincronizza l'animazione con lo scroll
+      //markers: true,
+    }
+  }
+)
 
 ScrollTrigger.create({
   start: "2000px",
@@ -89,11 +124,11 @@ ScrollTrigger.create({
 
 
 gsap.to(".icona", {
- 
+
   opacity: 0,
   scrollTrigger: {
     trigger: ".attivatore1",
-    start: "top 300px",
+    start: "top 200px",
     end: "+=0px", // L'animazione dura per 1000px di scroll
     //markers: true, // Lascia i marcatori per il debug
     scrub: 1, // Sincronizza l'animazione con lo scroll
@@ -104,13 +139,13 @@ gsap.to(".icona", {
 gsap.fromTo(".titolo",
   { opacity: 1 },
   {
-    scale: 0.7,
+    scale: 0.8,
     opacity: 1,
     y: "5vh", // <<< VALORE MOLTO PICCOLO PER VEDERE SE SI MUOVE POCO
-    x: "20%",
+    x: "22%",
     scrollTrigger: {
       trigger: ".attivatore1",
-      start: "top 300px", // O "top center"
+      start: "top 200px", // O "top center"
       scrub: 3, // Sincronizza l'animazione con lo scroll
       end: "+=0px", // L'animazione dura per 1000px di scroll
       //markers: true,
