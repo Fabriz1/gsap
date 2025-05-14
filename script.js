@@ -1,9 +1,9 @@
 
-gsap.registerPlugin(MorphSVGPlugin, MotionPathPlugin, ScrollTrigger);
+gsap.registerPlugin(MorphSVGPlugin, MotionPathPlugin, ScrollTrigger, ScrollSmoother);
 gsap.fromTo(".titolo", {
 
   x: "-40%",
-  y: "10vh",
+  y: "20vh",
   opacity: 0,
   scale: 1.5,
 
@@ -11,8 +11,8 @@ gsap.fromTo(".titolo", {
   {
     duration: 1,
     ease: "power2.out",
-    x: "5%",
-    y: "10vh",
+    x: "30%",
+    y: "23vh",
     opacity: 1,
   },
 )
@@ -20,15 +20,16 @@ gsap.fromTo(".titolo", {
 gsap.fromTo(".icona", {
   
   scale: 1.5,
-
+  y: "30%",
+  x: "0%",
 },
   {
     
     duration: 4,
     rotation: 360,
     ease: "elastic.out(1, 0.5)",
-    
-    
+    y: "30%",
+    x: "40%",
 
   },
 )
@@ -56,48 +57,25 @@ gsap.to(".blob-container",
     scrollTrigger: {
       trigger: ".icona",
       start: "bottom",
-      end: "+=2000", // L'animazione dura per 1000px di scroll
+      end: "+=800", // L'animazione dura per 1000px di scroll
       scrub: 1, // Sincronizza l'animazione con lo scroll
 
     },
   });
 
 ScrollTrigger.create({
-  trigger: ".titolo",
+  trigger: ".titoloeicona", // CAMBIATO: usa il contenitore come trigger
+  pin: true,               // CAMBIATO: questo pinnerà .titoloeicona
   scrub: 2,
-  start: "top ",
-  end: "+=2000",      // L'animazione e il pinning durano per 1000px di scroll
-  pin: true,
-  pinSpacing: true, // Mantiene lo spazio del pinning
-  //markers: true,      // Lascia i marcatori per il debug
-
-
-
-});
-
-ScrollTrigger.create({
-  trigger: "#freccia",
-  scrub: 2,
-  start: "top 120px",
-  end: "+=2000",      // L'animazione e il pinning durano per 1000px di scroll
-  pin: true,
-  pinSpacing: true, // Mantiene lo spazio del pinning
-  //markers: true,      // Lascia i marcatori per il debug
-
-
-
+  start: "top top",        // Assicurati che il punto di start sia corretto per .titoloeicona
+  end: "+=2200",
+  pinSpacing: true,
+  //markers: true,
 });
 
 
-ScrollTrigger.create({
-  trigger: ".icona",
-  scrub: 2,
-  start: "top ",
-  end: "+=2000",      // L'animazione e il pinning durano per 1000px di scroll
-  pin: true,
-  pinSpacing: true, // Mantiene lo spazio del pinning
-  markers: true,      // Lascia i marcatori per il debug
-});
+
+
 
 ScrollTrigger.create({
   start: "2000px",
@@ -110,6 +88,32 @@ ScrollTrigger.create({
 
 
 
+gsap.to(".icona", {
+ 
+  opacity: 0,
+  scrollTrigger: {
+    trigger: ".attivatore1",
+    start: "top 300px",
+    end: "+=0px", // L'animazione dura per 1000px di scroll
+    //markers: true, // Lascia i marcatori per il debug
+    scrub: 1, // Sincronizza l'animazione con lo scroll
+  },
 
+})
 
-
+gsap.fromTo(".titolo",
+  { opacity: 1 },
+  {
+    scale: 0.7,
+    opacity: 1,
+    y: "5vh", // <<< VALORE MOLTO PICCOLO PER VEDERE SE SI MUOVE POCO
+    x: "20%",
+    scrollTrigger: {
+      trigger: ".attivatore1",
+      start: "top 300px", // O "top center"
+      scrub: 3, // Sincronizza l'animazione con lo scroll
+      end: "+=0px", // L'animazione dura per 1000px di scroll
+      //markers: true,
+    },
+  }
+);

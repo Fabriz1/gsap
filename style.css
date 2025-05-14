@@ -110,19 +110,22 @@ body {
 
 }
 
-  
+#icona-libro-svg{
+    position: relative;
+    top: 20%;
+}
  
 
 
 .titolo {
     flex-wrap: nowrap;
-    position: absolute;
+    
     align-items: center;
     width: 100%;
     display: flex;
     opacity: 1;
     color: white;
-    font-size: 180px;
+    font-size: 100px;
     font-family: 'font_titolo', sans-serif;
 }
 
@@ -141,7 +144,7 @@ body {
 position: absolute;
 
 top: 1750px;
-left: 30%;
+left: 40vw;
 opacity: 1;
  
 }
@@ -155,4 +158,20 @@ opacity: 1;
     z-index: 10;
 }
 
-    
+.attivatore1{
+    position: absolute;
+    background-color: white;
+    height: 10%;
+    width: 10%;
+    top: 2000px;
+   opacity: 0;
+    z-index: -1;
+}
+
+.animazione{
+    background-color: white; 
+    height: 10vh; 
+    width: 10vw;
+    position: relative;
+    top: 2500px;
+}
