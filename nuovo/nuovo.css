@@ -71,6 +71,9 @@ body {
 }
 
 .descrizione-carica{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     font-size: larger;
     padding: 2vh;
     color: rgb(255, 255, 255);
