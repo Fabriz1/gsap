@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida Completa alla Grid Bootstrap 5</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Stili per visualizzare i bordi delle colonne e un po' di padding */
+        .visualize-cols [class^="col"] {
+            border: 1px solid #007bff; /* Blu Bootstrap */
+            background-color: rgba(0, 123, 255, 0.05); /* Sfondo leggermente blu */
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+            margin-bottom: 1rem; /* Spazio tra le righe di esempio */
+            text-align: center;
+        }
+        .visualize-cols .row {
+            margin-bottom: 1rem; /* Spazio tra le righe di esempio */
+        }
+        .example-container {
+            border: 2px dashed #6c757d; /* Grigio Bootstrap */
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa; /* Sfondo grigio chiaro */
+        }
+        .code-block {
+            background-color: #282c34; /* Sfondo scuro per il codice */
+            color: #abb2bf; /* Testo chiaro per il codice */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto; /* Scroll orizzontale se il codice è lungo */
+            margin-bottom: 1rem;
+        }
+        .result-block {
+            padding: 15px;
+            border: 1px solid #dee2e6; /* Bordo grigio chiaro per il risultato */
+            border-radius: 5px;
+        }
+        h2, h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #343a40; /* Grigio scuro Bootstrap */
+        }
+        .container-fluid { /* Stile per il container principale della pagina */
+            padding-bottom: 50px; /* Spazio in fondo */
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <header class="text-center mb-5">
+            <h1>Guida Completa alla Grid Bootstrap 5</h1>
+            <p class="lead">Impara a usare il sistema a griglia di Bootstrap per layout responsivi.</p>
+        </header>
+
+        <section id="introduzione">
+            <h2>1. Introduzione alla Grid</h2>
+            <p>Il sistema a griglia di Bootstrap utilizza una serie di contenitori, righe e colonne per allineare e disporre i contenuti. È costruito con flexbox ed è completamente responsive. Si basa su un sistema a <strong>12 colonne</strong>.</p>
+            <p><strong>Concetti chiave:</strong></p>
+            <ul>
+                <li><strong><code>.container</code> o <code>.container-fluid</code>:</strong> Definiscono la larghezza e l'allineamento del contenuto.</li>
+                <li><strong><code>.row</code>:</strong> Contenitori per le colonne. Eliminano il padding del container e applicano margini negativi per compensare il padding delle colonne.</li>
+                <li><strong><code>.col</code>, <code>.col-*</code>, <code>.col-sm-*</code>, ecc.:</strong> Le colonne effettive dove inserire il contenuto. Hanno un padding orizzontale (chiamato "gutter").</li>
+            </ul>
+        </section>
+
+        <section id="visualizzazione-bordi">
+            <h2>2. Visualizzare i Bordi delle Colonne</h2>
+            <p>Per capire meglio come sono posizionate le colonne, è utile aggiungere dei bordi. Possiamo farlo con un po' di CSS. In questa guida, tutte le colonne negli esempi avranno automaticamente i bordi grazie alla classe <code>.visualize-cols</code> applicata al loro contenitore <code>.row</code> o <code>.example-container</code>.</p>
+            <p>Il CSS utilizzato in questa pagina per visualizzare i bordi è:</p>
+            <div class="code-block">
+                <pre><code>
+.visualize-cols [class^="col"] {
+    border: 1px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.05);
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+                </code></pre>
+            </div>
+            <p>Basterà avvolgere le tue righe (<code>.row</code>) in un div con classe <code>.visualize-cols</code> o applicare stili simili direttamente alle classi <code>.col</code>.</p>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="contenitori">
+            <h2>3. Contenitori: <code>.container</code> e <code>.container-fluid</code></h2>
+            <p>I contenitori sono l'elemento più esterno necessario per la griglia.</p>
+            <ul>
+                <li><strong><code>.container</code>:</strong> Fornisce un contenitore a larghezza fissa responsive (la sua <code>max-width</code> cambia ad ogni breakpoint).</li>
+                <li><strong><code>.container-fluid</code>:</strong> Fornisce un contenitore a larghezza piena, che occupa tutta la larghezza del viewport.</li>
+            </ul>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio: <code>.container</code></h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container visualize-cols">
+  Contenuto dentro un .container
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container visualize-cols" style="border-style: solid;">
+                            Contenuto dentro un .container
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio: <code>.container-fluid</code></h3>
+                    <div class="code-block">
+<pre><code><div class="container-fluid example-container visualize-cols">
+  Contenuto dentro un .container-fluid
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container-fluid example-container visualize-cols" style="border-style: solid;">
+                           Contenuto dentro un .container-fluid
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="righe-colonne-base">
+            <h2>4. Righe e Colonne di Base</h2>
+            <p>Le righe (<code>.row</code>) creano gruppi orizzontali di colonne. Le colonne (<code>.col</code>) specificano quante delle 12 colonne disponibili occuperanno.</p>
+
+            <h3>Colonne di Larghezza Automatica (<code>.col</code>)</h3>
+            <p>Se usi solo la classe <code>.col</code> senza specificare un numero, Bootstrap distribuirà lo spazio equamente tra le colonne presenti nella riga.</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row visualize-cols">
+    <div class="col">Colonna 1 di 2</div>
+    <div class="col">Colonna 2 di 2</div>
+  </div>
+  <div class="row visualize-cols">
+    <div class="col">Colonna 1 di 3</div>
+    <div class="col">Colonna 2 di 3</div>
+    <div class="col">Colonna 3 di 3</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row visualize-cols">
+                                <div class="col">Colonna 1 di 2</div>
+                                <div class="col">Colonna 2 di 2</div>
+                            </div>
+                            <div class="row visualize-cols">
+                                <div class="col">Colonna 1 di 3</div>
+                                <div class="col">Colonna 2 di 3</div>
+                                <div class="col">Colonna 3 di 3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Colonne con Larghezza Specifica (<code>.col-*</code>)</h3>
+            <p>Puoi specificare quante delle 12 colonne virtuali deve occupare una colonna usando <code>.col-NUMERO</code> (es. <code>.col-4</code>, <code>.col-6</code>, <code>.col-8</code>).</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row visualize-cols">
+    <div class="col-8">col-8</div>
+    <div class="col-4">col-4</div>
+  </div>
+  <div class="row visualize-cols">
+    <div class="col-6">col-6</div>
+    <div class="col-3">col-3</div>
+    <div class="col-3">col-3</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row visualize-cols">
+                                <div class="col-8">col-8</div>
+                                <div class="col-4">col-4</div>
+                            </div>
+                            <div class="row visualize-cols">
+                                <div class="col-6">col-6</div>
+                                <div class="col-3">col-3</div>
+                                <div class="col-3">col-3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="breakpoint">
+            <h2>5. Breakpoint della Grid</h2>
+            <p>Bootstrap ha 6 breakpoint di default (tier), che permettono di controllare il layout a diverse dimensioni di schermo:</p>
+            <ul>
+                <li><code>xs</code> (extra small): <code><576px</code> (implicito, non serve il prefisso <code>xs</code>, es. <code>.col-6</code>)</li>
+                <li><code>sm</code> (small): <code>≥576px</code> (es. <code>.col-sm-6</code>)</li>
+                <li><code>md</code> (medium): <code>≥768px</code> (es. <code>.col-md-6</code>)</li>
+                <li><code>lg</code> (large): <code>≥992px</code> (es. <code>.col-lg-6</code>)</li>
+                <li><code>xl</code> (extra large): <code>≥1200px</code> (es. <code>.col-xl-6</code>)</li>
+                <li><code>xxl</code> (extra extra large): <code>≥1400px</code> (es. <code>.col-xxl-6</code>)</li>
+            </ul>
+            <p>Puoi combinare queste classi per creare layout molto flessibili. Le classi si applicano dal breakpoint specificato in su, a meno che non vengano sovrascritte da un breakpoint più grande.</p>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row visualize-cols">
+    <!-- Stack su mobile, 2 colonne su tablet, 4 su desktop -->
+    <div class="col-12 col-md-6 col-lg-3">Colonna 1</div>
+    <div class="col-12 col-md-6 col-lg-3">Colonna 2</div>
+    <div class="col-12 col-md-6 col-lg-3">Colonna 3</div>
+    <div class="col-12 col-md-6 col-lg-3">Colonna 4</div>
+  </div>
+</div></code></pre>
+                    </div>
+                    <p class="mt-2"><em>Prova a ridimensionare la finestra del browser per vedere l'effetto!</em></p>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row visualize-cols">
+                                <div class="col-12 col-md-6 col-lg-3">Colonna 1</div>
+                                <div class="col-12 col-md-6 col-lg-3">Colonna 2</div>
+                                <div class="col-12 col-md-6 col-lg-3">Colonna 3</div>
+                                <div class="col-12 col-md-6 col-lg-3">Colonna 4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="gutters">
+            <h2>6. Gutters (Spaziatura tra Colonne)</h2>
+            <p>I "gutters" sono gli spazi tra il contenuto delle colonne, creati dal padding orizzontale. Le righe (<code>.row</code>) hanno margini negativi per compensare il padding della prima e ultima colonna.</p>
+            <p>Puoi controllare i gutters usando le classi <code>.g-*</code>, <code>.gx-*</code> (orizzontale), <code>.gy-*</code> (verticale) sulla classe <code>.row</code>. I valori vanno da 0 a 5.</p>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio: Gutter orizzontale e verticale</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row g-3 visualize-cols"> <!-- Gutter di dimensione 3 -->
+    <div class="col-6"><div class="p-2 bg-light">Colonna con Gutter</div></div>
+    <div class="col-6"><div class="p-2 bg-light">Colonna con Gutter</div></div>
+    <div class="col-6"><div class="p-2 bg-light">Colonna con Gutter</div></div>
+    <div class="col-6"><div class="p-2 bg-light">Colonna con Gutter</div></div>
+  </div>
+</div></code></pre>
+                    </div>
+                     <p>Nota: Per vedere l'effetto del gutter, ho aggiunto un div interno con classe <code>.p-2 bg-light</code>, altrimenti il padding del gutter si "fonde" con il padding che abbiamo aggiunto per visualizzare i bordi.</p>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                          <div class="row g-3 visualize-cols">
+                            <div class="col-6"><div class="p-2 bg-light border">Colonna con Gutter</div></div>
+                            <div class="col-6"><div class="p-2 bg-light border">Colonna con Gutter</div></div>
+                            <div class="col-6"><div class="p-2 bg-light border">Colonna con Gutter</div></div>
+                            <div class="col-6"><div class="p-2 bg-light border">Colonna con Gutter</div></div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio: Nessun Gutter</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row g-0 visualize-cols"> <!-- Nessun Gutter -->
+    <div class="col-6">Colonna senza Gutter</div>
+    <div class="col-6">Colonna senza Gutter</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                          <div class="row g-0 visualize-cols">
+                            <div class="col-6">Colonna senza Gutter</div>
+                            <div class="col-6">Colonna senza Gutter</div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="offsetting">
+            <h2>7. Offsetting delle Colonne</h2>
+            <p>Puoi spostare le colonne a destra usando le classi <code>.offset-*</code>. Ad esempio, <code>.offset-md-2</code> sposta una colonna di due unità a partire dal breakpoint <code>md</code>.</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row visualize-cols">
+    <div class="col-md-4">.col-md-4</div>
+    <div class="col-md-4 offset-md-4">.col-md-4 .offset-md-4</div>
+  </div>
+  <div class="row visualize-cols">
+    <div class="col-md-3 offset-md-3">.col-md-3 .offset-md-3</div>
+    <div class="col-md-3 offset-md-3">.col-md-3 .offset-md-3</div>
+  </div>
+  <div class="row visualize-cols">
+    <div class="col-md-6 offset-md-3">.col-md-6 .offset-md-3</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row visualize-cols">
+                                <div class="col-md-4">.col-md-4</div>
+                                <div class="col-md-4 offset-md-4">.col-md-4 .offset-md-4</div>
+                            </div>
+                            <div class="row visualize-cols">
+                                <div class="col-md-3 offset-md-3">.col-md-3 .offset-md-3</div>
+                                <div class="col-md-3 offset-md-3">.col-md-3 .offset-md-3</div>
+                            </div>
+                            <div class="row visualize-cols">
+                                <div class="col-md-6 offset-md-3">.col-md-6 .offset-md-3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="ordering">
+            <h2>8. Riordinamento delle Colonne</h2>
+            <p>Puoi cambiare l'ordine visuale delle colonne con le classi <code>.order-*</code>. Funzionano per tutti i breakpoint (es. <code>.order-1</code>, <code>.order-lg-2</code>). Puoi anche usare <code>.order-first</code> e <code>.order-last</code>.</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row visualize-cols">
+    <div class="col">Prima nel DOM, Prima visualmente</div>
+    <div class="col order-5">Seconda nel DOM, Terza visualmente</div>
+    <div class="col order-1">Terza nel DOM, Seconda visualmente</div>
+  </div>
+  <div class="row visualize-cols mt-3">
+    <div class="col order-last">Prima nel DOM, Ultima visualmente</div>
+    <div class="col">Seconda nel DOM, Media visualmente</div>
+    <div class="col order-first">Terza nel DOM, Prima visualmente</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row visualize-cols">
+                                <div class="col">Prima nel DOM, Prima visualmente</div>
+                                <div class="col order-5">Seconda nel DOM, Terza visualmente</div>
+                                <div class="col order-1">Terza nel DOM, Seconda visualmente</div>
+                            </div>
+                             <div class="row visualize-cols mt-3">
+                                <div class="col order-last">Prima nel DOM, Ultima visualmente</div>
+                                <div class="col">Seconda nel DOM, Media visualmente</div>
+                                <div class="col order-first">Terza nel DOM, Prima visualmente</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <section id="nesting">
+            <h2>9. Annidamento (Nesting)</h2>
+            <p>Puoi annidare le righe e le colonne. Inserisci una nuova <code>.row</code> e un set di <code>.col-*</code> all'interno di una colonna esistente.</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row visualize-cols">
+    <div class="col-sm-9">
+      Livello 1: .col-sm-9
+      <div class="row visualize-cols">
+        <div class="col-8 col-sm-6">Livello 2: .col-8 .col-sm-6</div>
+        <div class="col-4 col-sm-6">Livello 2: .col-4 .col-sm-6</div>
+      </div>
+    </div>
+    <div class="col-sm-3">Livello 1: .col-sm-3</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row visualize-cols">
+                                <div class="col-sm-9">
+                                    Livello 1: .col-sm-9
+                                    <div class="row visualize-cols" style="background-color: rgba(0,123,255,0.1);"> <!-- Sfondo leggermente più scuro per il nested row -->
+                                        <div class="col-8 col-sm-6">Livello 2: .col-8 .col-sm-6</div>
+                                        <div class="col-4 col-sm-6">Livello 2: .col-4 .col-sm-6</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">Livello 1: .col-sm-3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <hr class="my-5">
+
+        <section id="alignment">
+            <h2>10. Allineamento</h2>
+            <p>Bootstrap fornisce utility flexbox per allineare le colonne verticalmente e orizzontalmente.</p>
+
+            <h3>Allineamento Verticale (sulla <code>.row</code>)</h3>
+            <p>Usa <code>align-items-start</code>, <code>align-items-center</code>, <code>align-items-end</code> sulla classe <code>.row</code>.</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row align-items-start visualize-cols" style="min-height: 10rem;">
+    <div class="col">Colonna 1</div>
+    <div class="col">Colonna 2</div>
+    <div class="col">Colonna 3 (align-items-start)</div>
+  </div>
+  <div class="row align-items-center visualize-cols" style="min-height: 10rem;">
+    <div class="col">Colonna 1</div>
+    <div class="col">Colonna 2 (align-items-center)</div>
+    <div class="col">Colonna 3</div>
+  </div>
+  <div class="row align-items-end visualize-cols" style="min-height: 10rem;">
+    <div class="col">Colonna 1</div>
+    <div class="col">Colonna 2</div>
+    <div class="col">Colonna 3 (align-items-end)</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row align-items-start visualize-cols" style="min-height: 10rem;">
+                                <div class="col">Colonna 1</div>
+                                <div class="col">Colonna 2</div>
+                                <div class="col">Colonna 3 (align-items-start)</div>
+                            </div>
+                            <div class="row align-items-center visualize-cols" style="min-height: 10rem;">
+                                <div class="col">Colonna 1</div>
+                                <div class="col">Colonna 2 (align-items-center)</div>
+                                <div class="col">Colonna 3</div>
+                            </div>
+                            <div class="row align-items-end visualize-cols" style="min-height: 10rem;">
+                                <div class="col">Colonna 1</div>
+                                <div class="col">Colonna 2</div>
+                                <div class="col">Colonna 3 (align-items-end)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Allineamento Orizzontale (sulla <code>.row</code>)</h3>
+            <p>Usa <code>justify-content-start</code>, <code>justify-content-center</code>, <code>justify-content-end</code>, <code>justify-content-around</code>, <code>justify-content-between</code> sulla classe <code>.row</code>.</p>
+             <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Codice Esempio:</h3>
+                    <div class="code-block">
+<pre><code><div class="container example-container">
+  <div class="row justify-content-start visualize-cols">
+    <div class="col-4">Colonna 1 (start)</div>
+    <div class="col-4">Colonna 2</div>
+  </div>
+  <div class="row justify-content-center visualize-cols">
+    <div class="col-4">Colonna 1 (center)</div>
+    <div class="col-4">Colonna 2</div>
+  </div>
+  <div class="row justify-content-end visualize-cols">
+    <div class="col-4">Colonna 1 (end)</div>
+    <div class="col-4">Colonna 2</div>
+  </div>
+</div></code></pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>Risultato:</h3>
+                    <div class="result-block">
+                        <div class="container example-container">
+                            <div class="row justify-content-start visualize-cols">
+                                <div class="col-4">Colonna 1 (start)</div>
+                                <div class="col-4">Colonna 2</div>
+                            </div>
+                            <div class="row justify-content-center visualize-cols">
+                                <div class="col-4">Colonna 1 (center)</div>
+                                <div class="col-4">Colonna 2</div>
+                            </div>
+                            <div class="row justify-content-end visualize-cols">
+                                <div class="col-4">Colonna 1 (end)</div>
+                                <div class="col-4">Colonna 2</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-5 py-3 border-top">
+            <p>© Guida alla Grid Bootstrap. Sperimenta e crea layout fantastici!</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -89,8 +89,8 @@ gsap.fromTo(".nuovo",
     opacity: 1,
     scale: 1,
     scrollTrigger: {
-      trigger: ".opzioni",
-      start: "top 45%",
+      trigger: ".attivatore1",
+      start: "top 20%",
       end: "+=0", // L'animazione dura per 1000px di scroll
       scrub: 2, // Sincronizza l'animazione con lo scroll
       //markers: true,
@@ -103,8 +103,8 @@ gsap.fromTo(".continua",
     opacity: 1,
     scale: 1,
     scrollTrigger: {
-      trigger: ".opzioni",
-      start: "top 45%",
+      trigger: ".attivatore1",
+      start: "top 20%",
       end: "+=0", // L'animazione dura per 1000px di scroll
       scrub: 2, // Sincronizza l'animazione con lo scroll
       //markers: true,
@@ -128,7 +128,7 @@ gsap.to(".icona", {
   opacity: 0,
   scrollTrigger: {
     trigger: ".attivatore1",
-    start: "top 200px",
+    start: "top 20%",
     end: "+=0px", // L'animazione dura per 1000px di scroll
     //markers: true, // Lascia i marcatori per il debug
     scrub: 1, // Sincronizza l'animazione con lo scroll
@@ -145,10 +145,20 @@ gsap.fromTo(".titolo",
     x: "22%",
     scrollTrigger: {
       trigger: ".attivatore1",
-      start: "top 200px", // O "top center"
+      start: "top 20%", // O "top center"
       scrub: 3, // Sincronizza l'animazione con lo scroll
       end: "+=0px", // L'animazione dura per 1000px di scroll
       //markers: true,
     },
   }
 );
+
+
+
+document.querySelector('.nuovo').onclick = function (){
+window.location.href = "nuovo/nuovo.html";
+}
+
+document.querySelector('.continua').onclick = function (){
+window.location.href = "continua/continua.html";
+}

@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'font_titolo'; /* Scegli un nome per il tuo font */
+    src: url('../fonts/CelsiusFlower.otf') format('opentype');
+    /* Puoi aggiungere font-weight e font-style se il file .otf è specifico per un peso/stile */
+    /* Esempio: font-weight: normal; font-style: normal; */
+    font-display: swap; /* Importante per le prestazioni e l'esperienza utente */
+}
+html {
+    /* 1. Assicura che lo scroll sia abilitato se il contenuto eccede */
+    overflow-y: scroll;
+    overflow-x: hidden; /* Nasconde lo scroll orizzontale se non necessario */
+
+    /* 2. Nasconde la scrollbar su Firefox */
+    scrollbar-width: none;
+
+    /* 3. Nasconde la scrollbar su IE e Edge (vecchio) - per completezza */
+    -ms-overflow-style: none;
+}
+
+/* 4. Nasconde la scrollbar su browser WebKit (Chrome, Safari, Edge moderno, Opera) */
+html::-webkit-scrollbar {
+    display: none;
+}
+html, body {
+    height: 100%; /* FONDAMENTALE */
+    font-family: "font_titolo" /* Font di default */
+}
+body {
+    
+    background-color: black;
+    color: white; /* Colore del testo di default, se non sovrascritto */
+   
+    
+  }
+
+    
+.titolo-carica{
+    display: flex;
+    justify-content: center;
+    margin-top: 4vh;
+}
+.icona-carica{
+    height: 8vh;
+    width: 8vw;
+    stroke: white;
+    
+    
+    
+}
+.carica{
+    background-color: rgba(45, 70, 73, 0.868);
+}
+.opzioni{
+    background-color: rgba(30, 38, 46, 0.868);
+}
+.attendi{
+    background-color: rgba(35, 34, 58, 0.868);
+}
+.carica,.opzioni,.attendi{
+    height: 95vh;
+    width: 95vw;
+    position: absolute;
+    top: 2.5%;
+    left: 2.5%;
+    
+    border-radius: 10px;
+    
+}
+.opzioni,.attendi{
+    opacity: 0;
+}
+
+.descrizione-carica{
+    font-size: larger;
+    padding: 2vh;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    height: 75vh;
+    width: 30vw;
+    background-color: rgba(0, 0, 0, 0.616);
+}
