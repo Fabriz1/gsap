@@ -80,7 +80,7 @@ fileInput.addEventListener('change', () => {
     }).to(".descrizione-opzioni", {
         opacity: 1,
         scale: 1,
-    }).to(".sezione-opzioni",{
+    }).to(".def-opzioni",{
         opacity: 1,
         scale: 1,
     })

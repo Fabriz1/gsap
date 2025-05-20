@@ -34,7 +34,7 @@ body {
   }
 
     
-.titolo-carica{
+.titolo-carica,.titolo-opzioni{
     display: flex;
     justify-content: center;
     margin-top: 4vh;
@@ -93,7 +93,7 @@ body {
     background-color: rgba(0, 0, 0, 0.616);
 }
 
-.carica-file{
+.carica-file,.def-opzioni{
     margin-top: 3%;
     scale: 0.5;
     height: 70vh;
@@ -107,3 +107,53 @@ body {
     align-items: center;
     border-style: dashed;
 }
+
+.descrizione-opzioni{
+    margin-top: 6%;
+    opacity: 0;
+    scale: 0.5;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: larger;
+    padding: 8vh;
+    border-style: solid;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    border-color: rgb(255, 255, 255);
+    height: 70vh;
+    width: 30vw;
+    background-color: rgba(0, 0, 0, 0.616);
+
+}
+.titolo-opzioni{
+    font-size: 60px;
+    
+}
+
+
+.descrizione-opzioni{
+    margin-top: 6%;
+    opacity: 0;
+    scale: 0.5;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: larger;
+    padding: 8vh;
+    border-style: solid;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    border-color: rgb(255, 255, 255);
+    height: 70vh;
+    width: 30vw;
+    background-color: rgba(0, 0, 0, 0.616);
+
+}
+.titolo-opzioni{
+    font-size: 60px;
+    
+}
+
