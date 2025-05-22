@@ -1,0 +1,96 @@
+@font-face {
+    font-family: 'font_titolo';
+    /* Scegli un nome per il tuo font */
+    src: url('../fonts/CelsiusFlower.otf') format('opentype');
+    /* Puoi aggiungere font-weight e font-style se il file .otf è specifico per un peso/stile */
+    /* Esempio: font-weight: normal; font-style: normal; */
+    font-display: swap;
+    /* Importante per le prestazioni e l'esperienza utente */
+}
+
+html {
+    /* 1. Assicura che lo scroll sia abilitato se il contenuto eccede */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* Nasconde lo scroll orizzontale se non necessario */
+
+    /* 2. Nasconde la scrollbar su Firefox */
+    scrollbar-width: none;
+
+    /* 3. Nasconde la scrollbar su IE e Edge (vecchio) - per completezza */
+    -ms-overflow-style: none;
+}
+
+/* 4. Nasconde la scrollbar su browser WebKit (Chrome, Safari, Edge moderno, Opera) */
+html::-webkit-scrollbar {
+    display: none;
+}
+
+html,
+body {
+    height: 100%;
+    /* FONDAMENTALE */
+    font-family: "font_titolo";
+    /* Font di default */
+    background-color: #000000;
+    /* Colore di sfondo */
+}
+
+
+body {
+
+    background-color: black;
+    color: white;
+    /* Colore del testo di default, se non sovrascritto */
+
+
+}
+
+.contenitore-titolo {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.titolo {
+    opacity: 0;
+    scale: 0;
+    font-family: "font_titolo";
+    /* Font personalizzato */
+    font-size: 10em;
+    /* Dimensione del font */
+}
+
+.descrizione {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 0%;
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+
+}
+
+.freccia {
+    opacity: 0;
+}
+
+.scroll-destra{
+    height: 60vh;
+    width: 400vw;
+    position: absolute;
+    top: 40%;
+    display: flex;
+
+}
+.utente{
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    
+    
+}
