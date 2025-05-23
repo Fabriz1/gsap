@@ -28,97 +28,41 @@ html::-webkit-scrollbar {
 
 html,
 body {
-    height: 100%;
+    
     /* FONDAMENTALE */
     font-family: "font_titolo";
     /* Font di default */
     background-color: #000000;
     /* Colore di sfondo */
-}
-
-
-body {
-
-    background-color: black;
     color: white;
-    /* Colore del testo di default, se non sovrascritto */
-
-
 }
 
-.contenitore-titolo {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.titolo {
-    opacity: 0;
-    scale: 0;
-    font-family: "font_titolo";
-    /* Font personalizzato */
-    font-size: 10em;
-    /* Dimensione del font */
-}
-
-.descrizione {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    top: 0%;
-    height: 100vh;
-    width: 100vw;
-    position: absolute;
-
-}
-
-.freccia {
-    opacity: 0;
-}
-
-.scroll-destra{
-    height: 60vh;
+.contenitore{
+    
     width: 400vw;
-    position: absolute;
-    top: 40%;
+    height: 98vh;
     display: flex;
+    align-items: center;
+    
 
 }
-.utente{
-    position: absolute;
-    right: 2%;
-    top: 3%;
-    scale: 0.6;
-    opacity: 0;
-    z-index: 10;
-    
+.clicca{
+    scale: 1.15;
 }
-.scelta{
-    width: 100vw;
-    height: 80vh;
-    position: absolute;
-    top: 20%;
-    
-}
-.nuovo,.continua{
+
+.carica-file{
     opacity: 0;
-    margin-top: 13%;
-    height: 50vh;
-    width: 45%;
-    border-style: solid;
-    box-shadow: 0 0 25px rgb(53, 53, 53);
-    border-radius: 10px;
-    border-color: rgb(255, 255, 255);
-    padding: 20px;
     display: flex;
-    font-size: 2em;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
-    overflow: hidden; 
- background: linear-gradient( to right, #0d0d0d7c, #18181883, #14141480, #0d0d0d83); /* Viola, Violetto, Blu, Verde, Viola */
+    width: 40vw;
+    height: 97%;
+    border-radius: 10px;
+    border-style: solid;
+    box-shadow: 0 0 10px ;
+    border-color: white;
+    background: linear-gradient( to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83); /* Viola, Violetto, Blu, Verde, Viola */
     
     /* Imposta la dimensione del background ad essere molto più grande del div. */
     background-size: 400% 100%; /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
@@ -130,27 +74,38 @@ body {
     -webkit-animation: gradientAnimation 10s ease infinite alternate;
     -moz-animation: gradientAnimation 10s ease infinite alternate;
     -o-animation: gradientAnimation 10s ease infinite alternate;
-    
-
 }
+.carica-testo{
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+    margin-left: 3vw;
+    width: 40vw;
+    height: 97%;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: white;
+    background: linear-gradient( to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83); /* Viola, Violetto, Blu, Verde, Viola */
+    box-shadow: 0 0 10px ;
+    /* Imposta la dimensione del background ad essere molto più grande del div. */
+    background-size: 400% 100%; /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
 
-.icona{
-    margin-top: 45%;
+    /* Applica l'animazione */
+    animation: gradientAnimation 10s ease infinite alternate; /* AGGIUNTO 'alternate' */
+
+    /* Prefissi per la compatibilità con browser più vecchi */
+    -webkit-animation: gradientAnimation 10s ease infinite alternate;
+    -moz-animation: gradientAnimation 10s ease infinite alternate;
+    -o-animation: gradientAnimation 10s ease infinite alternate;
 }
-.particle-simple {
-    /* position: absolute; è già impostato da GSAP, ma non fa male averlo */
-    pointer-events: none; /* Le particelle non devono intercettare eventi del mouse */
-    z-index: 2000;      /* Un valore alto per assicurarsi che siano in primo piano */
-    /* Le altre proprietà come width, height, background-color, borderRadius, opacity
-       sono impostate dinamicamente da GSAP nel tuo script.js */
+.carica{
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
 }
-
-
-
-
-
-
-
 @keyframes gradientAnimation {
     0% {
         background-position: 0% 50%; /* Inizia dalla posizione iniziale del gradiente */
