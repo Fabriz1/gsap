@@ -48,6 +48,77 @@ body {
 }
 .clicca{
     scale: 1.15;
+    margin-top: 15%;
+}
+
+.conf{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    scale: 0.17;
+    
+    opacity: 0;
+}
+.back{
+    position: absolute;
+    left: 0;
+    top: 0;
+    scale: 0.25;
+    
+    opacity: 0;
+    
+}
+.incolla{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+    width: 50%;
+    opacity: 0;
+    border-radius: 10px;
+    margin-top: 18%;
+    border-style:dashed ;
+    background-color: #3a3a3a5b;
+    position: relative; /* <-- AGGIUNGI QUESTO: Necessario per posizionare la textarea al suo interno */
+    overflow: hidden;
+    cursor: pointer;
+}
+
+#text-input-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%; /* Larghezza relativa al genitore .incolla */
+    height: 85%; /* Altezza relativa al genitore .incolla */
+    transform: translate(-50%, -50%) scale(0.8); /* Centra e prepara per animazione scale */
+    
+    color: #e0e0e0; /* Colore del testo chiaro */
+     background-color: #3a3a3a5b;
+    
+    padding: 20px; /* Spaziatura interna */
+    font-family: "font_titolo", sans-serif; /* Usa il font della pagina o uno di fallback */
+    font-size: 0.3rem; /* Dimensione del font leggibile */
+    line-height: 1.6; /* Interlinea per una migliore leggibilità */
+    resize: none; /* Disabilita il ridimensionamento manuale da parte dell'utente */
+    opacity: 0; /* Inizialmente invisibile */
+    pointer-events: none; /* Inizialmente non interagibile */
+    
+    z-index: 10; /* Assicura che sia sopra altri elementi dentro .incolla se necessario */
+     overflow-y: scroll; /* Assicura che lo scroll sia abilitato verticalmente */
+    overflow-x: hidden; /* Nasconde la scrollbar orizzontale, se non voluta */
+
+    /* Per Chrome, Safari, Edge (Webkit browsers) */
+    &::-webkit-scrollbar {
+        display: none; /* Nasconde completamente la scrollbar */
+        width: 0; /* Assicura che non occupi spazio */
+        background: transparent; /* Rende il track della scrollbar trasparente */
+    }
+
+    /* Per Firefox */
+    scrollbar-width: none; /* "none" per nasconderla completamente */
+
+    /* Per Internet Explorer e Edge (versioni precedenti) */
+    -ms-overflow-style: none;
 }
 
 .carica-file{
@@ -63,7 +134,7 @@ body {
     box-shadow: 0 0 10px ;
     border-color: white;
     background: linear-gradient( to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83); /* Viola, Violetto, Blu, Verde, Viola */
-    
+    cursor: pointer;
     /* Imposta la dimensione del background ad essere molto più grande del div. */
     background-size: 400% 100%; /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
 
@@ -81,7 +152,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction:column;
-    margin-left: 3vw;
+    margin-left: 6vw;
     width: 40vw;
     height: 97%;
     border-radius: 10px;
@@ -94,7 +165,7 @@ body {
 
     /* Applica l'animazione */
     animation: gradientAnimation 10s ease infinite alternate; /* AGGIUNTO 'alternate' */
-
+    
     /* Prefissi per la compatibilità con browser più vecchi */
     -webkit-animation: gradientAnimation 10s ease infinite alternate;
     -moz-animation: gradientAnimation 10s ease infinite alternate;
