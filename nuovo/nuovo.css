@@ -28,47 +28,54 @@ html::-webkit-scrollbar {
 
 html,
 body {
-    
+
     /* FONDAMENTALE */
     font-family: "font_titolo";
     /* Font di default */
-    background-color: #000000;
+
     /* Colore di sfondo */
     color: white;
 }
 
-.contenitore{
-    
-    width: 400vw;
+body {
+    background-color: black;
+}
+
+.contenitore {
+
+    width: 100vw;
     height: 98vh;
     display: flex;
     align-items: center;
-    
+
 
 }
-.clicca{
+
+.clicca {
     scale: 1.15;
     margin-top: 15%;
 }
 
-.conf{
+.conf {
     position: absolute;
     right: 0;
     bottom: 0;
     scale: 0.17;
-    
+
     opacity: 0;
 }
-.back{
+
+.back {
     position: absolute;
     left: 0;
     top: 0;
     scale: 0.25;
-    
+
     opacity: 0;
-    
+
 }
-.incolla{
+
+.incolla {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,9 +84,10 @@ body {
     opacity: 0;
     border-radius: 10px;
     margin-top: 18%;
-    border-style:dashed ;
+    border-style: dashed;
     background-color: #3a3a3a5b;
-    position: relative; /* <-- AGGIUNGI QUESTO: Necessario per posizionare la textarea al suo interno */
+    position: relative;
+    /* <-- AGGIUNGI QUESTO: Necessario per posizionare la textarea al suo interno */
     overflow: hidden;
     cursor: pointer;
 }
@@ -88,40 +96,58 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 90%; /* Larghezza relativa al genitore .incolla */
-    height: 85%; /* Altezza relativa al genitore .incolla */
-    transform: translate(-50%, -50%) scale(0.8); /* Centra e prepara per animazione scale */
-    
-    color: #e0e0e0; /* Colore del testo chiaro */
-     background-color: #3a3a3a5b;
-    
-    padding: 20px; /* Spaziatura interna */
-    font-family: "font_titolo", sans-serif; /* Usa il font della pagina o uno di fallback */
-    font-size: 0.3rem; /* Dimensione del font leggibile */
-    line-height: 1.6; /* Interlinea per una migliore leggibilità */
-    resize: none; /* Disabilita il ridimensionamento manuale da parte dell'utente */
-    opacity: 0; /* Inizialmente invisibile */
-    pointer-events: none; /* Inizialmente non interagibile */
-    
-    z-index: 10; /* Assicura che sia sopra altri elementi dentro .incolla se necessario */
-     overflow-y: scroll; /* Assicura che lo scroll sia abilitato verticalmente */
-    overflow-x: hidden; /* Nasconde la scrollbar orizzontale, se non voluta */
+    width: 90%;
+    /* Larghezza relativa al genitore .incolla */
+    height: 85%;
+    /* Altezza relativa al genitore .incolla */
+    transform: translate(-50%, -50%) scale(0.8);
+    /* Centra e prepara per animazione scale */
+
+    color: #e0e0e0;
+    /* Colore del testo chiaro */
+    background-color: #3a3a3a5b;
+
+    padding: 20px;
+    /* Spaziatura interna */
+    font-family: "font_titolo", sans-serif;
+    /* Usa il font della pagina o uno di fallback */
+    font-size: 0.3rem;
+    /* Dimensione del font leggibile */
+    line-height: 1.6;
+    /* Interlinea per una migliore leggibilità */
+    resize: none;
+    /* Disabilita il ridimensionamento manuale da parte dell'utente */
+    opacity: 0;
+    /* Inizialmente invisibile */
+    pointer-events: none;
+    /* Inizialmente non interagibile */
+
+    z-index: 10;
+    /* Assicura che sia sopra altri elementi dentro .incolla se necessario */
+    overflow-y: scroll;
+    /* Assicura che lo scroll sia abilitato verticalmente */
+    overflow-x: hidden;
+    /* Nasconde la scrollbar orizzontale, se non voluta */
 
     /* Per Chrome, Safari, Edge (Webkit browsers) */
     &::-webkit-scrollbar {
-        display: none; /* Nasconde completamente la scrollbar */
-        width: 0; /* Assicura che non occupi spazio */
-        background: transparent; /* Rende il track della scrollbar trasparente */
+        display: none;
+        /* Nasconde completamente la scrollbar */
+        width: 0;
+        /* Assicura che non occupi spazio */
+        background: transparent;
+        /* Rende il track della scrollbar trasparente */
     }
 
     /* Per Firefox */
-    scrollbar-width: none; /* "none" per nasconderla completamente */
+    scrollbar-width: none;
+    /* "none" per nasconderla completamente */
 
     /* Per Internet Explorer e Edge (versioni precedenti) */
     -ms-overflow-style: none;
 }
 
-.carica-file{
+.carica-file {
     opacity: 0;
     display: flex;
     justify-content: center;
@@ -131,71 +157,340 @@ body {
     height: 97%;
     border-radius: 10px;
     border-style: solid;
-    box-shadow: 0 0 10px ;
+    box-shadow: 0 0 10px;
     border-color: white;
-    background: linear-gradient( to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83); /* Viola, Violetto, Blu, Verde, Viola */
+    background: linear-gradient(to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83);
+    /* Viola, Violetto, Blu, Verde, Viola */
     cursor: pointer;
     /* Imposta la dimensione del background ad essere molto più grande del div. */
-    background-size: 400% 100%; /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
+    background-size: 400% 100%;
+    /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
 
     /* Applica l'animazione */
-    animation: gradientAnimation 10s ease infinite alternate; /* AGGIUNTO 'alternate' */
+    animation: gradientAnimation 10s ease infinite alternate;
+    /* AGGIUNTO 'alternate' */
 
     /* Prefissi per la compatibilità con browser più vecchi */
     -webkit-animation: gradientAnimation 10s ease infinite alternate;
     -moz-animation: gradientAnimation 10s ease infinite alternate;
     -o-animation: gradientAnimation 10s ease infinite alternate;
 }
-.carica-testo{
+
+.carica-testo {
     opacity: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction:column;
+    flex-direction: column;
     margin-left: 6vw;
     width: 40vw;
     height: 97%;
     border-radius: 10px;
     border-style: solid;
     border-color: white;
-    background: linear-gradient( to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83); /* Viola, Violetto, Blu, Verde, Viola */
-    box-shadow: 0 0 10px ;
+    background: linear-gradient(to right, #0d0d0d7c, #44374483, #1d1a2e80, #0d0d0d83);
+    /* Viola, Violetto, Blu, Verde, Viola */
+    box-shadow: 0 0 10px;
     /* Imposta la dimensione del background ad essere molto più grande del div. */
-    background-size: 400% 100%; /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
+    background-size: 400% 100%;
+    /* La dimensione è la stessa, ma ora il gradiente si muoverà avanti e indietro */
 
     /* Applica l'animazione */
-    animation: gradientAnimation 10s ease infinite alternate; /* AGGIUNTO 'alternate' */
-    
+    animation: gradientAnimation 10s ease infinite alternate;
+    /* AGGIUNTO 'alternate' */
+
     /* Prefissi per la compatibilità con browser più vecchi */
     -webkit-animation: gradientAnimation 10s ease infinite alternate;
     -moz-animation: gradientAnimation 10s ease infinite alternate;
     -o-animation: gradientAnimation 10s ease infinite alternate;
+
+
 }
-.carica{
+
+
+
+
+
+
+.preferenze {
+    z-index: -1;
+    opacity: 0;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    position: absolute;
+
+
+}
+
+.carica {
     height: 90vh;
     display: flex;
     justify-content: center;
     width: 100vw;
 }
+
 @keyframes gradientAnimation {
     0% {
-        background-position: 0% 50%; /* Inizia dalla posizione iniziale del gradiente */
+        background-position: 0% 50%;
+        /* Inizia dalla posizione iniziale del gradiente */
     }
+
     100% {
-        background-position: 100% 50%; /* Si sposta fino alla posizione finale */
+        background-position: 100% 50%;
+        /* Si sposta fino alla posizione finale */
     }
 }
 
 /* Prefissi per i keyframes */
 @-webkit-keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
 }
+
 @-moz-keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
 }
+
 @-o-keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+
+
+
+}
+
+#blob-container {
+    opacity: 0;
+    position: fixed;
+    /* O absolute, a seconda del contesto del tuo layout */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Nasconde le parti dei blob che escono */
+    z-index: -1;
+    /* Mette i blob dietro a tutto il resto */
+    pointer-events: none;
+    /* I blob non devono intercettare i click */
+}
+
+.color-blob {
+
+    position: absolute;
+    filter: blur(60px);
+    /* Prova valori tra 25px e 60px. Più alto = più sfocato e fuso */
+    mix-blend-mode: screen;
+    /* 'screen' o 'lighten' sono ottimi per colori chiari su sfondo scuro.
+                               Sperimenta per vedere quale preferisci.
+                               'screen' tende a rendere i colori più brillanti quando si sovrappongono. */
+    border-radius: 50%;
+    /* Li rende circolari */
+    opacity: 0;
+    /* Iniziano invisibili */
+
+    transition: opacity 0.8s ease,
+        width 0.8s ease,
+        height 0.8s ease;
+    /* Durata più lunga per il movimento */
+    /* mix-blend-mode: screen; /* Prova diversi blend mode: screen, lighten, color-dodge, multiply */
+    /* Per un effetto più "liquido", 'screen' o 'lighten' sono buoni punti di partenza */
+    /* Se vuoi che i colori si scuriscano quando si sovrappongono, prova 'multiply' */
+    /* Puoi anche non usare mix-blend-mode se l'effetto di sovrapposizione normale ti piace */
+    will-change: opacity, width, height, transform;
+    /* Ottimizzazione per le animazioni */
+}
+
+
+.pentagon-chart {
+
+    position: relative;
+    width: 800px;
+    height: 800px;
+}
+
+.shape-chart {
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    z-index: -1;
+}
+
+.pentagon-svg,
+.shape-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.grid-line {
+    stroke: rgba(255, 255, 255, 0.616);
+    stroke-width: 1;
+    fill: none;
+}
+
+.pentagon-outline {
+    stroke: rgba(255, 255, 255, 0.842);
+    stroke-width: 2;
+    fill: none;
+}
+
+.data-polygon {
+    stroke: #00ff88;
+    stroke-width: 3;
+    fill: rgba(0, 255, 136, 0.2);
+    transition: all 0.3s ease;
+}
+
+.axis-line {
+    stroke: rgba(255, 255, 255, 0.712);
+    stroke-width: 1;
+}
+
+.control-point {
+    fill: #00ff88;
+    stroke: #ffffff;
+    stroke-width: 3;
+    cursor: grab;
+    transition: all 0.2s ease;
+    r: 5;
+}
+
+.control-point:hover {
+    fill: #00cc6a;
+    r: 7;
+}
+
+.control-point.dragging {
+    cursor: grabbing;
+    fill: #ff6b6b;
+    r: 8;
+}
+
+.label {
+    fill: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.values-display {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+}
+
+.value-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    min-width: 150px;
+}
+
+.value-number {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.morphing-shape {
+    fill: rgba(255, 107, 107, 0.4);
+    stroke: #ff6b6b;
+    stroke-width: 3;
+    transition: all 0.5s ease;
+}
+
+.shape-label {
+    fill: white;
+    font-size: 16px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+
+
+
+
+
+
+@keyframes floatAroundSmooth1 {
+    0%   { transform: translate(0vw, 0vh) scale(1); }
+    25%  { transform: translate(15vw, -10vh) scale(1.05); } /* In alto a destra */
+    50%  { transform: translate(0vw, 15vh) scale(0.95); }  /* In basso al centro */
+    75%  { transform: translate(-15vw, -5vh) scale(1.03); } /* In alto a sinistra */
+    100% { transform: translate(0vw, 0vh) scale(1); }
+}
+
+/* Keyframe 2: Un percorso più ellittico e veloce in alcuni tratti, più stretto */
+@keyframes floatAroundSmooth2 {
+    0%   { transform: translate(0vw, 0vh) scale(1); }
+    20%  { transform: translate(-10vw, 12vh) scale(0.97); } /* In basso a sinistra */
+    40%  { transform: translate(5vw, -15vh) scale(1.04); }  /* Molto in alto, leggermente a destra */
+    60%  { transform: translate(12vw, 10vh) scale(0.96); }  /* In basso a destra */
+    80%  { transform: translate(-15vw, -8vh) scale(1.02); } /* In alto a sinistra, più ampio */
+    100% { transform: translate(0vw, 0vh) scale(1); }
+}
+
+/* Keyframe 3: Movimento prevalentemente verticale con escursioni laterali */
+@keyframes floatAroundSmooth3 {
+    0%   { transform: translate(0vw, 0vh) scale(1); }
+    25%  { transform: translate(5vw, -18vh) scale(1.05); } /* Molto in alto */
+    50%  { transform: translate(-5vw, 18vh) scale(0.95); } /* Molto in basso */
+    75%  { transform: translate(8vw, 0vh) scale(1.03); }   /* Ritorno laterale */
+    100% { transform: translate(0vw, 0vh) scale(1); }
+}
+
+/* Keyframe 4: Un "otto" o un'infinito pigro, con incrocio al centro */
+@keyframes floatAroundSmooth4 {
+    0%   { transform: translate(0vw, 0vh) scale(1); }
+    12.5%{ transform: translate(10vw, 10vh) scale(1.02); }
+    25%  { transform: translate(18vw, 0vh) scale(1.04); }   /* Esterno destra */
+    37.5%{ transform: translate(10vw, -10vh) scale(1.01); }
+    50%  { transform: translate(0vw, 0vh) scale(0.96); }   /* Incrocio al centro */
+    62.5%{ transform: translate(-10vw, 10vh) scale(0.98); }
+    75%  { transform: translate(-18vw, 0vh) scale(0.95); }  /* Esterno sinistra */
+    87.5%{ transform: translate(-10vw, -10vh) scale(0.99); }
+    100% { transform: translate(0vw, 0vh) scale(1); }
+}
+
+/* Keyframe 5: Un movimento più circolare e costante, ma con leggere derive */
+@keyframes floatAroundSmooth5 {
+    0%   { transform: translate(0vw, 0vh) scale(1); }
+    10%  { transform: translate(8vw, -5vh) scale(1.01); }
+    20%  { transform: translate(15vw, 0vh) scale(1.02); }  /* Esterno destra */
+    30%  { transform: translate(18vw, 8vh) scale(1.03); }
+    40%  { transform: translate(10vw, 18vh) scale(1.01); } /* In basso */
+    50%  { transform: translate(0vw, 20vh) scale(0.98); }  /* Molto in basso, al centro */
+    60%  { transform: translate(-10vw, 18vh) scale(0.97); }
+    70%  { transform: translate(-18vw, 8vh) scale(0.99); }
+    80%  { transform: translate(-15vw, 0vh) scale(1); }    /* Esterno sinistra */
+    90%  { transform: translate(-8vw, -5vh) scale(1.01); }
+    100% { transform: translate(0vw, 0vh) scale(1); }
 }
