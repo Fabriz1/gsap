@@ -10,7 +10,7 @@
 
 html {
     /* 1. Assicura che lo scroll sia abilitato se il contenuto eccede */
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     /* Nasconde lo scroll orizzontale se non necessario */
 
@@ -319,7 +319,11 @@ body {
     will-change: opacity, width, height, transform;
     /* Ottimizzazione per le animazioni */
 }
-
+.conf-preferenze{
+    position: absolute;
+    bottom: 10%;
+    right: 12%;
+}
 
 .pentagon-chart {
 

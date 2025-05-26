@@ -1,5 +1,6 @@
 gsap.registerPlugin(DrawSVGPlugin, SplitText, Draggable)
-let fileOtesto;
+
+let fileOtesto; //se è falso è stato caricato testo altriemnti il file
 let tl = gsap.timeline();
 let split = SplitText.create(".testo1", { type: "chars" });
 let split2 = SplitText.create(".testo2", { type: "chars" });
@@ -157,6 +158,7 @@ let testoIncollato;
 let areatesto = document.getElementById('text-input-area');
 document.querySelector(".conf").addEventListener("click", function (event) {
     event.stopPropagation()
+    fileOtesto= false 
     // Se la timeline non è già invertita (cioè sta andando avanti o è alla fine), invertila.
     // Questo previene chiamate multiple a reverse() quando è già al suo punto di inizio.
     if (!incollaTimeline.reversed()) {
@@ -180,11 +182,13 @@ document.querySelector(".conf").addEventListener("click", function (event) {
     }, "<+1.4").to("#blob-container",{
         duration: 3,
         opacity:1
-    },"<+0.1")
+    },"<+0.1").to(".carica",{
+        display: "none"
+    })
 
 })
 fakeFile.addEventListener('change', function (event) {
-    
+    fileOtesto = true; // Indica che è stato caricato un file
     // Se la timeline non è già invertita (cioè sta andando avanti o è alla fine), invertila.
     // Questo previene chiamate multiple a reverse() quando è già al suo punto di inizio.
     
@@ -204,7 +208,9 @@ fakeFile.addEventListener('change', function (event) {
     }, "<+1.4").to("#blob-container",{
         duration: 3,
         opacity:1
-    },"<+0.1")
+    },"<+0.1").to(".carica",{
+        display: "none"
+    })
 
 })
 
@@ -244,8 +250,47 @@ gsap.to(".carica-testo", {
 
 
 
+document.querySelector(".conf-preferenze").addEventListener("click", function () {
+    const preferenzeCorrenti = window.pentagonChart.getValues();
 
+    // Definisci le variabili per le preferenze arrotondate
+    let lunghezza;
+    let lessico;
+    let colori;
+    let creativita;
+    let schematico;
+    gsap.timeline().to(".preferenze", {
+    opacity: 0,
+    y: -200,
+    scale: 0.7,
+    }).to("#blob-container", {
+        opacity: 0,
+    },"<").to(".preferenze", {
+        display: "none",
+    })
+    if (preferenzeCorrenti && preferenzeCorrenti.length === 5) {
+        lunghezza = Math.round(preferenzeCorrenti[0]);
+        lessico = Math.round(preferenzeCorrenti[1]);
+        colori = Math.round(preferenzeCorrenti[2]);
+        creativita = Math.round(preferenzeCorrenti[3]);
+        schematico = Math.round(preferenzeCorrenti[4]);
 
+        // Log per verifica (puoi rimuoverlo in produzione)
+        console.log("Preferenze salvate:");
+        console.log("Lunghezza:", lunghezza);
+        console.log("Lessico:", lessico);
+        console.log("Colori:", colori);
+        console.log("Creatività:", creativita);
+        console.log("Schematico:", schematico);
+
+        // Qui puoi fare qualcos'altro con queste variabili,
+        // ad esempio inviarle a un server o usarle per altre logiche nell'applicazione.
+
+    } else {
+        console.error("Errore: Impossibile recuperare le preferenze dal grafico.");
+    }
+
+});
 
 
 
@@ -402,14 +447,14 @@ function startBlobAnimations() {
 
 
 function aggiornaBlobs() {
-    console.log("DEBUG: DENTRO aggiornaBlobs - INIZIO"); // LOG 7
+   
     if (!window.pentagonChart || blobElements.length === 0) {
         console.warn("PentagonChart o blob non ancora inizializzati per aggiornaBlobs");
         return;
     }
 
     const values = window.pentagonChart.getValues(); 
-
+    console.log("DEBUG: DENTRO aggiornaBlobs - Valori ottenuti da PentagonChart:"); // LOG 7.A
     values.forEach((value, index) => {
         const blob = blobElements[index];
         if (!blob) return;
@@ -555,11 +600,13 @@ class PentagonChart {
     }
 
     updateDataPolygon() {
+        console.log("DEBUG: DENTRO PentagonChart updateDataPolygon - INIZIO"); // LOG 12.A
         const points = [];
         for (let i = 0; i < 5; i++) {
             const radius = (this.values[i] / 5) * this.radius;
             const pos = this.getVertexPosition(i, radius);
             points.push(`${pos.x},${pos.y}`);
+            console.log(pos);
         }
 
         const polygon = document.querySelector('.data-polygon');
@@ -609,6 +656,7 @@ class PentagonChart {
         this.updateControlPoint(this.dragIndex);
         this.updateDataPolygon();
         aggiornaBlobs();
+        
 
     }
 
@@ -664,6 +712,7 @@ class PentagonChart {
         }, { passive: false });
 
         document.addEventListener('touchend', (e) => {
+            
             if (this.isDragging) {
                 const draggingPoint = document.querySelector('.control-point.dragging');
                 if (draggingPoint) {
@@ -672,6 +721,7 @@ class PentagonChart {
                 this.isDragging = false;
                 this.dragIndex = -1;
             }
+            
         });
 
         // Previeni il drag del browser
@@ -718,6 +768,21 @@ console.log("DEBUG: FINE DELLO SCRIPT nuovo.js"); // LOG 19
 
 
 
+
+function getPreferenze(){
+
+}
+
+
+
+
+function analisiProgramma(){
+if(fileOtesto) {
+
+}else{
+
+}
+}
 
 
 
