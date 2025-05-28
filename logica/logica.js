@@ -10,6 +10,10 @@ const RESULTS_CONTAINER_ID = 'resultsContainer';
 const STATUS_MESSAGE_ID = 'statusMessage';
 const DOWNLOAD_PDF_BUTTON_ID = 'downloadPdfButton';
 
+
+const NOME_MODELLO_API = "gemini-2.5-flash-preview-05-20"; // <<<--- !!! MODIFICA QUESTO VALORE !!!
+const MODEL_OUTPUT_TOKEN_LIMIT = 65000; // Limite output specifico per il modello target (65k per 2.5 Flash Preview)
+
 // Funzione per mostrare messaggi di stato all'utente
 function displayStatus(message, isError = false) {
     const statusElement = document.getElementById(STATUS_MESSAGE_ID);
@@ -22,7 +26,6 @@ function displayStatus(message, isError = false) {
     }
 }
 
-// Funzione principale per elaborare il programma e generare i riassunti
 async function processProgramAndGenerateSummaries(programData) {
     if (!genAIInstance) {
         displayStatus("Errore critico: l'istanza AI non è inizializzata.", true);
@@ -55,118 +58,191 @@ Esempio di output atteso: 3;Argomento 1 con contesto;Argomento 2 con contesto;Ar
     } else if (programData.sourceType === 'text' && programData.content) {
         firstPromptContents.push({ text: firstPromptInstructionText + "\nProgramma Scolastico:\n---\n" + programData.content + "\n---" });
     } else {
-        displayStatus("Errore: Dati del programma non validi o mancanti.", true);
-        return;
+        displayStatus("Errore: Dati del programma non validi o mancanti.", true); return;
     }
 
     let analysisText;
     try {
-        const analysisConfig = {
-            temperature: 0.2,
-            maxOutputTokens: 1500,
-        };
+        const analysisConfig = { temperature: 0.2, maxOutputTokens: 2000 };
         const response = await genAIInstance.models.generateContent({
-            model: "gemini-1.5-flash-latest",
+            model: NOME_MODELLO_API,
             contents: firstPromptContents,
             config: analysisConfig
         });
         if (!response || typeof response.text !== 'string') {
-            throw new Error("La risposta API per l'analisi del programma non contiene testo valido.");
+            throw new Error("Risposta API (analisi programma) non contiene testo valido.");
         }
         analysisText = response.text;
         console.log("TESTO ANALISI PROGRAMMA DALL'AI:", analysisText);
     } catch (error) {
         console.error("Errore API durante l'analisi del programma:", error);
-        displayStatus(`Errore API (Fase 1): ${error.message}. Controlla la console.`, true);
+        displayStatus(`Errore API (Fase 1): ${error.message}.`, true);
         document.getElementById(START_BUTTON_ID).disabled = false;
         document.getElementById(API_KEY_INPUT_ID).disabled = false;
         return;
     }
 
     const analysisParts = analysisText.split(';');
-    if (!analysisParts || analysisParts.length === 0) {
-        displayStatus(`Errore: Formato risposta analisi programma non valido (vuoto). Risposta: "${analysisText}"`, true); return;
-    }
+    if (!analysisParts || analysisParts.length === 0) { displayStatus(`Errore: Formato risposta analisi non valido. Risposta: "${analysisText}"`, true); return; }
     const numArgomentiStr = analysisParts[0].trim();
     const numArgomenti = parseInt(numArgomentiStr, 10);
-    if (isNaN(numArgomenti) || numArgomenti < 0) {
-        displayStatus(`Errore: Numero di argomenti non valido ('${numArgomentiStr}') nella risposta: "${analysisText}"`, true); return;
-    }
+    if (isNaN(numArgomenti) || numArgomenti < 0) { displayStatus(`Errore: Numero argomenti non valido ('${numArgomentiStr}'). Risposta: "${analysisText}"`, true); return; }
     let argomentiList = [];
     if (numArgomenti > 0) {
         if (analysisParts.length > 1) {
             argomentiList = analysisParts.slice(1).map(arg => arg.trim()).filter(arg => arg.length > 0);
         }
-        if (argomentiList.length === 0) {
-            displayStatus(`Errore: L'AI ha indicato ${numArgomenti} argomenti, ma nessuno è stato estratto. Risposta: "${analysisText}"`, true); return;
-        }
-        if (argomentiList.length !== numArgomenti) {
-            console.warn(`Avviso: Numero argomenti dichiarato (${numArgomenti}) vs estratti (${argomentiList.length}). Si usano gli estratti.`);
-        }
+        if (argomentiList.length === 0) { displayStatus(`Errore: AI indica ${numArgomenti} argomenti, ma 0 estratti. Risposta: "${analysisText}"`, true); return; }
+        if (argomentiList.length !== numArgomenti) { console.warn(`Avviso: Argomenti dichiarati (${numArgomenti}) vs estratti (${argomentiList.length}). Si usano gli estratti.`); }
     } else {
         displayStatus("Nessun argomento identificato nel programma.", false);
-        document.getElementById(START_BUTTON_ID).disabled = false;
-        document.getElementById(API_KEY_INPUT_ID).disabled = false;
-        return;
+        document.getElementById(START_BUTTON_ID).disabled = false; document.getElementById(API_KEY_INPUT_ID).disabled = false; return;
     }
 
-    displayStatus(`Fase 1 completata. Trovati ${argomentiList.length} argomenti. Inizio generazione riassunti...`);
+    displayStatus(`Fase 1 OK. ${argomentiList.length} argomenti. Generazione riassunti...`);
 
     const [prefLunghezza, prefLessico, prefColori, prefCreativita, prefSchematico] = programData.preferences;
 
     for (let i = 0; i < argomentiList.length; i++) {
         const argomento = argomentiList[i];
+
+        if (i > 0) {
+            let currentDelay = 7000; // Base delay 7 secondi (circa 8-9 RPM max)
+            if (prefLunghezza >= 4) { // Per riassunti molto lunghi che consumano TPM
+                currentDelay = Math.max(currentDelay, 15000); // Almeno 15 secondi
+            } else if (prefLunghezza === 3) {
+                currentDelay = Math.max(currentDelay, 10000); // Almeno 10 secondi
+            }
+            displayStatus(`Pausa di ${Math.round(currentDelay / 1000)}s per limiti API prima di "${argomento}"...`);
+            await new Promise(resolve => setTimeout(resolve, currentDelay));
+        }
+
         displayStatus(`Ricerca e generazione riassunto per: "${argomento}" (${i + 1}/${argomentiList.length})`);
 
-        const secondPromptText = `Sei un esperto accademico e un eccellente divulgatore, incaricato di creare materiale di studio di alta qualità per studenti delle scuole superiori.
+        let lunghezzaDescrittivaPrompt;
+        let requestedMaxTokens;
 
-Il tuo compito è generare un riassunto completo e dettagliato sull'argomento seguente: "${argomento}"
+        switch (prefLunghezza) {
+            case 0:
+                lunghezzaDescrittivaPrompt = "DEVE ESSERE ESTREMAMENTE BREVE E CONCISO. Fornisci solo i 2-3 concetti fondamentali o una definizione sintetica. Non più di 50-100 parole. Pensa a una voce di glossario.";
+                requestedMaxTokens = 500;
+                break;
+            case 1:
+                lunghezzaDescrittivaPrompt = "DEVE ESSERE BREVE. Copri i punti principali in modo succinto. Circa 150-300 parole, 2-3 paragrafi al massimo.";
+                requestedMaxTokens = 1500;
+                break;
+            case 2:
+                lunghezzaDescrittivaPrompt = "DEVE AVERE UNA LUNGHEZZA NORMALE/STANDARD. Fornisci una buona panoramica, coprendo gli aspetti essenziali. Circa 400-700 parole.";
+                requestedMaxTokens = 4000;
+                break;
+            case 3:
+                lunghezzaDescrittivaPrompt = "DEVE ESSERE DI LUNGHEZZA MEDIA, PIUTTOSTO DETTAGLIATO. Approfondisci i concetti chiave, fornisci alcuni esempi. Circa 800-1500 parole.";
+                requestedMaxTokens = 10000;
+                break;
+            case 4:
+                lunghezzaDescrittivaPrompt = "DEVE ESSERE SIGNIFICATIVAMENTE LUNGO E DETTAGLIATO. Esplora l'argomento con buona profondità, includendo sotto-argomenti, esempi, analisi. Circa 2000-3500 parole.";
+                requestedMaxTokens = 30000;
+                break;
+            case 5:
+                lunghezzaDescrittivaPrompt = "DEVE ESSERE ESTREMAMENTE LUNGO, PROFONDAMENTE DETTAGLIATO ED ESAUSTIVO. Un 'deep dive' completo. Esplora ogni aspetto, sotto-temi, molteplici esempi, contestualizzazione, analisi. Oltre 4000 parole, puntando a un elaborato ricco e completo.";
+                requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 2000; // Buffer di 2000 token
+                break;
+            default:
+                lunghezzaDescrittivaPrompt = "DEVE AVERE UNA LUNGHEZZA NORMALE/STANDARD.";
+                requestedMaxTokens = 4000;
+        }
 
-Per fare ciò, devi:
-1.  **Comprendere a fondo l'argomento specificato.** Considera il contesto fornito (se presente nell'argomento stesso, es. "La Rivoluzione Francese: dal 1789 al Terrore").
-2.  **Attingere alla tua vasta base di conoscenza** per raccogliere tutte le informazioni essenziali relative a questo argomento. Immagina di dover spiegare questo concetto a qualcuno che non lo conosce.
-3.  **Strutturare le informazioni** in modo logico e coerente.
-4.  **Produrre un riassunto esaustivo** che copra gli aspetti chiave, le definizioni, gli eventi importanti, le figure significative, le cause, le conseguenze, e qualsiasi altro dettaglio rilevante per una comprensione completa dell'argomento a livello di scuola superiore.
-5.  **Adattare lo stile e il formato del riassunto** finale in base alle seguenti preferenze dell'utente (scala 0-5):
-    *   Lunghezza del riassunto: ${prefLunghezza} (0=estremamente conciso, solo i punti salienti; 3=bilanciato; 5=molto esteso, approfondito e ricco di dettagli)
-    *   Complessità del lessico: ${prefLessico} (0=linguaggio molto semplice e accessibile; 3=standard, chiaro; 5=lessico preciso, tecnico o formale se appropriato all'argomento, ma sempre comprensibile per uno studente)
-    *   Uso di colori nel testo (per evidenziare): ${prefColori} (0=nessun colore; 3=uso moderato; 5=uso più frequente di colori per parole chiave, date, nomi o sezioni importanti. Usa tag <span> con stili inline, es. style="color: #lightcoral;", scegliendo colori leggibili su sfondo scuro come lightblue, lightgreen, gold, lightpink.)
-    *   Livello di creatività/originalità nella presentazione: ${prefCreativita} (0=esposizione puramente fattuale e diretta; 3=qualche riformulazione interessante; 5=presentazione più coinvolgente, con possibili analogie o collegamenti pertinenti, mantenendo l'accuratezza)
-    *   Struttura schematica: ${prefSchematico} (0=testo prevalentemente discorsivo; 3=buona suddivisione in paragrafi e alcuni elenchi; 5=uso intensivo di sottotitoli chiari [<h2>, <h3>], elenchi puntati/numerati [<ul>, <ol>, <li>], e paragrafi brevi e focalizzati per facilitare la lettura e la memorizzazione. Se appropriato, considera l'uso di tabelle semplici per confronti o dati.)
+        if (requestedMaxTokens >= MODEL_OUTPUT_TOKEN_LIMIT) {
+            requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 100;
+        }
+        if (requestedMaxTokens <=0) { requestedMaxTokens = 500; }
 
-Output richiesto:
-*   Il riassunto DEVE essere formattato in HTML valido e semanticamente corretto.
-*   Il titolo principale del riassunto (usando <h1>) deve essere il nome dell'argomento: "${argomento}".
-*   Assicurati che il contenuto sia accurato, ben scritto e facile da comprendere per uno studente delle superiori.
-*   Non includere \`\`\`html all'inizio o \`\`\` alla fine. Fornisci solo il blocco di codice HTML del riassunto.
-*   Non aggiungere commenti personali o frasi come "Ecco il riassunto che hai chiesto". Inizia direttamente con il titolo <h1>.
+        const secondPromptText = `Sei un ricercatore esperto e un autore di testi didattici di altissimo livello, specializzato nel rendere argomenti complessi accessibili e interessanti per studenti liceali.
+
+Il tuo compito è produrre un elaborato completo, accurato e approfondito sull'argomento: "${argomento}"
+
+Istruzioni Fondamentali:
+1.  **Ricerca e Conoscenza:** Attingi dalla tua vasta conoscenza per trattare l'argomento in modo completo. Immagina di aver consultato diverse fonti autorevoli.
+2.  **Struttura e Chiarezza:** Organizza le informazioni in modo logico e fluente.
+3.  **Profondità del Contenuto:** Il livello di dettaglio e l'estensione del testo devono corrispondere ESATTAMENTE alla seguente specifica di lunghezza utente.
+
+Preferenze Utente (Scala 0-5):
+*   **Lunghezza del Riassunto (Valore: ${prefLunghezza}): ${lunghezzaDescrittivaPrompt}**
+*   Complessità del Lessico (Valore: ${prefLessico}): (0=molto semplice; 3=standard; 5=ricco e preciso, termini tecnici spiegati)
+*   Uso di Colori (Valore: ${prefColori}): (0=no colori; 5=uso frequente e strategico. Usa <span> con style="color: #..."; scegli colori leggibili su sfondo scuro come lightblue, lightgreen, gold, lightpink, lightcoral.)
+*   Creatività Espositiva (Valore: ${prefCreativita}): (0=fattuale; 5=coinvolgente, con analogie/collegamenti, mantenendo rigore)
+*   Struttura Schematica (Valore: ${prefSchematico}): (0=discorsivo; 5=molto strutturato con h1,h2,h3,h4, liste, paragrafi brevi. Usa tabelle se utili.)
+
+Output Richiesto (HTML):
+*   Inizia DIRETTAMENTE con un tag <h1> contenente il titolo: "${argomento}".
+*   Segui scrupolosamente tutte le preferenze utente, specialmente quella sulla LUNGHEZZA.
+*   Produci HTML valido e semanticamente corretto.
+*   Il contenuto deve essere accurato e adatto a studenti liceali.
+*   NON includere \`\`\`html o commenti personali/introduttivi.
 `;
         const secondPromptContents = [{ text: secondPromptText }];
 
         try {
-            let requestedMaxTokens = 1024 + (prefLunghezza * 512);
-            const modelOutputTokenLimit = 100000; // Limite per gemini-1.5-flash (circa, verifica documentazione ufficiale)
-            if (requestedMaxTokens > modelOutputTokenLimit) {
-                console.warn(`MaxOutputTokens richiesti (${requestedMaxTokens}) per "${argomento}" superano il limite del modello (${modelOutputTokenLimit}). Saranno limitati.`);
-                requestedMaxTokens = modelOutputTokenLimit;
-            }
-
             const summaryConfig = {
-                temperature: 0.4 + (prefCreativita * 0.1),
+                temperature: 0.3 + (prefCreativita * 0.1),
                 maxOutputTokens: requestedMaxTokens,
             };
+            console.log(`Richiesta API per "${argomento}" con config:`, summaryConfig);
 
             const responseSummary = await genAIInstance.models.generateContent({
-                model: "gemini-2.5-flash-preview-05-20",
+                model: NOME_MODELLO_API,
                 contents: secondPromptContents,
                 config: summaryConfig
             });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
             let summaryHtml = "";
             if (responseSummary && typeof responseSummary.text === 'string') {
                 summaryHtml = responseSummary.text;
+                console.log(`Riassunto per "${argomento}" gen., lunghezza: ${summaryHtml.length} chars.`);
             } else {
-                console.warn(`Risposta non valida o senza testo per argomento "${argomento}".`, responseSummary);
+                console.warn(`Risposta non valida per "${argomento}".`, responseSummary);
                 summaryHtml = `<p style="color:orange;">Impossibile generare riassunto per "${argomento}". Risposta API non valida.</p>`;
             }
             const argomentoDiv = document.createElement('div');
@@ -178,14 +254,11 @@ Output richiesto:
             const errorDiv = document.createElement('div');
             errorDiv.classList.add('argomento-summary');
             let detailedErrorMessage = error.message;
-            // Tenta di estrarre più info se disponibili (questo è speculativo, dipende da come l'errore è strutturato)
-            if (error.response && error.response.data && error.response.data.error && error.response.data.error.message) {
-                 detailedErrorMessage = error.response.data.error.message;
-            }
             errorDiv.innerHTML = `<h2 style="color:red;">Errore per ${argomento}</h2><p style="color:orange;">Impossibile generare: ${detailedErrorMessage}</p>`;
             resultsContainer.appendChild(errorDiv);
         }
-    }
+    } // Fine loop for argomenti
+
     displayStatus("Elaborazione completata! Controlla i risultati.", false);
     document.getElementById(START_BUTTON_ID).style.display = 'none';
     document.getElementById(API_KEY_INPUT_ID).style.display = 'none';
@@ -213,9 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startButton.addEventListener('click', async () => {
         const apiKey = apiKeyInput.value.trim();
-        if (!apiKey) {
-            displayStatus("Inserisci API Key Gemini.", true); return;
-        }
+        if (!apiKey) { displayStatus("Inserisci API Key Gemini.", true); return; }
         try {
             genAIInstance = new GoogleGenAI({ apiKey: apiKey });
             displayStatus("API Key OK. Elaborazione...");
@@ -223,9 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await processProgramAndGenerateSummaries(programData);
             if (document.getElementById(RESULTS_CONTAINER_ID).hasChildNodes()) {
                 downloadButton.style.display = 'inline-block';
-            } else {
-                 displayStatus("Nessun riassunto o errori.", true);
-            }
+            } else { displayStatus("Nessun riassunto generato o errori.", true); }
         } catch (error) {
             console.error("Errore principale:", error);
             displayStatus(`Errore: ${error.message}.`, true);
