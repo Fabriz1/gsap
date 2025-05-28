@@ -251,45 +251,89 @@ gsap.to(".carica-testo", {
 
 
 document.querySelector(".conf-preferenze").addEventListener("click", function () {
-    const preferenzeCorrenti = window.pentagonChart.getValues();
+    const preferenzeCorrenti = window.pentagonChart.getValues().map(v => Math.round(v));
 
     // Definisci le variabili per le preferenze arrotondate
-    let lunghezza;
-    let lessico;
-    let colori;
-    let creativita;
-    let schematico;
-    gsap.timeline().to(".preferenze", {
-    opacity: 0,
-    y: -200,
-    scale: 0.7,
-    }).to("#blob-container", {
-        opacity: 0,
-    },"<").to(".preferenze", {
-        display: "none",
-    })
-    if (preferenzeCorrenti && preferenzeCorrenti.length === 5) {
-        lunghezza = Math.round(preferenzeCorrenti[0]);
-        lessico = Math.round(preferenzeCorrenti[1]);
-        colori = Math.round(preferenzeCorrenti[2]);
-        creativita = Math.round(preferenzeCorrenti[3]);
-        schematico = Math.round(preferenzeCorrenti[4]);
+    // (Questo blocco è già presente nel tuo codice, lo lascio per contesto)
+    let lunghezza = preferenzeCorrenti[0];
+    let lessico = preferenzeCorrenti[1];
+    let colori = preferenzeCorrenti[2];
+    let creativita = preferenzeCorrenti[3];
+    let schematico = preferenzeCorrenti[4];
 
-        // Log per verifica (puoi rimuoverlo in produzione)
-        console.log("Preferenze salvate:");
-        console.log("Lunghezza:", lunghezza);
-        console.log("Lessico:", lessico);
-        console.log("Colori:", colori);
-        console.log("Creatività:", creativita);
-        console.log("Schematico:", schematico);
+    console.log("Preferenze salvate:", { lunghezza, lessico, colori, creativita, schematico });
 
-        // Qui puoi fare qualcos'altro con queste variabili,
-        // ad esempio inviarle a un server o usarle per altre logiche nell'applicazione.
+    // ---- NUOVA LOGICA PER SALVATAGGIO E REDIRECT ----
+    let programData = {
+        content: null,    // Contenuto del programma (testo o base64)
+        isBase64: false,  // true se 'content' è base64
+        mimeType: null,   // es. 'application/pdf', 'text/plain'
+        fileName: null,   // Opzionale, per i file
+        preferences: preferenzeCorrenti, // Array [lung, less, col, crea, schem]
+        sourceType: fileOtesto ? 'file' : 'text' // 'file' o 'text' (fileOtesto è la tua variabile globale)
+    };
 
+    const proceedToLogicPage = () => {
+        localStorage.setItem('programDataForLogic', JSON.stringify(programData));
+        // Animazione di uscita e redirect
+        gsap.timeline({
+            onComplete: () => {
+                window.location.href = "../logica/logica.html"; // Path relativo da nuovo/nuovo.html a logica/logica.html
+            }
+        }).to(".preferenze", {
+            opacity: 0,
+            y: -200,
+            scale: 0.7,
+            duration: 0.7
+        }).to("#blob-container", {
+            opacity: 0,
+            duration: 0.7
+        }, "<").to(".preferenze", {
+            display: "none"
+        }, "+=0.1").to(".carica", { // Assicurati che .carica sia ancora rilevante qui
+            display: "none", // O nascondilo in altro modo se necessario
+            duration:0.1
+        },"<");
+    };
+
+    if (programData.sourceType === 'file' && fakeFile.files.length > 0) {
+        const file = fakeFile.files[0];
+        programData.fileName = file.name;
+        programData.mimeType = file.type;
+
+        if (file.type !== "application/pdf" && !file.type.startsWith("text/")) {
+            alert("Tipo di file non supportato. Si prega di caricare PDF o TXT.");
+            // Potresti voler resettare l'interfaccia qui o annullare l'animazione di uscita
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            // event.target.result è un Data URL (es. data:application/pdf;base64,JVBER...)
+            // Estraiamo solo la parte base64
+            programData.content = event.target.result.split(',')[1];
+            programData.isBase64 = true;
+            proceedToLogicPage();
+        };
+        reader.onerror = function(error) {
+            console.error("Errore durante la lettura del file:", error);
+            alert("Errore durante la lettura del file. Controlla la console.");
+        };
+        reader.readAsDataURL(file); // Legge come Data URL
+    } else if (programData.sourceType === 'text' && testoIncollato && testoIncollato.trim() !== '') {
+        programData.content = testoIncollato;
+        programData.isBase64 = false;
+        programData.mimeType = 'text/plain'; // Il testo incollato è considerato plain text
+        proceedToLogicPage();
     } else {
-        console.error("Errore: Impossibile recuperare le preferenze dal grafico.");
+        alert("Nessun programma fornito (né file né testo incollato valido). Impossibile procedere.");
+        // Qui potresti voler ripristinare la visibilità degli elementi .preferenze e .carica
+        // se l'animazione di scomparsa fosse già partita o fosse parte di un'altra timeline.
+        // Per semplicità, ora non la ripristino, assumendo che l'utente debba ricominciare l'azione.
+        return; 
     }
-
+    // Il codice originale di animazione è stato spostato dentro proceedToLogicPage
+    // per assicurare che venga eseguito dopo che i dati sono pronti.
 });
 
 
