@@ -117,7 +117,7 @@ Esempio di output atteso: 3;Argomento 1 con contesto;Argomento 2 con contesto;Ar
             await new Promise(resolve => setTimeout(resolve, currentDelay));
         }
 
-        displayStatus(`Ricerca e generazione riassunto per: "${argomento}" (${i + 1}/${argomentiList.length})`);
+        displayStatus(`Ricerca  generazione riassunto per: "${argomento}" (${i + 1}/${argomentiList.length})`);
 
         let lunghezzaDescrittivaPrompt;
         let requestedMaxTokens;
