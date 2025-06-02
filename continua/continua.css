@@ -1,0 +1,150 @@
+/* Global Reset & Font */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'font';
+    src: url(../fonts/CelsiusFlower.otf); /* Assicurati che questo percorso sia corretto */
+}
+
+body {
+    font-family: 'font', sans-serif; /* Aggiunto un font di fallback */
+    color: white;
+    background-color: rgb(19, 19, 19);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+.titolo {
+    font-size: clamp(2rem, 5vw + 1rem, 4rem);
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    width: 100%;
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Contenitore Principale dei Quaderni */
+.paginazione {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: clamp(20px, 5vw, 50px);
+    margin: 5vh auto;
+    max-width: 1200px;
+    padding: 2vw 15px;
+}
+
+/* Stile del Quaderno */
+.quaderno {
+    position: relative;
+    /* Dimensioni per desktop */
+    height: clamp(280px, 35vh, 400px);
+    width: clamp(180px, 22vw, 250px);
+    border-radius: 10px;
+    border: 2px solid white;
+    background-color: rgb(82, 89, 95);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.quaderno:hover {
+    transform: translateY(-5px);
+}
+
+/* Copertina del Quaderno */
+.copertina {
+    margin-top: 5%;
+    border-radius: 5px;
+    height: 20%;
+    width: 90%;
+    background-color: rgb(155, 155, 155);
+}
+
+/* Spirale del Quaderno */
+.spirale {
+    position: absolute;
+    top: 10%;
+    left: -8px;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    z-index: 2; /* Assicurati sia sopra il quaderno */
+}
+
+.spirale div {
+    width: clamp(6px, 0.8vw, 10px);
+    height: clamp(6px, 0.8vw, 10px);
+    background-color: rgb(180, 180, 180);
+    border-radius: 50%;
+}
+
+/* 🔁 Responsive Design - Media Queries */
+
+/* Tablet e Mobile (fino a 768px) */
+@media (max-width: 768px) {
+    .titolo {
+        font-size: clamp(1.8rem, 6vw + 0.5rem, 2.8rem);
+        margin-bottom: 20px;
+    }
+
+    .paginazione {
+        /* Rimuoviamo flex-direction: column per tornare a row (default) */
+        /* justify-content: center è già nel CSS base e va bene */
+        gap: 20px; /* Spazio tra i quaderni e tra le righe */
+        padding: 20px 10px; /* Padding ai lati del contenitore paginazione */
+    }
+
+    .quaderno {
+        /* Due quaderni per riga: calc(50% della larghezza disponibile - metà del gap) */
+        /* clamp(MIN_WIDTH, IDEAL_WIDTH, MAX_WIDTH) */
+        width: clamp(120px, calc(50% - 10px), 170px);
+        height: auto; /* L'altezza sarà determinata dall'aspect-ratio */
+        aspect-ratio: 2 / 3; /* Mantiene le proporzioni del quaderno */
+        padding: 8px; /* Padding interno del quaderno leggermente ridotto */
+    }
+
+    .spirale {
+        left: -6px; /* Adegua posizione spirale */
+    }
+
+    .spirale div {
+        /* Rimpiccioliamo gli anelli della spirale */
+        width: clamp(4px, 1vw, 6px);
+        height: clamp(4px, 1vw, 6px);
+    }
+}
+
+/* Mobile più piccoli (fino a 480px) */
+@media (max-width: 480px) {
+    .titolo {
+        font-size: clamp(1.5rem, 7vw, 2.2rem);
+    }
+
+    .paginazione {
+        gap: 15px; /* Riduciamo ulteriormente il gap */
+        padding: 15px 8px; /* E il padding laterale */
+    }
+
+    .quaderno {
+        /* Adattiamo la larghezza per schermi ancora più piccoli, mantenendo due per riga */
+        /* metà del nuovo gap è 7.5px */
+        width: clamp(110px, calc(50% - 7.5px), 150px);
+        padding: 6px; /* Padding interno ancora più piccolo */
+    }
+
+    .spirale div {
+        width: clamp(3px, 0.8vw, 5px);
+        height: clamp(3px, 0.8vw, 5px);
+    }
+}

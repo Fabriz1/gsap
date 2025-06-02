@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida Completa PHP + XAMPP + Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin: 30px 0 20px 0;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #2980b9;
+            margin: 25px 0 15px 0;
+            font-size: 1.3em;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 5px solid #f39c12;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-left: 5px solid #17a2b8;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-left: 5px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .flow-diagram {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .step {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .step:hover {
+            transform: translateY(-2px);
+        }
+        
+        .arrow {
+            font-size: 1.5em;
+            color: #3498db;
+            margin: 0 10px;
+        }
+        
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .toc li::before {
+            content: "📖";
+            position: absolute;
+            left: 0;
+        }
+        
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <h1>🚀 Guida Completa PHP + XAMPP + Database</h1>
+        
+        <!-- Indice -->
+        <div class="toc">
+            <h2>📚 Indice della Guida</h2>
+            <ul>
+                <li><a href="#setup">1. Setup XAMPP e Configurazione</a></li>
+                <li><a href="#database">2. Creazione Database MySQL</a></li>
+                <li><a href="#connessione">3. Connessione PHP al Database</a></li>
+                <li><a href="#separazione">4. Separazione File PHP e HTML</a></li>
+                <li><a href="#query">5. Query SQL Avanzate</a></li>
+                <li><a href="#esempio">6. Esempio Pratico Completo</a></li>
+                <li><a href="#sicurezza">7. Sicurezza e Best Practices</a></li>
+            </ul>
+        </div>
+
+        <!-- Sezione 1: Setup XAMPP -->
+        <section id="setup">
+            <h2>🔧 1. Setup XAMPP e Configurazione</h2>
+            
+            <div class="info">
+                <strong>Cos'è XAMPP?</strong><br>
+                XAMPP è un pacchetto che include Apache (server web), MySQL (database), PHP e Perl. Ti permette di creare un ambiente di sviluppo locale sul tuo computer.
+            </div>
+
+            <h3>Installazione e Avvio</h3>
+            <div class="flow-diagram">
+                <div class="step">Scarica XAMPP</div>
+                <span class="arrow">→</span>
+                <div class="step">Installa</div>
+                <span class="arrow">→</span>
+                <div class="step">Avvia Apache + MySQL</div>
+                <span class="arrow">→</span>
+                <div class="step">Vai su localhost</div>
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ Importante:</strong> Assicurati che le porte 80 (Apache) e 3306 (MySQL) siano libere. Se hai Skype, potrebbe occupare la porta 80.
+            </div>
+
+            <h3>Struttura Directory XAMPP</h3>
+            <div class="file-structure">
+📁 XAMPP/
+├── 📁 htdocs/ ← <span class="highlight">QUI metti i tuoi file PHP</span>
+│   ├── 📄 index.php
+│   └── 📁 mio_progetto/
+├── 📁 mysql/
+└── 📁 php/
+            </div>
+        </section>
+
+        <!-- Sezione 2: Database -->
+        <section id="database">
+            <h2>🗄️ 2. Creazione Database MySQL</h2>
+
+            <h3>Accesso a phpMyAdmin</h3>
+            <div class="info">
+                Vai su <strong>http://localhost/phpmyadmin</strong> per gestire il database con interfaccia grafica.
+            </div>
+
+            <h3>Creazione Database e Tabella</h3>
+            <div class="code-block" data-lang="SQL">
+-- Crea il database
+CREATE DATABASE mio_sito;
+
+-- Seleziona il database
+USE mio_sito;
+
+-- Crea tabella utenti
+CREATE TABLE utenti (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    eta INT,
+    data_registrazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inserisci dati di esempio  
+INSERT INTO utenti (nome, email, eta) VALUES
+('Mario Rossi', 'mario@email.com', 30),
+('Laura Bianchi', 'laura@email.com', 25),
+('Giuseppe Verdi', 'giuseppe@email.com', 35);
+            </div>
+        </section>
+
+        <!-- Sezione 3: Connessione -->
+        <section id="connessione">
+            <h2>🔗 3. Connessione PHP al Database</h2>
+
+            <h3>File di Configurazione (config.php)</h3>
+            <div class="code-block" data-lang="PHP">
+&lt;?php
+// config.php - File di configurazione database
+
+// Parametri di connessione
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'mio_sito');
+define('DB_USER', 'root');
+define('DB_PASS', ''); // XAMPP di default ha password vuota
+
+// Funzione per connessione con PDO (raccomandato)
+function connetti_database() {
+    try {
+        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8";
+        $pdo = new PDO($dsn, DB_USER, DB_PASS);
+        
+        // Configura PDO per lanciare eccezioni
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        return $pdo;
+    } catch(PDOException $e) {
+        die("Errore connessione: " . $e->getMessage());
+    }
+}
+
+// Connessione alternativa con MySQLi
+function connetti_mysqli() {
+    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    
+    if ($conn->connect_error) {
+        die("Connessione fallita: " . $conn->connect_error);
+    }
+    
+    return $conn;
+}
+?&gt;
+            </div>
+
+            <div class="success">
+                <strong>✅ PDO vs MySQLi:</strong><br>
+                - <strong>PDO</strong>: Più moderno, supporta più database, sintassi più pulita<br>
+                - <strong>MySQLi</strong>: Più veloce con MySQL, interfaccia procedurale e orientata agli oggetti
+            </div>
+        </section>
+
+        <!-- Sezione 4: Separazione File -->
+        <section id="separazione">
+            <h2>📂 4. Separazione File PHP e HTML</h2>
+
+            <div class="flow-diagram">
+                <div class="step">database.php</div>
+                <span class="arrow">→</span>
+                <div class="step">estrae dati</div>
+                <span class="arrow">→</span>
+                <div class="step">index.html</div>
+                <span class="arrow">→</span>
+                <div class="step">mostra risultati</div>
+            </div>
+
+            <h3>File PHP per estrarre dati (database.php)</h3>
+            <div class="code-block" data-lang="PHP">
+&lt;?php
+// database.php - File per estrarre dati dal database
+
+require_once 'config.php';
+
+// Funzione per ottenere tutti gli utenti
+function ottieni_utenti() {
+    $pdo = connetti_database();
+    
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM utenti ORDER BY nome");
+        $stmt->execute();
+        $utenti = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $utenti;
+    } catch(PDOException $e) {
+        error_log("Errore query: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Funzione per cercare utente per ID
+function ottieni_utente_per_id($id) {
+    $pdo = connetti_database();
+    
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM utenti WHERE id = ?");
+        $stmt->execute([$id]);
+        $utente = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $utente;
+    } catch(PDOException $e) {
+        error_log("Errore query: " . $e->getMessage());
+        return null;
+    }
+}
+
+// Se il file viene chiamato direttamente, restituisci JSON
+if (basename($_SERVER['PHP_SELF']) == 'database.php') {
+    header('Content-Type: application/json');
+    
+    if (isset($_GET['azione'])) {
+        switch ($_GET['azione']) {
+            case 'tutti_utenti':
+                echo json_encode(ottieni_utenti());
+                break;
+            case 'utente':
+                $id = $_GET['id'] ?? 0;
+                echo json_encode(ottieni_utente_per_id($id));
+                break;
+            default:
+                echo json_encode(['errore' => 'Azione non valida']);
+        }
+    } else {
+        echo json_encode(ottieni_utenti());
+    }
+}
+?&gt;
+            </div>
+
+            <h3>File HTML per visualizzare i dati (index.html)</h3>
+            <div class="code-block" data-lang="HTML">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="it"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Lista Utenti&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .loading { color: #666; font-style: italic; }
+        .error { color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 4px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;👥 Lista Utenti&lt;/h1&gt;
+    
+    &lt;div id="contenuto"&gt;
+        &lt;p class="loading"&gt;Caricamento dati...&lt;/p&gt;
+    &lt;/div&gt;
+    
+    &lt;button onclick="caricaUtenti()"&gt;🔄 Ricarica Dati&lt;/button&gt;
+    &lt;button onclick="cercaUtente()"&gt;🔍 Cerca Utente per ID&lt;/button&gt;
+
+    &lt;script&gt;
+        // Funzione per caricare tutti gli utenti
+        function caricaUtenti() {
+            const contenuto = document.getElementById('contenuto');
+            contenuto.innerHTML = '&lt;p class="loading"&gt;Caricamento...&lt;/p&gt;';
+            
+            fetch('database.php?azione=tutti_utenti')
+                .then(response =&gt; response.json())
+                .then(data =&gt; {
+                    if (data.length &gt; 0) {
+                        let html = '&lt;table&gt;';
+                        html += '&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Nome&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;Età&lt;/th&gt;&lt;th&gt;Data Registrazione&lt;/th&gt;&lt;/tr&gt;';
+                        
+                        data.forEach(utente =&gt; {
+                            html += `&lt;tr&gt;
+                                &lt;td&gt;${utente.id}&lt;/td&gt;
+                                &lt;td&gt;${utente.nome}&lt;/td&gt;
+                                &lt;td&gt;${utente.email}&lt;/td&gt;
+                                &lt;td&gt;${utente.eta}&lt;/td&gt;
+                                &lt;td&gt;${utente.data_registrazione}&lt;/td&gt;
+                            &lt;/tr&gt;`;
+                        });
+                        
+                        html += '&lt;/table&gt;';
+                        contenuto.innerHTML = html;
+                    } else {
+                        contenuto.innerHTML = '&lt;p&gt;Nessun utente trovato.&lt;/p&gt;';
+                    }
+                })
+                .catch(error =&gt; {
+                    contenuto.innerHTML = '&lt;div class="error"&gt;❌ Errore nel caricamento dei dati: ' + error.message + '&lt;/div&gt;';
+                });
+        }
+        
+        // Funzione per cercare un utente specifico
+        function cercaUtente() {
+            const id = prompt('Inserisci ID utente:');
+            if (!id) return;
+            
+            const contenuto = document.getElementById('contenuto');
+            contenuto.innerHTML = '&lt;p class="loading"&gt;Ricerca in corso...&lt;/p&gt;';
+            
+            fetch(`database.php?azione=utente&amp;id=${id}`)
+                .then(response =&gt; response.json())
+                .then(utente =&gt; {
+                    if (utente) {
+                        const html = `
+                            &lt;div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px;"&gt;
+                                &lt;h3&gt;👤 ${utente.nome}&lt;/h3&gt;
+                                &lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt; ${utente.email}&lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Età:&lt;/strong&gt; ${utente.eta} anni&lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Registrato il:&lt;/strong&gt; ${utente.data_registrazione}&lt;/p&gt;
+                            &lt;/div&gt;
+                        `;
+                        contenuto.innerHTML = html;
+                    } else {
+                        contenuto.innerHTML = '&lt;p&gt;❌ Utente non trovato.&lt;/p&gt;';
+                    }
+                })
+                .catch(error =&gt; {
+                    contenuto.innerHTML = '&lt;div class="error"&gt;Errore nella ricerca: ' + error.message + '&lt;/div&gt;';
+                });
+        }
+        
+        // Carica i dati all'avvio della pagina
+        document.addEventListener('DOMContentLoaded', caricaUtenti);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </div>
+        </section>
+
+        <!-- Sezione 5: Query SQL -->
+        <section id="query">
+            <h2>🔍 5. Query SQL Avanzate</h2>
+
+            <h3>Tipi di Query Essenziali</h3>
+            <table>
+                <tr>
+                    <th>Operazione</th>
+                    <th>SQL</th>
+                    <th>Uso</th>
+                </tr>
+                <tr>
+                    <td>SELECT</td>
+                    <td>SELECT * FROM tabella</td>
+                    <td>Leggere dati</td>
+                </tr>
+                <tr>
+                    <td>INSERT</td>
+                    <td>INSERT INTO tabella VALUES(...)</td>
+                    <td>Inserire dati</td>
+                </tr>
+                <tr>
+                    <td>UPDATE</td>
+                    <td>UPDATE tabella SET campo=valore</td>
+                    <td>Aggiornare dati</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>DELETE FROM tabella WHERE...</td>
+                    <td>Cancellare dati</td>
+                </tr>
+            </table>
+
+            <h3>Esempi di Query Avanzate</h3>
+            <div class="code-block" data-lang="SQL">
+-- Ricerca con filtri
+SELECT * FROM utenti 
+WHERE eta BETWEEN 25 AND 35 
+AND nome LIKE 'M%'
+ORDER BY data_registrazione DESC;
+
+-- Contare records
+SELECT COUNT(*) as totale_utenti FROM utenti;
+
+-- Raggruppamento
+SELECT eta, COUNT(*) as numero_utenti 
+FROM utenti 
+GROUP BY eta
+HAVING COUNT(*) > 1;
+
+-- Join tra tabelle (se hai più tabelle)
+SELECT u.nome, u.email, p.titolo as ultimo_post
+FROM utenti u
+LEFT JOIN posts p ON u.id = p.user_id
+WHERE p.data_creazione = (
+    SELECT MAX(data_creazione) 
+    FROM posts 
+    WHERE user_id = u.id
+);
+
+-- Ricerca full-text
+SELECT * FROM utenti 
+WHERE MATCH(nome, email) AGAINST('mario' IN NATURAL LANGUAGE MODE);
+            </div>
+
+            <h3>File PHP con Query Avanzate (query_avanzate.php)</h3>
+            <div class="code-block" data-lang="PHP">
+&lt;?php
+require_once 'config.php';
+
+class UtentiManager {
+    private $pdo;
+    
+    public function __construct() {
+        $this->pdo = connetti_database();
+    }
+    
+    // Ricerca utenti con filtri
+    public function ricerca_utenti($filtri = []) {
+        $sql = "SELECT * FROM utenti WHERE 1=1";
+        $params = [];
+        
+        if (!empty($filtri['nome'])) {
+            $sql .= " AND nome LIKE ?";
+            $params[] = '%' . $filtri['nome'] . '%';
+        }
+        
+        if (!empty($filtri['eta_min'])) {
+            $sql .= " AND eta >= ?";
+            $params[] = $filtri['eta_min'];
+        }
+        
+        if (!empty($filtri['eta_max'])) {
+            $sql .= " AND eta <= ?";
+            $params[] = $filtri['eta_max'];
+        }
+        
+        $sql .= " ORDER BY nome";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    // Statistiche utenti
+    public function ottieni_statistiche() {
+        $stats = [];
+        
+        // Totale utenti
+        $stmt = $this->pdo->query("SELECT COUNT(*) as totale FROM utenti");
+        $stats['totale'] = $stmt->fetch()['totale'];
+        
+        // Età media
+        $stmt = $this->pdo->query("SELECT AVG(eta) as eta_media FROM utenti");
+        $stats['eta_media'] = round($stmt->fetch()['eta_media'], 1);
+        
+        // Utenti per fascia d'età
+        $stmt = $this->pdo->query("
+            SELECT 
+                CASE 
+                    WHEN eta < 25 THEN 'Under 25'
+                    WHEN eta BETWEEN 25 AND 35 THEN '25-35'
+                    ELSE 'Over 35'
+                END as fascia,
+                COUNT(*) as numero
+            FROM utenti 
+            GROUP BY fascia
+        ");
+        $stats['fasce_eta'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $stats;
+    }
+    
+    // Inserimento nuovo utente
+    public function inserisci_utente($dati) {
+        $sql = "INSERT INTO utenti (nome, email, eta) VALUES (?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        
+        try {
+            $stmt->execute([
+                $dati['nome'],
+                $dati['email'],
+                $dati['eta']
+            ]);
+            return $this->pdo->lastInsertId();
+        } catch(PDOException $e) {
+            if ($e->getCode() == 23000) { // Violazione vincolo UNIQUE
+                throw new Exception("Email già esistente");
+            }
+            throw $e;
+        }
+    }
+}
+
+// API endpoints
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $manager = new UtentiManager();
+    header('Content-Type: application/json');
+    
+    switch ($_GET['azione'] ?? '') {
+        case 'ricerca':
+            $filtri = [
+                'nome' => $_GET['nome'] ?? '',
+                'eta_min' => $_GET['eta_min'] ?? '',
+                'eta_max' => $_GET['eta_max'] ?? ''
+            ];
+            echo json_encode($manager->ricerca_utenti($filtri));
+            break;
+            
+        case 'statistiche':
+            echo json_encode($manager->ottieni_statistiche());
+            break;
+            
+        default:
+            echo json_encode(['errore' => 'Azione non valida']);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $manager = new UtentiManager();
+    header('Content-Type: application/json');
+    
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    try {
+        $id = $manager->inserisci_utente($input);
+        echo json_encode(['successo' => true, 'id' => $id]);
+    } catch(Exception $e) {
+        echo json_encode(['errore' => $e->getMessage()]);
+    }
+}
+?&gt;
+            </div>
+        </section>
+
+        <!-- Sezione 6: Esempio Completo -->
+        <section id="esempio">
+            <h2>🎯 6. Esempio Pratico Completo</h2>
+
+            <div class="success">
+                <strong>🎯 Progetto: Sistema di Gestione Utenti</strong><br>
+                Creeremo un sistema completo con ricerca, inserimento e statistiche.
+            </div>
+
+            <h3>Struttura File del Progetto</h3>
+            <div class="file-structure">
+📁 mio_progetto/
+├── 📄 config.php           ← Configurazione database
+├── 📄 database.php         ← Funzioni base database  
+├── 📄 query_avanzate.php   ← API per operazioni avanzate
+├── 📄 index.html          ← Interface principale
+├── 📄 admin.html          ← Pannello amministrativo  
+└── 📄 style.css           ← Stili CSS
+            </div>
+
+            <h3>File CSS per Styling (style.css)</h3>
+            <div class="code-block" data-lang="CSS">
+/* style.css - Stili per l'interfaccia */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.header {
+    text-align: center;
