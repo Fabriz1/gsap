@@ -245,3 +245,7 @@ document.querySelector(".utente").addEventListener('mouseleave', function(){
 document.querySelector(".nuovo").addEventListener('click',function(){
     window.location.href = "nuovo/nuovo.html";
 } )
+
+document.querySelector(".continua").addEventListener('click',function(){
+    window.location.href = "continua/continua.html";
+} )
