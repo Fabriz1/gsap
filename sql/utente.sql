@@ -27,17 +27,7 @@ SET time_zone = "+00:00";
 -- Struttura della tabella `utente`
 --
 
--- Elimina l'utente se esiste già (opzionale, per evitare errori)
-DROP USER IF EXISTS 'utente'@'localhost';
 
--- Crea l'utente con la password desiderata
-CREATE USER 'utente'@'localhost' IDENTIFIED BY 'Ludovica09';
-
--- Concedi solo i privilegi di base sul tuo database
-GRANT SELECT, INSERT, UPDATE, DELETE ON maturita_facile.* TO 'utente'@'localhost';
-
--- Applica le modifiche ai privilegi
-FLUSH PRIVILEGES;
 
 
 CREATE TABLE `utente` (
@@ -73,3 +63,16 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+-- Elimina l'utente se esiste già (opzionale, per evitare errori)
+DROP USER IF EXISTS 'utente'@'localhost';
+
+-- Crea l'utente con la password desiderata
+CREATE USER 'utente'@'localhost' IDENTIFIED BY 'Ludovica09';
+
+-- Concedi solo i privilegi di base sul tuo database
+GRANT SELECT, INSERT, UPDATE, DELETE ON maturita_facile.* TO 'utente'@'localhost';
+
+-- Applica le modifiche ai privilegi
+FLUSH PRIVILEGES;
