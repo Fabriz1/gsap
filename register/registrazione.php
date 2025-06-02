@@ -74,8 +74,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt_insert->bind_param("sssss", $nome_utente_form, $email_form, $password_utente_form, $nome_form, $cognome_form);
 
     if ($stmt_insert->execute()) {
-        echo "Registrazione avvenuta con successo!";
         $_SESSION['utente']=$nome_utente_form;
+        header("Location: ../continua/continua.html");
+        
     } else {
        
         error_log("Errore execute INSERT: " . $stmt_insert->error);

@@ -19,8 +19,12 @@ body{
 }
 
 .form{
+    height: 32rem;
+    width: 27rem;
     display: flex;
     align-items: center;
+    justify-content: center;
+    
 }
 
 .regi, .log {
@@ -79,11 +83,18 @@ input:hover, .bottone:hover,.logo:hover{
     background-color: rgb(255, 255, 255);
     border-radius: 15px;
 }
+
+
 @media screen and (max-width: 768px) {
  .registrazione{
     scale: 0.75;
     overflow-x: hidden;
-    margin-left: 3%
+    
+ }
+ .form{
+    scale: 0.80;
+    overflow-x: hidden;
+    
  }
 ;
     

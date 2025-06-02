@@ -17,7 +17,7 @@ if ($nome_utente != "") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $_SESSION['utente_loggato'] = $nome_utente;
+        $_SESSION['utente'] = $nome_utente;
         $stmt->bind_result($nome);
         $stmt->fetch();
         $si = true;
@@ -37,7 +37,7 @@ if ($nome_utente != "") {
         }
     } else {
         echo "devi inserire almeno password o email";
-        
+
     }
 }
 
