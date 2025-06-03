@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elaborazione Riassunto - Maturità Facile</title>
     <link rel="stylesheet" href="logica.css">
-    
+
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -22,13 +24,15 @@
         <div id="statusMessage">Pronto per iniziare. Inserisci la tua API Key e clicca "Avvia".</div>
 
         <div id="resultsContainer">
-            
+
         </div>
-
-        <button id="downloadPdfButton" style="display:none;">Salva/Stampa Riassunti (PDF)</button>
-
+        <div class="bottoni">
+            <button id="downloadPdfButton downloadPdfButtonvero" style="display: none;">Salva il riassunto in formato PDF</button>
+            <button id="downloadPdfButton" style="display: none;">Salva il riassunto nella tua bacheca</button>
+        </div>
     </div>
 
     <script type="module" src="logica.js"></script>
 </body>
+
 </html>

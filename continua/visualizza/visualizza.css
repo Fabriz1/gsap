@@ -107,10 +107,7 @@ header h1 {
     transition: background-color 0.2s ease, transform 0.15s ease;
     font-family: 'font_titolo'; /* Manteniamo il font titolo per i bottoni per coerenza */
     letter-spacing: 0.5px;
-    margin: 1%;
 }
-
-
 
 #controls button:hover, #downloadPdfButton:hover {
     background-color: var(--colore-accento-hover);
@@ -155,15 +152,6 @@ header h1 {
     border-radius: 8px;
     background-color: var(--colore-superficie); /* Coerente con il container principale */
     min-height: 150px;
-}
-.bottoni{
-    margin-top: 3%;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 2%;
-
 }
 
 .argomento-summary {

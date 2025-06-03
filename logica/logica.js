@@ -8,7 +8,7 @@ const API_KEY_INPUT_ID = 'apiKeyInput';
 const START_BUTTON_ID = 'startButton';
 const RESULTS_CONTAINER_ID = 'resultsContainer';
 const STATUS_MESSAGE_ID = 'statusMessage';
-const DOWNLOAD_PDF_BUTTON_ID = 'downloadPdfButton';
+const DOWNLOAD_PDF_BUTTON_ID = 'downloadPdfButtonvero';
 
 
 const NOME_MODELLO_API = "gemini-2.5-flash-preview-05-20"; // <<<--- !!! MODIFICA QUESTO VALORE !!!
@@ -45,9 +45,9 @@ Identifica il numero totale di argomenti principali distinti. Scrivi solo questo
 Subito dopo il numero, metti un punto e virgola (;).
 Poi, elenca ciascun argomento principale. Separa ogni argomento dal successivo con un punto e virgola (;).
 Per ogni argomento, includi il suo titolo esatto (o una sintesi fedele) e un breve contesto essenziale (es. capitolo, periodo, sottotema) per evitare ambiguità e assicurare che l'analisi futura sia pertinente.
-Non aggiungere altro testo, introduzioni, o formattazioni (es. markdown, grassetto). Fornisci solo il numero seguito dall'elenco come testo puro.
+Non aggiungere altro testo, introduzioni, o formattazioni (es. markdown, grassetto). Fornisci solo il numero seguito dall'elenco come testo puro, alla fine di tutto aggiungi un altro punto e virgola e scrivi la materia del programma inviato es (italiano, matematica, sistemi e reti , ecc) e basta, nient'altro.
 
-Esempio di output atteso: 3;Argomento 1 con contesto;Argomento 2 con contesto;Argomento 3 con contesto
+Esempio di output atteso: 3;Argomento 1 con contesto;Argomento 2 con contesto;Argomento 3 con contesto;Italiano
 `;
 
     if (programData.sourceType === 'file' && programData.isBase64) {
@@ -308,4 +308,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         window.print();
     });
+    document.querySelector(".bottone_salva").addEventListener('click',function(){
+        
+    });
 });
+
+
+
+

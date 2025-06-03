@@ -19,7 +19,17 @@ body {
     overflow-x: hidden;
     line-height: 1.6;
 }
+.materia{
+    font-size: 1.3rem;
+    margin:0%;
 
+}
+@media screen and (max-width: 768px) {
+    .materia{
+        font-size: 1.1rem;
+
+    }
+}
 .titolo {
     font-size: clamp(2rem, 5vw + 1rem, 4rem);
     margin-top: 3vh;
@@ -63,6 +73,10 @@ body {
 
 /* Copertina del Quaderno */
 .copertina {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin-top: 5%;
     border-radius: 5px;
     height: 20%;
