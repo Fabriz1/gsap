@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nuovo-mobile.css">
+    <title>Nuovo Riassunto - Mobile</title>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <header>
+            <h1>Crea il Tuo Riassunto</h1>
+        </header>
+
+        <main>
+            <section class="input-mode-selection">
+                <button id="btn-show-file-mode" class="mode-button active">Carica File</button>
+                <button id="btn-show-text-mode" class="mode-button">Incolla Testo</button>
+            </section>
+
+            <div class="main-content-card">
+                <div class="input-content-wrapper">
+                    <section id="file-input-section" class="input-area active-input-area">
+                        <input type="file" id="mobile-file-input" accept="application/pdf,text/plain" style="display: none;">
+                        <button id="trigger-file-upload-button" class="action-button file-upload-btn-style">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 17V12L7 14M9 12L11 14M21 12C21 13.1819 20.7672 14.3522 20.3151 15.4442C19.863 16.5361 19.1997 17.5282 18.364 18.364C17.5282 19.1997 16.5361 19.863 15.4442 20.3151C14.3522 20.7672 13.1819 21 12 21C10.8181 21 9.64778 20.7672 8.55585 20.3151C7.46392 19.863 6.47177 19.1997 5.63604 18.364C4.80031 17.5282 4.13705 16.5361 3.68493 15.4442C3.23281 14.3522 3 13.1819 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3C14.3869 3 16.6761 3.94821 18.364 5.63604C20.0518 7.32387 21 9.61305 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 11L12 8L9 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Scegli File
+                        </button>
+                        <p id="file-name-display">Nessun file selezionato.</p>
+                    </section>
+
+                    <section id="text-input-section" class="input-area">
+                        <textarea id="mobile-text-area" placeholder="Incolla il tuo testo qui..."></textarea>
+                    </section>
+                </div>
+
+                <hr class="section-divider">
+
+                <section class="preferences-section">
+                    <h2>Preferenze</h2>
+                    <div class="eq-preferences-container">
+                        <div class="eq-band" data-pref-name="lunghezza">
+                            <div class="eq-band-track-wrapper">
+                                <div class="eq-band-track"></div>
+                                <div class="eq-band-dot" draggable="true"></div>
+                                <span class="eq-band-value-display">2.5</span>
+                            </div>
+                            <span class="eq-band-label">Lunghezza</span>
+                            <input type="hidden" class="eq-hidden-input" id="pref-lunghezza" value="2.5">
+                        </div>
+
+                        <div class="eq-band" data-pref-name="lessico">
+                             <div class="eq-band-track-wrapper">
+                                <div class="eq-band-track"></div>
+                                <div class="eq-band-dot" draggable="true"></div>
+                                <span class="eq-band-value-display">2.5</span>
+                            </div>
+                            <span class="eq-band-label">Lessico</span>
+                            <input type="hidden" class="eq-hidden-input" id="pref-lessico" value="2.5">
+                        </div>
+
+                        <div class="eq-band" data-pref-name="colori">
+                             <div class="eq-band-track-wrapper">
+                                <div class="eq-band-track"></div>
+                                <div class="eq-band-dot" draggable="true"></div>
+                                <span class="eq-band-value-display">2.5</span>
+                            </div>
+                            <span class="eq-band-label">Colori</span>
+                            <input type="hidden" class="eq-hidden-input" id="pref-colori" value="2.5">
+                        </div>
+
+                        <div class="eq-band" data-pref-name="creativita">
+                             <div class="eq-band-track-wrapper">
+                                <div class="eq-band-track"></div>
+                                <div class="eq-band-dot" draggable="true"></div>
+                                <span class="eq-band-value-display">2.5</span>
+                            </div>
+                            <span class="eq-band-label">Creatività</span>
+                            <input type="hidden" class="eq-hidden-input" id="pref-creativita" value="2.5">
+                        </div>
+
+                        <div class="eq-band" data-pref-name="schematico">
+                             <div class="eq-band-track-wrapper">
+                                <div class="eq-band-track"></div>
+                                <div class="eq-band-dot" draggable="true"></div>
+                                <span class="eq-band-value-display">2.5</span>
+                            </div>
+                            <span class="eq-band-label">Schematico</span>
+                            <input type="hidden" class="eq-hidden-input" id="pref-schematico" value="2.5">
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <button id="btn-proceed" class="action-button proceed-button">
+                Procedi e Genera
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </main>
+
+         <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+            <p>Attendere...</p>
+        </div>
+    </div>
+    <script src="nuovo-mobile.js"></script>
+</body>
+</html>

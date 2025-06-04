@@ -1,0 +1,322 @@
+@font-face {
+    font-family: 'font_titolo';
+    src: url('../fonts/CelsiusFlower.otf') format('opentype');
+    font-display: swap;
+}
+
+:root {
+    --colore-sfondo: #000000;
+    --colore-superficie: #101010; /* Leggermente più chiaro del nero per i container */
+    --colore-bordo: #282828;
+    --colore-testo-primario: #e0e0e0;
+    --colore-testo-secondario: #a0a0a0;
+    --colore-accento: rgb(130, 180, 220); /* Un blu-grigio chiaro per accenti, più sobrio */
+    --colore-accento-hover: rgb(150, 200, 240);
+    --colore-errore: #ff5555;
+    --colore-sfondo-input: #181818;
+
+    --font-corpo: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-corpo);
+    background-color: var(--colore-sfondo);
+    color: var(--colore-testo-primario);
+    line-height: 1.65;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px; /* Contenuto più stretto per leggibilità */
+    background-color: var(--colore-superficie);
+    padding: 30px 35px;
+    border-radius: 12px; /* Angoli più morbidi */
+    border: 1px solid var(--colore-bordo);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-family: 'font_titolo';
+    font-size: 3.2em; /* Titolo più grande e d'impatto */
+    color: var(--colore-accento);
+    margin-bottom: 30px;
+    letter-spacing: 1px; /* Leggera spaziatura tra lettere */
+}
+
+#controls {
+    margin-bottom: 30px;
+    padding: 25px;
+    background-color: rgba(255,255,255,0.03); /* Sfondo traslucido sottile */
+    border-radius: 8px;
+    border: 1px solid var(--colore-bordo);
+}
+
+#controls label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.1em;
+    font-weight: 500; /* Leggermente più bold */
+    color: var(--colore-testo-secondario);
+}
+
+#controls input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background-color: var(--colore-sfondo-input);
+    color: var(--colore-testo-primario);
+    font-size: 1em;
+    font-family: var(--font-corpo);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#controls input[type="password"]::placeholder {
+    color: #666;
+}
+
+#controls input[type="password"]:focus {
+    outline: none;
+    border-color: var(--colore-accento);
+    box-shadow: 0 0 0 3px rgba(130, 180, 220, 0.2); /* Glow sottile al focus */
+}
+
+#controls button, #downloadPdfButtonvero, #saveToDashboardButton {
+    padding: 13px 30px;
+    font-size: 1.05em;
+    font-weight: 600; /* Testo bottone più marcato */
+    color: var(--colore-sfondo);
+    background-color: var(--colore-accento);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    font-family: 'font_titolo'; /* Manteniamo il font titolo per i bottoni per coerenza */
+    letter-spacing: 0.5px;
+    margin: 1%;
+}
+
+
+
+#controls button:hover, #downloadPdfButtonvero:hover,#saveToDashboardButton:hover {
+    background-color: var(--colore-accento-hover);
+    transform: translateY(-2px);
+}
+
+#controls button:active, #downloadPdfButtonvero:active, #saveToDashboardButton:active {
+    transform: translateY(0px);
+}
+
+#controls button:disabled {
+    background-color: #2a2a2a;
+    color: #555;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#statusMessage {
+    margin: 30px 0;
+    padding: 15px 20px;
+    background-color: rgba(255,255,255,0.04);
+    border-left: 4px solid var(--colore-accento);
+    font-size: 1.05em;
+    text-align: left;
+    border-radius: 0 6px 6px 0;
+    color: var(--colore-testo-secondario);
+}
+
+#statusMessage[style*="border-color: rgb(255, 107, 107)"],
+#statusMessage[style*="border-color: #ff5555"] { /* Se usi il colore esadecimale per l'errore */
+    border-left-color: var(--colore-errore);
+    background-color: rgba(255, 85, 85, 0.08);
+    color: var(--colore-errore);
+}
+
+
+#resultsContainer {
+    margin-top: 35px;
+    text-align: left;
+    border: 1px solid var(--colore-bordo);
+    padding: 25px 30px;
+    border-radius: 8px;
+    background-color: var(--colore-superficie); /* Coerente con il container principale */
+    min-height: 150px;
+}
+.bottoni{
+    margin-top: 3%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2%;
+
+}
+
+.argomento-summary {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--colore-bordo);
+}
+
+.argomento-summary:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Stili per l'HTML generato dall'AI, con un look più moderno */
+#resultsContainer h1 {
+    font-family: 'font_titolo';
+    font-size: 2.5em;
+    color: var(--colore-accento);
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--colore-bordo); /* Bordo più sottile */
+    letter-spacing: 0.5px;
+}
+
+#resultsContainer h2 {
+    font-family: 'font_titolo';
+    font-size: 1.9em;
+    color: var(--colore-testo-primario);
+    margin-top: 30px;
+    margin-bottom: 18px;
+}
+
+#resultsContainer h3 {
+    font-family: 'font_titolo';
+    font-size: 1.6em;
+    color: var(--colore-testo-primario);
+    font-weight: 500; /* Meno pesante per h3 */
+    margin-top: 25px;
+    margin-bottom: 12px;
+}
+
+#resultsContainer p {
+    font-size: 1em;
+    margin-bottom: 15px;
+    color: var(--colore-testo-secondario);
+    text-align: left; /* Lasciamo left per leggibilità di paragrafi lunghi */
+}
+
+#resultsContainer ul,
+#resultsContainer ol {
+    margin-left: 0; /* Allineamento con il testo */
+    padding-left: 25px; /* Usa padding per lo spazio del marcatore */
+    margin-bottom: 18px;
+    color: var(--colore-testo-secondario);
+}
+
+#resultsContainer li {
+    margin-bottom: 10px;
+    padding-left: 5px; /* Piccolo spazio dopo il marcatore */
+}
+
+#resultsContainer strong, #resultsContainer b {
+    color: var(--colore-testo-primario); /* Evidenzia il testo bold */
+    font-weight: 600;
+}
+
+#resultsContainer em, #resultsContainer i {
+    color: var(--colore-testo-secondario); /* Corsivo più discreto */
+    font-style: italic;
+}
+
+/* Stile per span colorati (generati dall'AI) */
+#resultsContainer span[style*="color"] {
+    padding: 0 2px; /* Piccola spaziatura per non toccare il testo adiacente */
+    border-radius: 2px;
+}
+
+
+#resultsContainer code {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--colore-accento-hover);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 0.9em;
+}
+
+#resultsContainer pre {
+    background-color: rgba(0,0,0,0.2); /* Sfondo per blocchi di codice più scuro */
+    border: 1px solid var(--colore-bordo);
+    color: #ccc; /* Testo codice più chiaro */
+    padding: 18px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    margin: 20px 0;
+}
+
+#resultsContainer blockquote {
+    border-left: 3px solid var(--colore-accento);
+    margin: 20px 0;
+    padding: 10px 20px;
+    color: var(--colore-testo-secondario);
+    font-style: italic;
+    background-color: rgba(255,255,255,0.02);
+}
+
+#resultsContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.95em;
+}
+
+#resultsContainer th, #resultsContainer td {
+    border: 1px solid var(--colore-bordo);
+    padding: 12px 15px;
+    text-align: left;
+}
+
+#resultsContainer th {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--colore-accento);
+    font-weight: 600;
+    font-family: 'font_titolo';
+}
+
+#downloadPdfButtonvero, #saveToDashboardButton {
+    margin-top: 40px;
+    display: none;
+}
+
+/* Stili di stampa (mantenuti funzionali, l'estetica qui è meno prioritaria) */
+@media print {
+    body {
+        background-color: #ffffff !important; color: #000000 !important;
+        font-family: 'Georgia', serif !important; /* Font serif classico per stampa */
+        font-size: 11pt !important; padding: 2cm !important; margin: 0 !important;
+    }
+    .container, #resultsContainer {
+        box-shadow: none !important; border: none !important; width: 100% !important;
+        max-width: 100% !important; padding: 0 !important; background-color: #ffffff !important;
+    }
+    header, #controls, #statusMessage, #downloadPdfButtonvero, #saveToDashboardButton { display: none !important; }
+    #resultsContainer * { color: #000000 !important; background-color: transparent !important; text-shadow: none !important; }
+    #resultsContainer span[style*="color"] { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    #resultsContainer h1, #resultsContainer h2, #resultsContainer h3 { page-break-after: avoid !important; }
+    #resultsContainer p, #resultsContainer li, #resultsContainer table { page-break-inside: avoid !important; }
+    .argomento-summary { page-break-before: auto; margin-bottom: 15px !important; border-bottom: 1px solid #ddd !important; }
+    .argomento-summary:last-child { border-bottom: none !important; }
+    #resultsContainer code, #resultsContainer pre { background-color: #f4f4f4 !important; border: 1px solid #e0e0e0 !important; }
+    #resultsContainer table, #resultsContainer th, #resultsContainer td { border: 1px solid #bbb !important; }
+}

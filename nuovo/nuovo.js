@@ -1,5 +1,13 @@
 gsap.registerPlugin(DrawSVGPlugin, SplitText, Draggable)
+const MOBILE_BREAKPOINT = 1900; // Larghezza massima per essere considerati mobile (es. < 992px)
+const currentScreenWidth = window.innerWidth;
 
+if (currentScreenWidth < MOBILE_BREAKPOINT) {
+    // Se lo schermo è più piccolo del breakpoint, reindirizza alla versione mobile
+    // Assumendo che la cartella 'mobile' sia allo stesso livello di questo script.js
+    console.log("Schermo piccolo rilevato. Reindirizzamento a /mobile/index-mobile.html");
+    window.location.href = "nuovo-mobile.html";
+}else{
 
 fetch("controllo.php")
     .then(riassunti => riassunti.json())
@@ -851,3 +859,6 @@ if(fileOtesto) {
 
 
 })
+
+
+}

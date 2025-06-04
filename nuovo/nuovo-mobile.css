@@ -1,0 +1,326 @@
+@font-face {
+    font-family: 'font_titolo';
+    src: url('../fonts/CelsiusFlower.otf') format('opentype');
+    font-display: swap;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'font_titolo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #000000;
+    color: #EFEFEF;
+    line-height: 1.6;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
+
+.mobile-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --- ANIMAZIONE DI INGRESSO A CASCATA --- */
+@keyframes slideUpFadeInSmooth {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+header,
+.input-mode-selection,
+.main-content-card,
+.proceed-button {
+    opacity: 0;
+    animation-name: slideUpFadeInSmooth;
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: forwards;
+}
+
+header { animation-delay: 0.1s; margin-bottom: 30px; text-align: center;}
+.input-mode-selection { animation-delay: 0.2s; margin-bottom: 20px; }
+.main-content-card { animation-delay: 0.3s; }
+.proceed-button { animation-delay: 0.4s; margin-top: 25px; }
+
+header h1 {
+    font-size: 2.4rem;
+    margin: 0;
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-mode-selection {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.mode-button {
+    font-family: 'font_titolo';
+    background-color: #1C1C1E;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.15s;
+    flex-grow: 1;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.mode-button.active {
+    background-color: #0A84FF;
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(10, 132, 255, 0.25);
+}
+.mode-button:not(.active):hover {
+    background-color: #2C2C2E;
+}
+
+.main-content-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: #181818;
+    border-radius: 22px;
+    border: 1px solid #2D2D2D;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.input-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-area {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+.input-area.active-input-area { display: flex; }
+
+.file-upload-btn-style {
+    background-color: #2C2C2E !important;
+    color: #E0E0E0 !important;
+    font-size: 0.9rem !important;
+    padding: 12px 15px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+}
+.file-upload-btn-style:hover{
+    background-color: #3A3A3E !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15) !important;
+}
+.file-upload-btn-style svg {
+    margin-right: 8px;
+    margin-left: 0;
+}
+
+#file-name-display {
+    font-size: 0.8rem;
+    color: #AAAAAA;
+    text-align: center;
+    word-break: break-all;
+}
+
+#mobile-text-area {
+    width: 100%;
+    min-height: 130px;
+    padding: 12px;
+    font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.95rem;
+    background-color: #0F0F0F;
+    color: #E0E0E0;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    resize: vertical;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+#mobile-text-area:focus {
+    border-color: #0A84FF;
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
+    outline: none;
+}
+#mobile-text-area::placeholder { color: #666666; }
+
+.section-divider {
+    border: none;
+    height: 1px;
+    background-color: #2D2D2D;
+    margin: 10px 0;
+}
+
+.preferences-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Gap tra titolo e contenitore EQ */
+}
+.preferences-section h2 {
+    text-align: left;
+    font-size: 1.2rem;
+    margin: 0 0 10px 0; /* Aumentato margine inferiore */
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+/* --- EQ PREFERENCES STYLES --- */
+.eq-preferences-container {
+    display: flex;
+    justify-content: space-around; /* Distribuisce le bande equamente */
+    align-items: flex-end; /* Allinea le bande alla base */
+    gap: 10px; /* Spazio tra le bande */
+    padding: 10px 0; /* Padding verticale per il contenitore */
+    min-height: 180px; /* Altezza minima per l'EQ */
+}
+
+.eq-band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* Spazio tra track-wrapper, label e value-display */
+    flex-basis: 0; /* Permette a flex-grow di funzionare correttamente */
+    flex-grow: 1; /* Ogni banda occupa spazio uguale */
+    max-width: 50px; /* Larghezza massima per banda per non farle troppo larghe */
+}
+
+.eq-band-track-wrapper {
+    position: relative; /* Per posizionare il dot assolutamente */
+    width: 8px; /* Larghezza della visualizzazione della track (non la parte cliccabile) */
+    height: 100px; /* Altezza della track per il dragging */
+    display: flex;
+    flex-direction: column; /* Per il value display sopra */
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.eq-band-track {
+    width: 2px; /* Larghezza effettiva della linea tratteggiata */
+    height: 100%;
+    background-image: linear-gradient(to bottom, #4A4A4E 50%, transparent 50%);
+    background-size: 2px 8px; /* Dimensioni del tratteggio */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+}
+
+.eq-band-dot {
+    width: 18px;
+    height: 18px;
+    background-color: #00DFD8; /* Teal accent */
+    border-radius: 50%;
+    border: 2px solid #181818; /* Bordo per staccare dallo sfondo card */
+    box-shadow: 0 0 10px rgba(0, 223, 216, 0.5);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: grab;
+    z-index: 10;
+    /* La posizione 'bottom' sarà gestita da JS */
+}
+.eq-band-dot:active {
+    cursor: grabbing;
+    transform: translateX(-50%) scale(1.1); /* Leggero ingrandimento durante il drag */
+}
+
+.eq-band-value-display {
+    font-size: 0.75rem;
+    color: #00DFD8; /* Teal */
+    font-weight: 600;
+    position: absolute;
+    top: -20px; /* Posiziona sopra il dot */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(24, 24, 24, 0.8); /* Sfondo semi-trasparente */
+    padding: 2px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0; /* Nascosto di default, mostrato durante il drag */
+    transition: opacity 0.2s;
+}
+.eq-band-dot:active + .eq-band-value-display, /* Mostra quando il dot è attivo (dragging) */
+.eq-band-track-wrapper:hover .eq-band-value-display { /* Mostra anche su hover della track-wrapper */
+    opacity: 1;
+}
+
+
+.eq-band-label {
+    font-size: 0.75rem;
+    color: #AAAAAA;
+    text-align: center;
+    white-space: nowrap; /* Evita che le label vadano a capo */
+}
+/* --- FINE EQ PREFERENCES --- */
+
+.action-button {
+    font-family: 'font_titolo';
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    font-size: 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s ease-out, box-shadow 0.2s ease-out;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.action-button svg {
+    margin-left: 8px;
+}
+
+.proceed-button {
+    background-color: #0A84FF;
+    box-shadow: 0 5px 18px rgba(10, 132, 255, 0.2);
+    width: 100%;
+    font-size: 1.1rem;
+}
+.proceed-button:hover, .proceed-button:focus {
+    background-color: #0077E0;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 7px 22px rgba(10, 132, 255, 0.25);
+}
+.proceed-button:active {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: 0 3px 15px rgba(10, 132, 255, 0.15);
+}
+
+.loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); display: none;
+    justify-content: center; align-items: center; flex-direction: column;
+    z-index: 9999; backdrop-filter: blur(6px);
+}
+.spinner {
+    border: 5px solid #2C2C2E; border-top: 5px solid #0A84FF; border-radius: 50%;
+    width: 45px; height: 45px; animation: spin 0.8s linear infinite; margin-bottom: 20px;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.loading-overlay p { color: #E0E0E0; font-size: 1.1rem; }
+
+@media (min-width: 480px) {
+    .mobile-container{ padding: 25px; }
+    .main-content-card { padding: 25px; }
+    header h1 { font-size: 2.6rem; }
+    .preferences-section h2 { font-size: 1.3rem; margin-bottom: 15px;} /* Più spazio sotto il titolo EQ */
+    .eq-preferences-container { min-height: 200px; gap: 15px;}
+    .eq-band-track-wrapper { height: 120px; }
+    .eq-band-label { font-size: 0.8rem; }
+    .eq-band-dot { width: 20px; height: 20px; }
+    .eq-band-value-display { top: -22px; font-size: 0.8rem; }
+}
