@@ -51,8 +51,9 @@ if ($nome_utente != "") {
 if($si){
     header("Location: ../index.html");
 }else{
-    echo "Paswword o Email sbaliate, riprova";
+    
     header("Location: login.html");
+    exit;
 }
 
 

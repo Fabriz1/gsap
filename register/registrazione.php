@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt_insert->execute()) {
         $_SESSION['utente']=$nome_utente_form;
-        header("Location: ../continua/continua.html");
+        header("Location: ../index.html");
         
     } else {
        
