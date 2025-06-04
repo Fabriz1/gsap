@@ -5,7 +5,9 @@
     src: url('../fonts/CelsiusFlower.otf') format('opentype');
     font-display: swap;
 }
-
+.logica{
+    margin-left: 10%;
+}
 :root {
     --colore-sfondo: #0A0A0A; /* Very dark grey, almost black */
     --colore-superficie: #141414; /* Slightly lighter for cards/containers */
@@ -25,7 +27,7 @@
     --border-radius-sm: 6px;
     --border-radius-md: 10px;
     --border-radius-lg: 16px;
-
+    overflow-x: hidden;
     --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
@@ -57,7 +59,7 @@ body {
 
 /* Main Container */
 .container {
-    width: 100%;
+    width: 95%;
     max-width: 960px; /* Slightly wider for a more spacious feel */
     background-color: var(--colore-superficie);
     padding: 2rem 2.5rem;
@@ -67,7 +69,24 @@ body {
     text-align: center;
     margin-bottom: 2.5rem;
 }
-
+#video_effettivo{
+    z-index: -100;
+    position:absolute;
+    top:0;
+    left: 50%;
+    opacity: 0;
+    
+    transform: translate(-50%);
+    
+    
+}
+.chiudi{
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    scale:0
+}
 /* Header */
 header h1 {
     font-family: var(--font-display);
@@ -77,6 +96,7 @@ header h1 {
     letter-spacing: 0.5px;
     font-weight: 600; /* CelsiusFlower might be thin, Inter will provide weight */
 }
+
 
 /* Controls Section */
 #controls {
@@ -386,6 +406,10 @@ header h1 {
     }
     .bottoni button:last-child {
         margin-bottom: 0;
+    }
+    .svg{
+        top: 0%;
+        
     }
 }
 

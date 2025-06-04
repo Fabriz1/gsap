@@ -1,6 +1,60 @@
 
-
 import { GoogleGenAI } from "https://esm.run/@google/genai";
+
+
+
+const video_effettivo = document.getElementById('video_effettivo');
+document.querySelector(".domanda").addEventListener("click",function(){
+    gsap.to("#video_effettivo",{
+        duration:1,
+        scale:1,
+        opacity:1,
+        zIndex:1000,
+        
+
+    })
+    gsap.to(".container",{
+        opacity:0,
+        zIndex:-1,
+    })
+    gsap.to(".chiudi",{
+        opacity:1,
+        zIndex:1000,
+        scale:0.7,
+    })
+    video_effettivo.currentTime=0;
+    video_effettivo.play()
+})
+document.querySelector(".chiudi").addEventListener("click",function(){
+    gsap.to("#video_effettivo",{
+        duration:0.5,
+        
+        opacity:0,
+        zIndex:-100,
+        
+
+    })
+    gsap.to(".container",{
+        opacity:1,
+        zIndex:100,
+    })
+    gsap.to(".chiudi",{
+        opacity:0,
+        zIndex:-100,
+        scale:0,
+    })
+
+    
+    video_effettivo.pause()
+})
+
+
+
+
+
+
+
+
 
 let genAIInstance; 
 
