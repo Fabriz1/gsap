@@ -1,0 +1,156 @@
+@font-face {
+    font-family: 'font_titolo_mobile';
+    src: url('../../fonts/CelsiusFlower.otf') format('opentype');
+    font-display: swap;
+}
+
+html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+html::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #0A0A0A;
+    color: #EAEAEA;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    /* display: flex; non più necessario se .mobile-container gestisce tutto */
+    /* justify-content: center; */
+    /* align-items: center; */
+    overflow: hidden;
+    background: linear-gradient(135deg, #000000 0%, #1a0e2a 50%, #0d0d0d 100%);
+    background-size: 400% 400%;
+    animation: gradientBackgroundMobile 20s ease infinite alternate;
+}
+
+@keyframes gradientBackgroundMobile {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.mobile-container {
+    width: 100%;
+    /* max-width: 600px; Rimosso per permettere al titolo di posizionarsi rispetto alla viewport */
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.mobile-header { /* Contiene l'icona utente */
+    position: absolute; /* o fixed se vuoi che stia sopra tutto, incluso lo scroll futuro */
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    opacity: 0; /* GSAP lo mostrerà */
+    /* Non serve transform qui, solo opacity */
+}
+
+.mobile-user-icon {
+    cursor: pointer;
+    padding: 5px;
+}
+.mobile-user-icon svg path {
+    transition: fill 0.3s ease;
+}
+.mobile-user-icon:hover svg path {
+    fill: #c5aeff;
+}
+
+/* Wrapper non più necessario se .animated-title è fixed */
+/* .title-animation-wrapper { ... } */
+
+.animated-title { /* Ora posizionato dove deve finire */
+    font-family: 'font_titolo_mobile', sans-serif;
+    position: fixed; /* Fisso rispetto alla viewport */
+    top: 22px;    /* Posizione finale Y */
+    left: 20px;   /* Posizione finale X */
+    font-size: clamp(1.6em, 6vw, 2.1em); /* Dimensione finale */
+    color: #FFFFFF;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 0 0 8px rgba(200, 150, 255, 0.3);
+    z-index: 10; /* Sopra il main content */
+    pointer-events: auto; /* Permette interazioni se necessario */
+
+    /* Proprietà per l'animazione "from" di GSAP */
+    opacity: 1;
+    /* GSAP animerà da: (esempio) */
+    /* transform: translate(calc(50vw - 50% - 20px), calc(50vh - 50% - 22px)) scale(2.5); */
+    /* La traslazione esatta per centrarlo da questa posizione fissa è più complessa,
+       perciò animeremo x, y, scale e opacity con GSAP.from */
+}
+
+
+.mobile-main-content {
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 70px; /* Spazio per il titolo + icona utente */
+    opacity: 0; /* Tutto il main content appare dopo */
+    /* GSAP gestirà l'apparizione */
+}
+
+.mobile-actions-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 25px;
+}
+
+.mobile-action-card {
+    background-color: rgba(20, 20, 30, 0.6);
+    border: 1px solid rgba(100, 80, 130, 0.5);
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.25s ease-out, background-color 0.25s ease-out, box-shadow 0.25s ease-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 110px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.mobile-action-card:hover, .mobile-action-card:active {
+    transform: translateY(-3px) scale(1.02);
+    background-color: rgba(30, 20, 50, 0.7);
+    box-shadow: 0 6px 20px rgba(100, 80, 130, 0.3);
+}
+
+.mobile-action-card h2 {
+    font-family: 'font_titolo_mobile', sans-serif;
+    font-size: clamp(1.2em, 5vw, 1.5em);
+    margin: 0 0 10px 0;
+    color: #F0F0F0;
+    font-weight: normal;
+}
+.mobile-icon {
+    color: #D0C0E0;
+}
+
+.mobile-description {
+    font-size: clamp(0.95em, 4vw, 1.15em);
+    color: #B0B0B0;
+    line-height: 1.6;
+    max-width: 90%;
+    opacity: 0;
+    transform: translateY(10px);
+}

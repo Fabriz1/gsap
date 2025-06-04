@@ -1,5 +1,23 @@
 gsap.registerPlugin(DrawSVGPlugin, SplitText, Draggable)
 
+
+fetch("controllo.php")
+    .then(riassunti => riassunti.json())
+    .then(risultato_vero => {
+        if (risultato_vero.errore) {
+            alert("Devi accedere per vedere la tua lista di riassunti")
+            window.location.href = "../login/login.html"
+            return;
+        }
+        
+        
+    })
+
+
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+
 let fileOtesto; //se è falso è stato caricato testo altriemnti il file
 let tl = gsap.timeline();
 let split = SplitText.create(".testo1", { type: "chars" });
@@ -832,4 +850,4 @@ if(fileOtesto) {
 
 
 
-
+})
