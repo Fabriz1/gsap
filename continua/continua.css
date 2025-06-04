@@ -1,164 +1,245 @@
-/* Global Reset & Font */
+/* === GLOBAL RESET & VARIABLES === */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    --colore-sfondo: #171A1F; /* Un blu-grigio molto scuro */
+    --colore-quaderno: #22272E; /* Superficie leggermente più chiara per il quaderno */
+    --colore-copertina: #2D333B; /* Colore per la "copertina" stilizzata */
+    --colore-bordo-quaderno: #3E444D;
+    --colore-spirale: #6E7681; /* Spirale più discreta */
+    --colore-testo-primario: #CDD5DF;
+    --colore-testo-secondario: #9DA5B0;
+    --colore-accento: #539BF5; /* Un blu più vivace per accenti */
+    --colore-accento-hover: #6AA6F7;
+
+    --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-titolo-pagina: 'font_titolo_cel', var(--font-ui);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    --shadow-quaderno: 0 4px 10px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.15);
+    --shadow-quaderno-hover: 0 8px 20px rgba(0,0,0,0.25), 0 3px 7px rgba(0,0,0,0.2);
+
+    --transition-speed: 0.25s;
 }
 
 @font-face {
-    font-family: 'font';
-    src: url(../fonts/CelsiusFlower.otf); /* Assicurati che questo percorso sia corretto */
+    font-family: 'font_titolo_cel';
+    src: url('../fonts/CelsiusFlower.otf'); /* AGGIORNA QUESTO PERCORSO! */
+    font-display: swap;
+}
+
+/* === BASE STYLES === */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'font', sans-serif; /* Aggiunto un font di fallback */
-    color: white;
-    background-color: rgb(19, 19, 19);
-    overflow-x: hidden;
+    font-family: var(--font-ui);
+    color: var(--colore-testo-primario);
+    background-color: var(--colore-sfondo);
     line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 3rem;
 }
-.materia{
-    font-size: 1.3rem;
-    margin:0%;
 
-}
-@media screen and (max-width: 768px) {
-    .materia{
-        font-size: 1.1rem;
-
-    }
-}
-.titolo {
-    font-size: clamp(2rem, 5vw + 1rem, 4rem);
-    margin-top: 3vh;
-    margin-bottom: 3vh;
-    width: 100%;
+/* === HEADER & PAGE TITLE === */
+.page-header {
+    padding: 2.5rem 1rem 2rem; /* Ridotto leggermente il padding top */
     text-align: center;
-    padding-left: 15px;
-    padding-right: 15px;
+    /* border-bottom: 1px solid var(--colore-bordo-quaderno); Rimosso bordo per un look più pulito */
+    margin-bottom: 2rem;
 }
 
-/* Contenitore Principale dei Quaderni */
-.paginazione {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    gap: clamp(20px, 5vw, 50px);
-    margin: 5vh auto;
+.titolo-pagina {
+    font-family: var(--font-titolo-pagina);
+    font-size: clamp(2rem, 4.5vw + 0.5rem, 3.2rem);
+    color: var(--colore-accento);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* === MAIN CONTENT AREA === */
+.contenitore-principale {
     max-width: 1200px;
-    padding: 2vw 15px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
-/* Stile del Quaderno */
+/* === GRIGLIA QUADERNI (PAGINAZIONE) === */
+.paginazione {
+    display: grid;
+    /* Responsive grid: min 150px (mobile), max 1fr.
+       Questo favorisce 2 colonne su mobile e più su desktop. */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap: 1.5rem; /* Gap consistente */
+}
+
+/* === QUADERNO STILIZZATO === */
 .quaderno {
     position: relative;
-    /* Dimensioni per desktop */
-    height: clamp(280px, 35vh, 400px);
-    width: clamp(180px, 22vw, 250px);
-    border-radius: 10px;
-    border: 2px solid white;
-    background-color: rgb(82, 89, 95);
-    padding: 15px;
+    background-color: var(--colore-quaderno);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--colore-bordo-quaderno);
+    padding: 0.75rem; /* Padding interno generale */
+    padding-left: 1.5rem; /* Più spazio a sx per la "spirale" */
+    aspect-ratio: 2 / 2.8; /* Proporzioni simili a un quaderno, leggermente più slanciato */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    transition: transform 0.3s ease;
+    align-items: center; /* Centra la copertina */
+    justify-content: flex-start; /* Allinea la copertina in alto */
+    cursor: pointer;
+    transition: transform var(--transition-speed) ease,
+                box-shadow var(--transition-speed) ease;
+    box-shadow: var(--shadow-quaderno);
+    overflow: hidden; /* Per contenere elementi interni */
 }
 
 .quaderno:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--shadow-quaderno-hover);
 }
 
-/* Copertina del Quaderno */
+/* === "COPERTINA" STILIZZATA === */
 .copertina {
+    width: 100%;
+    height: auto; /* L'altezza sarà determinata dal contenuto, padding e font size */
+    min-height: 60px; /* Altezza minima per la copertina */
+    background-color: var(--colore-copertina);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 0.6rem; /* Padding interno per il testo */
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-top: 5%;
-    border-radius: 5px;
-    height: 20%;
-    width: 90%;
-    background-color: rgb(155, 155, 155);
+    text-align: center;
+    margin-top: 0.5rem; /* Spazio dall'alto del quaderno */
+    overflow: hidden; /* Per gestire l'overflow del testo */
 }
 
-/* Spirale del Quaderno */
+/* === TESTO MATERIA === */
+.materia {
+    font-family: var(--font-ui);
+    font-weight: 600; /* Testo più marcato */
+    font-size: clamp(0.8rem, 2.8vw, 1rem); /* Responsive font-size per la materia */
+    color: var(--colore-testo-primario);
+    line-height: 1.3;
+    width: 100%;
+    
+    /* Gestione multi-line ellipsis */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Limita a 3 righe, aggiusta per mobile */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Un'altezza massima teorica per aiutare il line-clamp. */
+    /* Potrebbe essere necessario regolarla in base al font-size e line-height effettivi */
+    max-height: calc(1em * 1.3 * 3 + 0.2em); /* font-size * line-height * num_lines + piccolo buffer */
+}
+
+/* === "SPIRALE" STILIZZATA === */
 .spirale {
     position: absolute;
-    top: 10%;
-    left: -8px;
-    height: 80%;
+    left: 0.6rem; /* Spostata leggermente dentro il padding */
+    top: 50%;
+    transform: translateY(-50%); /* Centrata verticalmente */
+    height: 75%; /* Più corta e centrata */
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    z-index: 2; /* Assicurati sia sopra il quaderno */
+    align-items: center;
 }
 
 .spirale div {
-    width: clamp(6px, 0.8vw, 10px);
-    height: clamp(6px, 0.8vw, 10px);
-    background-color: rgb(180, 180, 180);
+    width: 5px; /* Anelli più sottili */
+    height: 5px;
+    background-color: var(--colore-spirale);
     border-radius: 50%;
+    margin: 2px 0; /* Spazio tra gli anelli */
+    opacity: 0.8;
 }
 
-/* 🔁 Responsive Design - Media Queries */
+/* ID non visibile */
+.id {
+    display: none !important;
+}
 
-/* Tablet e Mobile (fino a 768px) */
-@media (max-width: 768px) {
-    .titolo {
-        font-size: clamp(1.8rem, 6vw + 0.5rem, 2.8rem);
-        margin-bottom: 20px;
-    }
+/* === MESSAGGI DI STATO === */
+.nessuna-materia, .errore-caricamento { /* Stili per quando non ci sono quaderni */
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 1.05rem;
+    color: var(--colore-testo-secondario);
+    background-color: var(--colore-quaderno); /* Sfondo coerente */
+    border: 1px dashed var(--colore-bordo-quaderno);
+    border-radius: var(--radius-md);
+}
+.errore-caricamento {
+    color: var(--colore-accento); /* Usa accento per errori, o un rosso se preferisci */
+    border-color: var(--colore-accento);
+}
 
+/* === RESPONSIVE ADJUSTMENTS === */
+
+@media (min-width: 600px) { /* Quando c'è più spazio, più colonne */
     .paginazione {
-        /* Rimuoviamo flex-direction: column per tornare a row (default) */
-        /* justify-content: center è già nel CSS base e va bene */
-        gap: 20px; /* Spazio tra i quaderni e tra le righe */
-        padding: 20px 10px; /* Padding ai lati del contenitore paginazione */
+        /* min 180px, permette più colonne su tablet/desktop piccoli */
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+        gap: 1.75rem;
     }
+     .materia {
+        -webkit-line-clamp: 3;
+    }
+}
 
+@media (min-width: 992px) { /* Desktop */
+    .paginazione {
+        /* min 200px, per layout desktop più ariosi */
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+        gap: 2rem;
+    }
+    .materia {
+        font-size: clamp(0.9rem, 1.5vw, 1.1rem); /* Leggermente più grande su desktop */
+         -webkit-line-clamp: 3;
+    }
+}
+
+/* Nessuna media query specifica per mobile perché la base è già pensata per mobile-first
+   con grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+   Questo dovrebbe dare 2 colonne sulla maggior parte dei telefoni.
+   Se vuoi una singola colonna su telefoni molto piccoli (es. < 380px), puoi aggiungere:
+*/
+@media (max-width: 380px) {
+    .paginazione {
+        grid-template-columns: 1fr; /* Forza una singola colonna */
+        gap: 1.25rem;
+    }
     .quaderno {
-        /* Due quaderni per riga: calc(50% della larghezza disponibile - metà del gap) */
-        /* clamp(MIN_WIDTH, IDEAL_WIDTH, MAX_WIDTH) */
-        width: clamp(120px, calc(50% - 10px), 170px);
-        height: auto; /* L'altezza sarà determinata dall'aspect-ratio */
-        aspect-ratio: 2 / 3; /* Mantiene le proporzioni del quaderno */
-        padding: 8px; /* Padding interno del quaderno leggermente ridotto */
+        padding: 0.6rem;
+        padding-left: 1.25rem;
+        aspect-ratio: 2 / 2.6; /* Leggermente meno alto se in singola colonna */
     }
-
+    .materia {
+        font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+        -webkit-line-clamp: 4; /* Più spazio per il testo in singola colonna */
+    }
     .spirale {
-        left: -6px; /* Adegua posizione spirale */
+        left: 0.4rem;
     }
-
     .spirale div {
-        /* Rimpiccioliamo gli anelli della spirale */
-        width: clamp(4px, 1vw, 6px);
-        height: clamp(4px, 1vw, 6px);
-    }
-}
-
-/* Mobile più piccoli (fino a 480px) */
-@media (max-width: 480px) {
-    .titolo {
-        font-size: clamp(1.5rem, 7vw, 2.2rem);
-    }
-
-    .paginazione {
-        gap: 15px; /* Riduciamo ulteriormente il gap */
-        padding: 15px 8px; /* E il padding laterale */
-    }
-
-    .quaderno {
-        /* Adattiamo la larghezza per schermi ancora più piccoli, mantenendo due per riga */
-        /* metà del nuovo gap è 7.5px */
-        width: clamp(110px, calc(50% - 7.5px), 150px);
-        padding: 6px; /* Padding interno ancora più piccolo */
-    }
-
-    .spirale div {
-        width: clamp(3px, 0.8vw, 5px);
-        height: clamp(3px, 0.8vw, 5px);
+        width: 4px;
+        height: 4px;
     }
 }

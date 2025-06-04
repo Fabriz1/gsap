@@ -31,8 +31,15 @@ if ($nome_utente != "") {
         $stmt->store_result();
         if ($stmt->num_rows > 0) {
         $_SESSION['email'] = $mail;
+        
         $stmt->bind_result($nome);
         $stmt->fetch();
+        $stmt->close();
+        $stmt=$conn->prepare("SELECT id_utente WHERE email=?");
+        $stmt->bind_param("s",$mail);
+        $stmt->execute();
+        $id_mail=$stmt->get_result();
+        $_SESSION['utente']=$id_mail;
         $si = true;
         }
     } else {
@@ -42,9 +49,10 @@ if ($nome_utente != "") {
 }
 
 if($si){
-    echo "benvenuto ". $nome;
+    header("Location: ../index.html");
 }else{
     echo "Paswword o Email sbaliate, riprova";
+    header("Location: login.html");
 }
 
 
