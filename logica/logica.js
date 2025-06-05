@@ -1,62 +1,27 @@
+// ========= logica.js (VERSIONE FINALE con Vera Logica a Lotti) =========
 
 import { GoogleGenAI } from "https://esm.run/@google/genai";
 
-
-
+// --- Sezione Controlli UI (Invariata) ---
 const video_effettivo = document.getElementById('video_effettivo');
-document.querySelector(".domanda").addEventListener("click",function(){
-    gsap.to("#video_effettivo",{
-        duration:1,
-        scale:1,
-        opacity:1,
-        zIndex:1000,
-        
-
-    })
-    gsap.to(".container",{
-        opacity:0,
-        zIndex:-1,
-    })
-    gsap.to(".chiudi",{
-        opacity:1,
-        zIndex:1000,
-        scale:0.7,
-    })
-    video_effettivo.currentTime=0;
-    video_effettivo.play()
-})
-document.querySelector(".chiudi").addEventListener("click",function(){
-    gsap.to("#video_effettivo",{
-        duration:0.5,
-        
-        opacity:0,
-        zIndex:-100,
-        
-
-    })
-    gsap.to(".container",{
-        opacity:1,
-        zIndex:100,
-    })
-    gsap.to(".chiudi",{
-        opacity:0,
-        zIndex:-100,
-        scale:0,
-    })
-
-    
-    video_effettivo.pause()
-})
+document.querySelector(".domanda").addEventListener("click", function () {
+    gsap.to("#video_effettivo", { duration: 1, scale: 1, opacity: 1, zIndex: 1000 });
+    gsap.to(".container", { opacity: 0, zIndex: -1 });
+    gsap.to(".chiudi", { opacity: 1, zIndex: 1000, scale: 0.7 });
+    video_effettivo.currentTime = 0;
+    video_effettivo.play();
+});
+document.querySelector(".chiudi").addEventListener("click", function () {
+    gsap.to("#video_effettivo", { duration: 0.5, opacity: 0, zIndex: -100 });
+    gsap.to(".container", { opacity: 1, zIndex: 100 });
+    gsap.to(".chiudi", { opacity: 0, zIndex: -100, scale: 0 });
+    video_effettivo.pause();
+});
 
 
+// --- Sezione Logica Principale Gemini AI ---
 
-
-
-
-
-
-
-let genAIInstance; 
+let genAIInstance;
 
 // ID degli elementi HTML
 const API_KEY_INPUT_ID = 'apiKeyInput';
@@ -66,205 +31,181 @@ const STATUS_MESSAGE_ID = 'statusMessage';
 const DOWNLOAD_PDF_BUTTON_ID = 'downloadPdfButtonvero';
 const SAVE_TO_DASHBOARD_BUTTON_ID = 'saveToDashboardButton';
 
-let materia = "bla"; // Variabile globale per la materia
-const NOME_MODELLO_API = "gemini-2.5-flash-preview-05-20";
+// Variabili e Costanti Globali
+let materia = "bla";
+const MODELLO_ANALISI_PRO = "gemini-2.5-flash-preview-05-20";
+const MODELLO_RIASSUNTI_FLASH = "gemini-2.5-flash-preview-05-20";
 const MODEL_OUTPUT_TOKEN_LIMIT = 65000;
 
-// Funzione per mostrare messaggi di stato all'utente
+// --- Funzioni Helper UI (Invariate) ---
 function displayStatus(message, isError = false) {
     const statusElement = document.getElementById(STATUS_MESSAGE_ID);
     if (statusElement) {
         statusElement.textContent = message;
         statusElement.style.color = isError ? '#ff6b6b' : '#ffffff';
         statusElement.style.borderColor = isError ? '#ff6b6b' : 'rgb(164, 193, 204)';
-    } else {
-        console.warn("Elemento statusMessage non trovato nel DOM:", message);
     }
 }
-
-// Funzioni helper per UI
 function enableInitialControls(show = true) {
     const startButton = document.getElementById(START_BUTTON_ID);
     const apiKeyInput = document.getElementById(API_KEY_INPUT_ID);
     const apiKeyLabel = document.querySelector('label[for="apiKeyInput"]');
     const displayValue = show ? '' : 'none';
-
     if (startButton) { startButton.disabled = false; startButton.style.display = displayValue; }
     if (apiKeyInput) { apiKeyInput.disabled = false; apiKeyInput.style.display = displayValue; }
     if (apiKeyLabel) apiKeyLabel.style.display = displayValue;
 }
-
 function showResultButtons(show = true) {
     const downloadButton = document.getElementById(DOWNLOAD_PDF_BUTTON_ID);
     const saveToDashboardButton = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
     const displayValue = show ? 'inline-block' : 'none';
-
     if (downloadButton) downloadButton.style.display = displayValue;
     if (saveToDashboardButton) saveToDashboardButton.style.display = displayValue;
 }
 
+/**
+ * Genera un riassunto per un singolo argomento con logica di retry.
+ */
+async function generateSummaryWithRetry(argomento, index, apiConfig, promptText, maxRetries = 3, currentAttempt = 1) {
+    console.log(`Tentativo ${currentAttempt}/${maxRetries} per: "${argomento}"`);
+    try {
+        const contents = [{ text: promptText }];
+        const responseSummary = await genAIInstance.models.generateContent({ model: MODELLO_RIASSUNTI_FLASH, contents: contents, config: apiConfig });
+        const generatedText = responseSummary.text || responseSummary?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        if (generatedText.trim()) {
+            return { index, html: generatedText, success: true };
+        } else {
+            const errorHtml = `<h2 style="color:red;">Errore per ${argomento}</h2><p style="color:orange;">L'API non ha restituito contenuto.</p>`;
+            return { index, html: errorHtml, success: false };
+        }
+    } catch (error) {
+        const isRateLimitError = error.message && (error.message.includes('429') || error.message.toLowerCase().includes('rate limit'));
+        if (isRateLimitError && currentAttempt < maxRetries) {
+            const delay = 10000 + Math.random() * 5000;
+            const waitSeconds = (delay / 1000).toFixed(1);
+            console.warn(`Quota superata per "${argomento}". Riprovo tra ${waitSeconds} secondi...`);
+            displayStatus(`Quota API superata. Metto in pausa per ${waitSeconds}s e riprovo...`, false);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return generateSummaryWithRetry(argomento, index, apiConfig, promptText, maxRetries, currentAttempt + 1);
+        } else {
+            const errorHtml = `<h2 style="color:red;">Errore per ${argomento}</h2><p style="color:orange;">Impossibile generare: ${error.message}</p>`;
+            return { index, html: errorHtml, success: false, error };
+        }
+    }
+}
+
+/**
+ * Funzione principale che orchestra l'intero processo.
+ */
 async function processProgramAndGenerateSummaries(programData) {
     if (!genAIInstance) {
         displayStatus("Errore critico: l'istanza AI non è inizializzata.", true);
         enableInitialControls(true);
-        showResultButtons(false);
         return;
     }
 
     const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
     resultsContainer.innerHTML = '';
-    displayStatus("Fase 1: Analisi del programma scolastico in corso...");
+    displayStatus("Fase 1: Analisi del programma scolastico con Gemini 2.5 Pro...");
     showResultButtons(false);
 
+    const firstPromptInstructionText = `Sei un assistente didattico specializzato nell'analisi di documenti accademici. Il tuo compito è smontare il programma scolastico fornito in ogni sua singola componente di studio.
+**PRINCIPIO GUIDA FONDAMENTALE:**
+Un "argomento" è la più piccola unità di conoscenza discreta elencata nel documento. Se un concetto è presentato su una riga a sé, come un punto elenco, una voce numerata, o un sottotitolo, esso costituisce un singolo argomento. Ignora la formattazione e concentrati sulla struttura logica e sulla suddivisione dei contenuti fatta dal docente.
+**ISTRUZIONI DETTAGLIATE:**
+1.  **IDENTIFICA LE MACRO-AREE:** Prima di tutto, riconosci le materie principali o le sezioni del documento (es. "Materia: Italiano", "MODULO 1 - IL LIVELLO TRASPORTO", "FASE/UdA: Architettura di rete", "CONTENUTI DISCIPLINARI"). Queste ti serviranno per dare contesto.
+2.  **ESTRAZIONE GRANULARE (REGOLA PIÙ IMPORTANTE):**
+    - Scandisci il documento riga per riga.
+    - Estrai ogni singola voce che rappresenta un tema di studio come un argomento separato.
+    - **NON DEVI ASSOLUTAMENTE RAGGRUPPARE O RIASSUMERE.** Se trovi "Derivate" e poi "Derivate fondamentali" su due righe, sono DUE argomenti distinti.
+    - Estrai anche i titoli delle sezioni se rappresentano un argomento a sé (es. "Laboratorio", "AREA TEORICA").
+3.  **AGGIUNGI CONTESTO OBBLIGATORIO:**
+    - Per ogni argomento estratto, devi indicare tra parentesi la sua macro-area di origine. Esempi: "(da Italiano)", "(da Matematica - DERIVATE)", "(da Sistemi e Reti - MODULO 3)". Questo è cruciale per la chiarezza.
+4.  **IDENTIFICA LA MATERIA:** Alla fine, identifica la materia generale a cui si riferisce ogni programma (es. Italiano, Matematica, Storia, Informatica, ecc.). Se il documento contiene più programmi, estrai la materia per ogni blocco. L'output finale conterrà la materia più pertinente all'ultimo blocco di argomenti analizzato.
+**FORMATO DI OUTPUT - SEGUIRE ALLA LETTERA:**
+L'output deve essere una SINGOLA STRINGA DI TESTO, senza introduzioni, commenti o markdown. La struttura è la seguente:
+\`NumeroTotaleArgomenti;Argomento1 (Contesto1);Argomento2 (Contesto2);...;ArgomentoN (ContestoN);MateriaPrincipale\`
+**ESEMPIO PRATICO DI OUTPUT ATTESO:**
+\`152;La belle époque: definizione e caratteristiche (da Storia - Unità 1);Il concetto di Fair Play: rispetto, lealtà, integrazione (da Scienze Motorie - AREA TEORICA);Derivata di una funzione (da Matematica - DERIVATE);Comprendere il modello client-server (da Tecnologie - FASE/UdA: Architettura di rete);...;Il Neorealismo (da Italiano);Italiano\``;
+    
     let firstPromptContents = [];
-    const firstPromptInstructionText = `Analizza attentamente il documento fornito, che contiene un programma scolastico.
-
-Il tuo compito principale è identificare tutti gli argomenti principali distinti, i temi trattati o le unità di studio che compongono il programma. Questi argomenti possono essere presentati in vari modi all'interno del documento (es. liste puntate, liste numerate, sottotitoli, paragrafi descrittivi, ecc.). Non limitarti a cercare un formato specifico; leggi e comprendi il contenuto generale.
-
-Una volta identificati gli argomenti principali, forniscili in un formato STRETTAMENTE SPECIFICO:
-1.  Inizia con il numero totale di argomenti principali distinti che hai identificato. Scrivi solo il numero.
-2.  Subito dopo il numero, metti un punto e virgola (;).
-3.  Successivamente, elenca CIASCUNO argomento principale che hai trovato. Per ogni argomento, usa una sintesi chiara o il titolo come appare nel documento, e includi un brevissimo contesto se necessario per distinguerlo da altri argomenti simili o per indicare a quale sezione generale appartiene nel programma originale (es. "Argomento X (parte di Capitolo Y)").
-4.  Separa ogni argomento dal successivo con un punto e virgola (;).
-5.  NON includere alcun altro testo, introduzioni, commenti o formattazioni aggiuntive (come markdown, grassetto, ecc.) oltre agli argomenti e ai separatori punto e virgola.
-6.  Alla fine dell'elenco di argomenti, aggiungi un altro punto e virgola (;).
-7.  Come ULTIMO elemento, scrivi il nome della materia a cui si riferisce il programma (es. italiano, matematica, sistemi e reti, GESTIONE PROGETTO ORGANIZZAZIONE D'IMPRESA).
-
-L'output DEVE consistere unicamente in una singola stringa di testo formattata in questo modo: NumeroTotale;Argomento1;Argomento2;...;ArgomentoN;Materia
-
-Esempio di output atteso (per 3 argomenti e la materia): 3;Primo Argomento Trovato;Secondo Argomento (contesto);Terzo Argomento come da testo;Nome Materia
-`;
-
     if (programData.sourceType === 'file' && programData.isBase64) {
-        firstPromptContents.push({ text: "Il seguente è un documento (" + programData.mimeType + ") contenente un programma scolastico. " + firstPromptInstructionText });
-        firstPromptContents.push({
-            inlineData: { mimeType: programData.mimeType, data: programData.content }
-        });
+        firstPromptContents = [{ text: firstPromptInstructionText }, { inlineData: { mimeType: programData.mimeType, data: programData.content } }];
     } else if (programData.sourceType === 'text' && programData.content) {
-        firstPromptContents.push({ text: firstPromptInstructionText + "\nProgramma Scolastico:\n---\n" + programData.content + "\n---" });
+        firstPromptContents = [{ text: firstPromptInstructionText + "\n\nProgramma:\n---\n" + programData.content }];
     } else {
-        displayStatus("Errore: Dati del programma non validi o mancanti.", true);
+        displayStatus("Errore: Dati del programma non validi.", true);
         enableInitialControls(true);
         return;
     }
 
     let analysisText;
     try {
-        const analysisAPIConfig = { // Rinominato per chiarezza
-            temperature: 0.2,
-            maxOutputTokens: 2000
-        };
-        // Utilizzo di genAIInstance.models.generateContent
-        const response = await genAIInstance.models.generateContent({
-            model: NOME_MODELLO_API,
-            contents: firstPromptContents,
-            // L'SDK potrebbe aspettarsi 'generationConfig' o 'config'.
-            // Se 'config' non funziona, prova 'generationConfig: analysisAPIConfig'
-            config: analysisAPIConfig
-        });
-
-        let textFromResponse = "";
-        if (response && typeof response.text === 'string' && response.text.trim()) {
-            textFromResponse = response.text;
-        } else { // Fallback al percorso completo di Gemini se response.text non è disponibile
-            const fullPathText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (typeof fullPathText === 'string' && fullPathText.trim()) {
-                textFromResponse = fullPathText;
-            }
+        const analysisAPIConfig = { temperature: 0.1, maxOutputTokens: 8192 };
+        const result = await genAIInstance.models.generateContent({ model: MODELLO_ANALISI_PRO, contents: firstPromptContents, config: analysisAPIConfig });
+        const response = result;
+        if (!response || !response.candidates || response.candidates.length === 0) {
+            let reason = `La risposta API era vuota. Bloccata per: ${response?.promptFeedback?.blockReason || 'motivo sconosciuto'}.`;
+            throw new Error(`Analisi fallita. ${reason}`);
         }
-
-        if (!textFromResponse) {
-            throw new Error("Risposta API (analisi programma) non contiene testo valido o struttura inattesa.");
+        analysisText = response.candidates[0]?.content?.parts?.[0]?.text || "";
+        if (!analysisText.trim()) {
+            let reason = `La risposta non conteneva testo. Motivo fine: ${response.candidates[0]?.finishReason || 'sconosciuto'}.`;
+            if (response.candidates[0]?.finishReason === 'SAFETY') reason += ` Ratings: ${JSON.stringify(response.candidates[0].safetyRatings)}`;
+            throw new Error(reason);
         }
-        analysisText = textFromResponse;
-        console.log("TESTO ANALISI PROGRAMMA DALL'AI:", analysisText);
     } catch (error) {
-        console.error("Errore API durante l'analisi del programma:", error);
-        displayStatus(`Errore API (Fase 1): ${error.message}.`, true);
+        displayStatus(`Errore API (Fase 1 con Modello Pro): ${error.message}.`, true);
         enableInitialControls(true);
         return;
     }
 
-    const analysisParts = analysisText.split(';');
-    if (!analysisParts || analysisParts.length < 2) {
-        displayStatus(`Errore: Formato risposta analisi non valido (meno di 2 parti attese). Risposta: "${analysisText}"`, true);
+    const analysisParts = analysisText.split(';').map(p => p.trim()).filter(p => p);
+    if (analysisParts.length < 2) {
+        displayStatus(`Errore: Formato risposta analisi non valido: "${analysisText}"`, true);
+        enableInitialControls(true);
+        return;
+    }
+    materia = analysisParts.pop() || "Materia non specificata";
+    const numArgomenti = parseInt(analysisParts.shift(), 10);
+    const argomentiList = analysisParts;
+    if (isNaN(numArgomenti) || argomentiList.length === 0) {
+        displayStatus(`Nessun argomento valido identificato.`, false);
         enableInitialControls(true);
         return;
     }
 
-    materia = analysisParts.pop()?.trim() || "Materia non specificata";
-    console.log("Materia identificata:", materia);
-
-    const numArgomentiStr = analysisParts[0]?.trim();
-    const numArgomenti = parseInt(numArgomentiStr, 10);
-
-    if (isNaN(numArgomenti) || numArgomenti < 0) {
-        displayStatus(`Errore: Numero argomenti non valido ('${numArgomentiStr}'). Risposta: "${analysisText}"`, true);
-        enableInitialControls(true);
-        return;
-    }
-
-    let argomentiList = [];
-    if (numArgomenti > 0) {
-        argomentiList = analysisParts.slice(1).map(arg => arg.trim()).filter(arg => arg.length > 0);
-        if (argomentiList.length === 0) {
-            displayStatus(`Errore: AI indica ${numArgomenti} argomenti, ma 0 estratti correttamente. Risposta: "${analysisText}"`, true);
-            enableInitialControls(true);
-            return;
-        }
-        if (argomentiList.length !== numArgomenti) {
-            console.warn(`Avviso: Argomenti dichiarati (${numArgomenti}) vs estratti (${argomentiList.length}). Si usano gli estratti.`);
-        }
-    } else {
-        displayStatus("Nessun argomento identificato nel programma.", false);
-        enableInitialControls(false); // Nascondi controlli iniziali
-        showResultButtons(false);
-        return;
-    }
-
-    displayStatus(`Fase 1 OK. ${argomentiList.length} argomenti. Generazione riassunti in parallelo...`);
+    displayStatus(`Fase 1 OK. ${argomentiList.length} argomenti trovati. Inizio elaborazione ibrida...`);
     const [prefLunghezza, prefLessico, prefColori, prefCreativita, prefSchematico] = programData.preferences;
 
-    const generatePromises = argomentiList.map(async (argomento, index) => {
-        let lunghezzaDescrittivaPrompt;
-        let requestedMaxTokens;
-
-        switch (prefLunghezza) {
-            case 0:
-                lunghezzaDescrittivaPrompt = "DEVE ESSERE ESTREMAMENTE BREVE E CONCISO. Fornisci solo i 2-3 concetti fondamentali o una definizione sintetica. Non più di 50-100 parole. Pensa a una voce di glossario.";
-                requestedMaxTokens = 64000;
-                break;
-            case 1:
-                lunghezzaDescrittivaPrompt = "DEVE ESSERE BREVE. Copri i punti principali in modo succinto. Circa 150-300 parole, 2-3 paragrafi al massimo.";
-                requestedMaxTokens = 64000;
-                break;
-            case 2:
-                lunghezzaDescrittivaPrompt = "DEVE AVERE UNA LUNGHEZZA NORMALE/STANDARD. Fornisci una buona panoramica, coprendo gli aspetti essenziali. Circa 400-700 parole.";
-                requestedMaxTokens = 64000;
-                break;
-            case 3:
-                lunghezzaDescrittivaPrompt = "DEVE ESSERE DI LUNGHEZZA MEDIA, PIUTTOSTO DETTAGLIATO. Approfondisci i concetti chiave, fornisci alcuni esempi. Circa 800-1500 parole.";
-                requestedMaxTokens = 64000;
-                break;
-            case 4:
-                lunghezzaDescrittivaPrompt = "DEVE ESSERE SIGNIFICATIVAMENTE LUNGO E DETTAGLIATO. Esplora l'argomento con buona profondità, includendo sotto-argomenti, esempi, analisi. Circa 2000-3500 parole.";
-                requestedMaxTokens = 64000;
-                break;
-            case 5:
-                lunghezzaDescrittivaPrompt = "DEVE ESSERE ESTREMAMENTE LUNGO, PROFONDAMENTE DETTAGLIATO ED ESAUSTIVO. Un 'deep dive' completo. Esplora ogni aspetto, sotto-temi, molteplici esempi, contestualizzazione, analisi. Oltre 4000 parole, puntando a un elaborato ricco e completo.";
-                requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 2000;
-                break;
-            default:
-                lunghezzaDescrittivaPrompt = "DEVE AVERE UNA LUNGHEZZA NORMALE/STANDARD.";
-                requestedMaxTokens = 64000;
-        }
-
-        if (requestedMaxTokens >= MODEL_OUTPUT_TOKEN_LIMIT) {
-            requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 100;
-        }
-        if (requestedMaxTokens <= 0) { requestedMaxTokens = 500; }
-
-        const secondPromptText = `Sei un ricercatore esperto e un autore di testi didattici di altissimo livello, specializzato nel rendere argomenti complessi accessibili e interessanti per studenti liceali.
+    // --- LOGICA IBRIDA CORRETTA: CREAZIONE E GESTIONE LOTTI ---
+    const BATCH_SIZE = 3; 
+    const PAUSE_BETWEEN_BATCHES_MS = 5000;
+    const allResults = [];
+    
+    for (let i = 0; i < argomentiList.length; i += BATCH_SIZE) {
+        const batchOfTopics = argomentiList.slice(i, i + BATCH_SIZE);
+        const currentProgress = i + batchOfTopics.length;
+        const totalTopics = argomentiList.length;
+        
+        displayStatus(`Preparazione lotto ${Math.floor(i / BATCH_SIZE) + 1}. Argomenti ${currentProgress}/${totalTopics}...`, false);
+        
+        const batchPromises = batchOfTopics.map((argomento, indexInBatch) => {
+            const globalIndex = i + indexInBatch;
+            
+            let lunghezzaDescrittivaPrompt, requestedMaxTokens;
+            switch (prefLunghezza) {
+                case 0: lunghezzaDescrittivaPrompt = "BREVISSIMO. 50-100 parole."; requestedMaxTokens = 1000; break;
+                case 1: lunghezzaDescrittivaPrompt = "BREVE. 150-300 parole."; requestedMaxTokens = 2000; break;
+                case 2: lunghezzaDescrittivaPrompt = "STANDARD. 400-700 parole."; requestedMaxTokens = 4000; break;
+                case 3: lunghezzaDescrittivaPrompt = "DETTAGLIATO. 800-1500 parole."; requestedMaxTokens = 8000; break;
+                case 4: lunghezzaDescrittivaPrompt = "LUNGO. 2000-3500 parole."; requestedMaxTokens = 16000; break;
+                case 5: lunghezzaDescrittivaPrompt = "ESAUSTIVO. Oltre 4000 parole."; requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 2000; break;
+                default: lunghezzaDescrittivaPrompt = "STANDARD."; requestedMaxTokens = 4000;
+            }
+            if (requestedMaxTokens >= MODEL_OUTPUT_TOKEN_LIMIT) requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 100;
+            const summaryAPIConfig = { temperature: 0.3 + (prefCreativita * 0.1), maxOutputTokens: requestedMaxTokens };
+            const secondPromptText = `Sei un ricercatore esperto e un autore di testi didattici di altissimo livello, specializzato nel rendere argomenti complessi accessibili e interessanti per studenti liceali.
 
 Il tuo compito è produrre un elaborato completo, accurato e approfondito sull'argomento: "${argomento}"
 
@@ -287,80 +228,45 @@ Output Richiesto (HTML):
 *   Il contenuto deve essere accurato e adatto a studenti liceali.
 *   NON includere \`\`\`html o commenti personali/introduttivi.
 `;
-        const secondPromptContents = [{ text: secondPromptText }];
-        const summaryAPIConfig = { // Rinominato per chiarezza
-            temperature: 0.3 + (prefCreativita * 0.1),
-            maxOutputTokens: requestedMaxTokens,
-        };
-        console.log(`Lancio richiesta per "${argomento}" (Index ${index})...`);
-
-        return genAIInstance.models.generateContent({
-            model: NOME_MODELLO_API,
-            contents: secondPromptContents,
-            // Come prima, se 'config' non funziona, prova 'generationConfig: summaryAPIConfig'
-            config: summaryAPIConfig
-        })
-        .then(responseSummary => {
-            let summaryHtml = "";
-            let generatedText = "";
-            if (responseSummary && typeof responseSummary.text === 'string' && responseSummary.text.trim()) {
-                generatedText = responseSummary.text;
-            } else {
-                const fullPathText = responseSummary?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (typeof fullPathText === 'string' && fullPathText.trim()) {
-                    generatedText = fullPathText;
-                }
-            }
-
-            if (generatedText) {
-                summaryHtml = generatedText;
-                console.log(`Riassunto per "${argomento}" (Index ${index}) gen., lunghezza: ${summaryHtml.length} chars.`);
-            } else {
-                console.warn(`Risposta non contiene testo valido per "${argomento}" (Index ${index}).`, responseSummary);
-                summaryHtml = `<p style="color:orange;">Impossibile generare riassunto per "${argomento}". Risposta API non valida.</p>`;
-            }
-            return { index: index, html: summaryHtml, success: true };
-        })
-        .catch(error => {
-            console.error(`Errore API gen. riassunto per "${argomento}" (Index ${index}):`, error);
-            let detailedErrorMessage = error.message || 'Errore sconosciuto';
-            const errorHtml = `<h2 style="color:red;">Errore per ${argomento}</h2><p style="color:orange;">Impossibile generare: ${detailedErrorMessage}</p>`;
-            return { index: index, html: errorHtml, success: false, error: error };
+            
+            return generateSummaryWithRetry(argomento, globalIndex, summaryAPIConfig, secondPromptText);
         });
-    });
 
-    displayStatus(`Generazione in corso per ${generatePromises.length} argomenti. Attendere...`);
-    const results = await Promise.allSettled(generatePromises);
-
-    results.forEach(settledResult => {
-        const itemResult = settledResult.value;
-        const argomentoDiv = document.createElement('div');
-        argomentoDiv.classList.add('argomento-summary');
-        if (itemResult && itemResult.html) {
+        displayStatus(`Elaborazione lotto ${Math.floor(i / BATCH_SIZE) + 1} in corso...`, false);
+        
+        const batchResults = await Promise.all(batchPromises);
+        
+        batchResults.forEach(itemResult => {
+            allResults.push(itemResult);
+            const argomentoDiv = document.createElement('div');
+            argomentoDiv.classList.add('argomento-summary');
             argomentoDiv.innerHTML = itemResult.html;
-        } else {
-            console.error("Risultato promessa inaspettato o malformato:", settledResult);
-            argomentoDiv.innerHTML = `<h2 style="color:red;">Errore di sistema</h2><p style="color:orange;">Impossibile ottenere il risultato per un argomento (${itemResult?.index}).</p>`;
+            resultsContainer.appendChild(argomentoDiv);
+        });
+
+        if (currentProgress < totalTopics) {
+            displayStatus(`Pausa di ${PAUSE_BETWEEN_BATCHES_MS / 1000}s per rispettare i limiti API...`, false);
+            await new Promise(resolve => setTimeout(resolve, PAUSE_BETWEEN_BATCHES_MS));
         }
-        resultsContainer.appendChild(argomentoDiv);
-    });
-
-    displayStatus("Elaborazione completata! Controlla i risultati.", false);
-    enableInitialControls(false); // Nascondi controlli iniziali
-
-    if (resultsContainer && resultsContainer.hasChildNodes()) {
+    }
+    const results = allResults;
+    
+    const successfulCount = results.filter(r => r.success).length;
+    displayStatus(`Elaborazione completata. ${successfulCount}/${results.length} riassunti generati.`, successfulCount === 0);
+    
+    enableInitialControls(false);
+    if (resultsContainer.hasChildNodes()) {
         showResultButtons(true);
     } else {
-        displayStatus("Nessun riassunto generato o errori. Riprova.", true);
         enableInitialControls(true);
         showResultButtons(false);
     }
 }
 
+// --- Event Listener e Inizializzazione (Invariato) ---
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof GoogleGenAI === 'undefined') {
-        console.error("Errore critico: GoogleGenAI non importato.");
-        displayStatus("Errore critico: SDK Google non caricato. Controlla console.", true);
+        displayStatus("Errore critico: SDK Google non caricato.", true);
         const sb = document.getElementById(START_BUTTON_ID); if (sb) sb.disabled = true;
         return;
     }
@@ -371,33 +277,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     const programData = JSON.parse(storedData);
-
     const apiKeyInput = document.getElementById(API_KEY_INPUT_ID);
     const startButton = document.getElementById(START_BUTTON_ID);
 
-    if (!apiKeyInput || !startButton) { // Controlli minimi per partire
-         console.error("Errore: Elementi DOM essenziali (apiKeyInput o startButton) non trovati.");
-         displayStatus("Errore critico: Elementi pagina mancanti.", true);
-         if (startButton) startButton.disabled = true;
-         return;
+    if (!apiKeyInput || !startButton) {
+        displayStatus("Errore critico: Elementi pagina mancanti.", true);
+        if (startButton) startButton.disabled = true;
+        return;
     }
 
-    showResultButtons(false); // Nascondi bottoni di risultato all'inizio
+    showResultButtons(false);
 
     startButton.addEventListener('click', async () => {
         const apiKey = apiKeyInput.value.trim();
-        if (!apiKey) { displayStatus("Inserisci API Key Gemini.", true); return; }
-
+        if (!apiKey) { displayStatus("Inserisci la tua API Key Gemini.", true); return; }
         startButton.disabled = true;
         apiKeyInput.disabled = true;
-        // L'etichetta viene gestita da enableInitialControls(false) alla fine di process...
-
         try {
-            genAIInstance = new GoogleGenAI({ apiKey: apiKey }); // CORRETTO
-            displayStatus("API Key OK. Elaborazione...");
+            genAIInstance = new GoogleGenAI({ apiKey: apiKey });
+            displayStatus("API Key OK. Inizio elaborazione...");
             await processProgramAndGenerateSummaries(programData);
         } catch (error) {
-            console.error("Errore principale (durante inizializzazione AI o chiamata iniziale):", error);
+            console.error("Errore principale:", error);
             displayStatus(`Errore: ${error.message}.`, true);
             enableInitialControls(true);
             showResultButtons(false);
@@ -413,66 +314,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             window.print();
         });
-    } else {
-        console.warn("Pulsante download PDF non trovato.");
     }
 
     const saveToDashboardButton = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
     if (saveToDashboardButton) {
         saveToDashboardButton.addEventListener('click', () => {
-             const rc = document.getElementById(RESULTS_CONTAINER_ID);
-             if (!rc || !rc.hasChildNodes() || rc.innerHTML.trim() === "") {
-                 alert("Niente da salvare."); return;
-             }
+            const rc = document.getElementById(RESULTS_CONTAINER_ID);
+            if (!rc || !rc.hasChildNodes() || rc.innerHTML.trim() === "") {
+                alert("Niente da salvare."); return;
+            }
             salva();
         });
-    } else {
-        console.warn("Pulsante salva su dashboard non trovato.");
     }
 
     async function salva() {
         const Materia_messaggio = materia || "materia non specificata";
-        console.log("Salvataggio riassunto per materia:", Materia_messaggio);
         const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
         const riassunto_html = resultsContainer ? resultsContainer.innerHTML : "";
-
-        if (!riassunto_html.trim()) {
-            alert("Nessun contenuto da salvare.");
-            return;
-        }
-
+        if (!riassunto_html.trim()) { alert("Nessun contenuto da salvare."); return; }
         const downloadBtn = document.getElementById(DOWNLOAD_PDF_BUTTON_ID);
         const saveToDashboardBtn = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
         if (downloadBtn) downloadBtn.disabled = true;
         if (saveToDashboardBtn) saveToDashboardBtn.disabled = true;
-
         try {
             const risposta = await fetch("salvataggio.php", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    contenuto: riassunto_html,
-                    materia: Materia_messaggio
-                })
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contenuto: riassunto_html, materia: Materia_messaggio })
             });
-
             const esito = await risposta.json();
-            console.log("Risposta da salvataggio.php:", esito);
-
             if (esito && esito.success) {
-                 alert("Riassunto salvato con successo!");
+                alert("Riassunto salvato con successo!");
             } else {
-                 alert("Errore durante il salvataggio: " + (esito.error || JSON.stringify(esito)));
+                alert("Errore durante il salvataggio: " + (esito.error || JSON.stringify(esito)));
             }
         } catch (error) {
-            console.error("Errore nella chiamata fetch per il salvataggio:", error);
-             alert("Errore tecnico durante il salvataggio: " + error.message);
+            alert("Errore tecnico durante il salvataggio: " + error.message);
         } finally {
-             if (downloadBtn) downloadBtn.disabled = false;
-             if (saveToDashboardBtn) saveToDashboardBtn.disabled = false;
+            if (downloadBtn) downloadBtn.disabled = false;
+            if (saveToDashboardBtn) saveToDashboardBtn.disabled = false;
         }
     }
 });
-
