@@ -1,92 +1,75 @@
-// --- START OF FILE continua.js (VERSAZIONE ADATTATA PER I QUADERNI MODERNI) ---
-fetch("materia.php")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Errore HTTP: ${response.status}`);
+import { db, auth } from '../firebase-init.js';
+import { collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+const contenitore = document.querySelector(".paginazione"); // Assicurati che esista nel tuo HTML statico
+
+if (!contenitore) {
+    console.error("ERRORE CRITICO: Elemento '.paginazione' non trovato nel DOM.");
+    // Potresti voler mostrare un messaggio di errore all'utente qui
+    // Esempio: document.body.innerHTML = "<p>Errore nel caricamento della pagina. Contenitore non trovato.</p>";
+    
+}
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Se c'è un utente, carichiamo i suoi riassunti
+        caricaRiassuntiUtente(user.uid);
+    } else {
+        // Altrimenti, mostriamo un messaggio (anche se la guardia principale dovrebbe già averlo reindirizzato)
+        contenitore.innerHTML = '<p class="errore-caricamento">Devi essere loggato per vedere questa pagina.</p>';
+    }
+});
+
+
+
+async function caricaRiassuntiUtente(idUtente) {
+    contenitore.innerHTML = '<p style="color:white">Sto cercando i tuoi quaderni...</p>'; // Messaggio di attesa
+
+    try {
+        // Creiamo la nostra richiesta specifica (query) per Firestore
+        const q = query(
+            collection(db, "riassunti"),       // Cerca nella collezione "riassunti"
+            where("id_utente", "==", idUtente), // DOVE il campo "id_utente" è UGUALE all'ID dell'utente loggato
+            orderBy("dataC", "desc")         // E ordina i risultati dal più nuovo al più vecchio (basato sul campo dataC)
+        );
+
+        // Eseguiamo la richiesta
+        const querySnapshot = await getDocs(q);
+
+        // Puliamo il contenitore dal messaggio di attesa
+        contenitore.innerHTML = '';
+
+        if (querySnapshot.empty) {
+            contenitore.innerHTML = '<p class="nessuna-materia">La tua bacheca è vuota! 😢<br>Crea il tuo primo riassunto.</p>';
+            
         }
-        return response.json();
-    })
-    .then(risultato_vero => {
-        const contenitore = document.querySelector(".paginazione"); // Assicurati che esista nel tuo HTML statico
 
-        if (!contenitore) {
-            console.error("ERRORE CRITICO: Elemento '.paginazione' non trovato nel DOM.");
-            // Potresti voler mostrare un messaggio di errore all'utente qui
-            // Esempio: document.body.innerHTML = "<p>Errore nel caricamento della pagina. Contenitore non trovato.</p>";
-            return;
-        }
-
-        if (risultato_vero.errore) {
-            // Gestisci l'errore specifico dell'applicazione (es. utente non loggato)
-            alert("Devi accedere per vedere la tua lista di riassunti");
-            window.location.href = "../login/login.html"; // Assicurati che questo percorso sia corretto
-            return;
-        }
-        
-        contenitore.innerHTML = ''; // Pulisce il contenitore prima di aggiungere nuovi elementi
-
-        const numero_quaderni = risultato_vero.conta;
-        const riassunti = risultato_vero.riassunto;
-
-        if (!riassunti || numero_quaderni === 0) {
-            contenitore.innerHTML = '<p class="nessuna-materia">Nessuna materia salvata nella tua bacheca.</p>';
-            console.log("Nessun riassunto da visualizzare.");
-            return;
-        }
-
-        console.log("Numero quaderni da creare:", numero_quaderni);
-        console.log("Dati riassunti:", riassunti);
-
-        for (let i = 0; i < numero_quaderni; i++) {
-            if (!riassunti[i]) {
-                console.warn(`Attenzione: riassunto all'indice ${i} non definito.`);
-                continue; // Salta questo riassunto se i dati sono mancanti
-            }
-
-            const idRiassunto = riassunti[i].id_riassunto;
-            const nomeMateria = riassunti[i].materia;
-
-            if (idRiassunto === undefined || nomeMateria === undefined) {
-                console.warn(`Attenzione: Dati mancanti per il riassunto all'indice ${i}. ID: ${idRiassunto}, Materia: ${nomeMateria}`);
-                continue;
-            }
+        // Per ogni documento trovato, creiamo la grafica del quaderno
+        querySnapshot.forEach((doc) => {
+            const riassunto = doc.data();
+            const idRiassunto = doc.id; // L'ID del documento, non dell'utente
+            const nomeMateria = riassunto.materia;
 
             const quaderno = document.createElement("div");
             quaderno.classList.add("quaderno");
-            
-            // Creazione dinamica degli anelli della spirale
+
             let anelliSpiraleHTML = '';
-            for (let s = 0; s < 6; s++) { // Crea 6 anelli come da esempio
-                anelliSpiraleHTML += '<div></div>';
-            }
+            for (let s = 0; s < 6; s++) { anelliSpiraleHTML += '<div></div>'; }
 
             quaderno.innerHTML = `
                 <div class="id" style="display:none;">${idRiassunto}</div>
-                <div class="copertina">
-                    <p class="materia">${nomeMateria}</p>
-                </div>
-                <div class="spirale">
-                    ${anelliSpiraleHTML}
-                </div>
+                <div class="copertina"><p class="materia">${nomeMateria}</p></div>
+                <div class="spirale">${anelliSpiraleHTML}</div>
             `;
-            
-            quaderno.addEventListener("click", function () {
-                const id = this.querySelector(".id").textContent.trim();
-                // Assicurati che il percorso visualizza/visualizza.html sia corretto
-                // relativo alla pagina corrente (continua.html)
-                window.location.href = `visualizza/visualizza.html?id=${id}`; 
+
+            quaderno.addEventListener("click", () => {
+                window.location.href = `visualizza/visualizza.html?id=${idRiassunto}`;
             });
             contenitore.appendChild(quaderno);
-        }
-    })
-    .catch(error => {
-        console.error("Errore durante il fetch dei riassunti o elaborazione:", error);
-        const contenitore = document.querySelector(".paginazione");
-        if (contenitore) {
-            contenitore.innerHTML = `<p class="errore-caricamento">Impossibile caricare i riassunti. Errore: ${error.message}. Riprova più tardi.</p>`;
-        } else {
-            // Fallback se anche il contenitore non esiste
-            document.body.innerHTML = `<p>Errore grave nel caricamento della pagina: ${error.message}.</p>`;
-        }
-    });
-// --- END OF FILE continua.js ---
+        });
+
+    } catch (error) {
+        console.error("Errore nel caricare i riassunti:", error);
+        contenitore.innerHTML = `<p class="errore-caricamento">Ops! C'è stato un problema nel recuperare i tuoi dati.</p>`;
+    }
+}

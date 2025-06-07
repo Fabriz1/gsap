@@ -80,10 +80,10 @@ body {
 /* === GRIGLIA QUADERNI (PAGINAZIONE) === */
 .paginazione {
     display: grid;
-    /* Responsive grid: min 150px (mobile), max 1fr.
-       Questo favorisce 2 colonne su mobile e più su desktop. */
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
-    gap: 1.5rem; /* Gap consistente */
+    /* Responsive grid: le colonne saranno tra 180px e 220px */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+    gap: 1.5rem; /* O il valore che preferisci */
+    justify-content: center; /* Centra la griglia di quaderni */
 }
 
 /* === QUADERNO STILIZZATO === */
@@ -196,7 +196,7 @@ body {
 @media (min-width: 600px) { /* Quando c'è più spazio, più colonne */
     .paginazione {
         /* min 180px, permette più colonne su tablet/desktop piccoli */
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
         gap: 1.75rem;
     }
      .materia {
@@ -207,7 +207,7 @@ body {
 @media (min-width: 992px) { /* Desktop */
     .paginazione {
         /* min 200px, per layout desktop più ariosi */
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 240px));
         gap: 2rem;
     }
     .materia {

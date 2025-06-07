@@ -1,7 +1,8 @@
 // ========= logica.js (VERSIONE FINALE con Vera Logica a Lotti) =========
 
 import { GoogleGenAI } from "https://esm.run/@google/genai";
-
+import { db, auth } from '../firebase-init.js';
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
 // --- Sezione Controlli UI (Invariata) ---
 const video_effettivo = document.getElementById('video_effettivo');
 document.querySelector(".domanda").addEventListener("click", function () {
@@ -127,7 +128,7 @@ L'output deve essere una SINGOLA STRINGA DI TESTO, senza introduzioni, commenti 
 \`NumeroTotaleArgomenti;Argomento1 (Contesto1);Argomento2 (Contesto2);...;ArgomentoN (ContestoN);MateriaPrincipale\`
 **ESEMPIO PRATICO DI OUTPUT ATTESO:**
 \`152;La belle époque: definizione e caratteristiche (da Storia - Unità 1);Il concetto di Fair Play: rispetto, lealtà, integrazione (da Scienze Motorie - AREA TEORICA);Derivata di una funzione (da Matematica - DERIVATE);Comprendere il modello client-server (da Tecnologie - FASE/UdA: Architettura di rete);...;Il Neorealismo (da Italiano);Italiano\``;
-    
+
     let firstPromptContents = [];
     if (programData.sourceType === 'file' && programData.isBase64) {
         firstPromptContents = [{ text: firstPromptInstructionText }, { inlineData: { mimeType: programData.mimeType, data: programData.content } }];
@@ -141,7 +142,7 @@ L'output deve essere una SINGOLA STRINGA DI TESTO, senza introduzioni, commenti 
 
     let analysisText;
     try {
-        const analysisAPIConfig = { temperature: 0.1, maxOutputTokens: 8192 };
+        const analysisAPIConfig = { temperature: 0.1, maxOutputTokens: 30000 };
         const result = await genAIInstance.models.generateContent({ model: MODELLO_ANALISI_PRO, contents: firstPromptContents, config: analysisAPIConfig });
         const response = result;
         if (!response || !response.candidates || response.candidates.length === 0) {
@@ -179,32 +180,32 @@ L'output deve essere una SINGOLA STRINGA DI TESTO, senza introduzioni, commenti 
     const [prefLunghezza, prefLessico, prefColori, prefCreativita, prefSchematico] = programData.preferences;
 
     // --- LOGICA IBRIDA CORRETTA: CREAZIONE E GESTIONE LOTTI ---
-    const BATCH_SIZE = 3; 
+    const BATCH_SIZE = 3;
     const PAUSE_BETWEEN_BATCHES_MS = 5000;
     const allResults = [];
-    
+
     for (let i = 0; i < argomentiList.length; i += BATCH_SIZE) {
         const batchOfTopics = argomentiList.slice(i, i + BATCH_SIZE);
         const currentProgress = i + batchOfTopics.length;
         const totalTopics = argomentiList.length;
-        
+
         displayStatus(`Preparazione lotto ${Math.floor(i / BATCH_SIZE) + 1}. Argomenti ${currentProgress}/${totalTopics}...`, false);
-        
+
         const batchPromises = batchOfTopics.map((argomento, indexInBatch) => {
             const globalIndex = i + indexInBatch;
-            
+
             let lunghezzaDescrittivaPrompt, requestedMaxTokens;
             switch (prefLunghezza) {
-                case 0: lunghezzaDescrittivaPrompt = "BREVISSIMO. 50-100 parole."; requestedMaxTokens = 1000; break;
-                case 1: lunghezzaDescrittivaPrompt = "BREVE. 150-300 parole."; requestedMaxTokens = 2000; break;
-                case 2: lunghezzaDescrittivaPrompt = "STANDARD. 400-700 parole."; requestedMaxTokens = 4000; break;
-                case 3: lunghezzaDescrittivaPrompt = "DETTAGLIATO. 800-1500 parole."; requestedMaxTokens = 8000; break;
-                case 4: lunghezzaDescrittivaPrompt = "LUNGO. 2000-3500 parole."; requestedMaxTokens = 16000; break;
-                case 5: lunghezzaDescrittivaPrompt = "ESAUSTIVO. Oltre 4000 parole."; requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 2000; break;
-                default: lunghezzaDescrittivaPrompt = "STANDARD."; requestedMaxTokens = 4000;
+                case 0: lunghezzaDescrittivaPrompt = "BREVISSIMO devi scrivere prorpio due informazioni. 50 circa parole."; requestedMaxTokens = 60000; break;
+                case 1: lunghezzaDescrittivaPrompt = "BREVE i conmcetti principali circa 100 parole."; requestedMaxTokens = 60000; break;
+                case 2: lunghezzaDescrittivaPrompt = "STANDARD. 200 parole."; requestedMaxTokens = 60000; break;
+                case 3: lunghezzaDescrittivaPrompt = "DETTAGLIATO. 400 parole."; requestedMaxTokens = 60000; break;
+                case 4: lunghezzaDescrittivaPrompt = "LUNGO. 700 parole."; requestedMaxTokens = 60000; break;
+                case 5: lunghezzaDescrittivaPrompt = "ESAUSTIVO. 1000."; requestedMaxTokens = 60000; break;
+                default: lunghezzaDescrittivaPrompt = "STANDARD."; requestedMaxTokens = 60000;
             }
             if (requestedMaxTokens >= MODEL_OUTPUT_TOKEN_LIMIT) requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 100;
-            const summaryAPIConfig = { temperature: 0.3 + (prefCreativita * 0.1), maxOutputTokens: requestedMaxTokens };
+            const summaryAPIConfig = { temperature: 0.3 + (prefCreativita * 0.1), maxOutputTokens: 64000 };
             const secondPromptText = `Sei un ricercatore esperto e un autore di testi didattici di altissimo livello, specializzato nel rendere argomenti complessi accessibili e interessanti per studenti liceali.
 
 Il tuo compito è produrre un elaborato completo, accurato e approfondito sull'argomento: "${argomento}"
@@ -228,14 +229,14 @@ Output Richiesto (HTML):
 *   Il contenuto deve essere accurato e adatto a studenti liceali.
 *   NON includere \`\`\`html o commenti personali/introduttivi.
 `;
-            
+
             return generateSummaryWithRetry(argomento, globalIndex, summaryAPIConfig, secondPromptText);
         });
 
         displayStatus(`Elaborazione lotto ${Math.floor(i / BATCH_SIZE) + 1} in corso...`, false);
-        
+
         const batchResults = await Promise.all(batchPromises);
-        
+
         batchResults.forEach(itemResult => {
             allResults.push(itemResult);
             const argomentoDiv = document.createElement('div');
@@ -250,10 +251,10 @@ Output Richiesto (HTML):
         }
     }
     const results = allResults;
-    
+
     const successfulCount = results.filter(r => r.success).length;
     displayStatus(`Elaborazione completata. ${successfulCount}/${results.length} riassunti generati.`, successfulCount === 0);
-    
+
     enableInitialControls(false);
     if (resultsContainer.hasChildNodes()) {
         showResultButtons(true);
@@ -326,33 +327,99 @@ document.addEventListener('DOMContentLoaded', () => {
             salva();
         });
     }
-
-    async function salva() {
-        const Materia_messaggio = materia || "materia non specificata";
-        const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
-        const riassunto_html = resultsContainer ? resultsContainer.innerHTML : "";
-        if (!riassunto_html.trim()) { alert("Nessun contenuto da salvare."); return; }
-        const downloadBtn = document.getElementById(DOWNLOAD_PDF_BUTTON_ID);
-        const saveToDashboardBtn = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
-        if (downloadBtn) downloadBtn.disabled = true;
-        if (saveToDashboardBtn) saveToDashboardBtn.disabled = true;
-        try {
-            const risposta = await fetch("salvataggio.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contenuto: riassunto_html, materia: Materia_messaggio })
-            });
-            const esito = await risposta.json();
-            if (esito && esito.success) {
-                alert("Riassunto salvato con successo!");
-            } else {
-                alert("Errore durante il salvataggio: " + (esito.error || JSON.stringify(esito)));
+    /*
+        async function salva() {
+            const Materia_messaggio = materia || "materia non specificata";
+            const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
+            const riassunto_html = resultsContainer ? resultsContainer.innerHTML : "";
+            if (!riassunto_html.trim()) { alert("Nessun contenuto da salvare."); return; }
+            const downloadBtn = document.getElementById(DOWNLOAD_PDF_BUTTON_ID);
+            const saveToDashboardBtn = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
+            if (downloadBtn) downloadBtn.disabled = true;
+            if (saveToDashboardBtn) saveToDashboardBtn.disabled = true;
+            try {
+                const risposta = await fetch("salvataggio.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contenuto: riassunto_html, materia: Materia_messaggio })
+                });
+                const esito = await risposta.json();
+                if (esito && esito.success) {
+                    alert("Riassunto salvato con successo!");
+                } else {
+                    alert("Errore durante il salvataggio: " + (esito.error || JSON.stringify(esito)));
+                }
+            } catch (error) {
+                alert("Errore tecnico durante il salvataggio: " + error.message);
+            } finally {
+                if (downloadBtn) downloadBtn.disabled = false;
+                if (saveToDashboardBtn) saveToDashboardBtn.disabled = false;
             }
-        } catch (error) {
-            alert("Errore tecnico durante il salvataggio: " + error.message);
-        } finally {
-            if (downloadBtn) downloadBtn.disabled = false;
-            if (saveToDashboardBtn) saveToDashboardBtn.disabled = false;
+        }*/
+    // Importa questo in cima al tuo file logica.js se non l'hai già fatto
+
+
+// ...
+
+async function salva() {
+    // Elementi UI
+    const saveToDashboardBtn = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
+
+    // 1. CONTROLLO DI SICUREZZA: L'utente è loggato?
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+        alert("Errore: Utente non trovato. Per favore, effettua di nuovo il login per salvare.");
+        return;
+    }
+
+    // Disabilita il bottone per prevenire doppi click
+    if (saveToDashboardBtn) {
+        saveToDashboardBtn.disabled = true;
+        saveToDashboardBtn.textContent = "Salvataggio..."; // Feedback visivo
+    }
+
+    // 2. PREPARAZIONE DEI DATI
+    const Materia_messaggio = materia || "materia non specificata";
+    const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
+    const riassunto_html = resultsContainer ? resultsContainer.innerHTML : "";
+
+    if (!riassunto_html.trim()) {
+        alert("Nessun contenuto da salvare.");
+        if (saveToDashboardBtn) { // Riattiva il bottone se non c'è niente da salvare
+            saveToDashboardBtn.disabled = false;
+            saveToDashboardBtn.textContent = "Salva il riassunto nella tua bacheca";
+        }
+        return;
+    }
+
+    // 3. CREAZIONE DELL'OGGETTO PER FIRESTORE
+    // (Ho usato i tuoi nomi di campo, vanno benissimo!)
+    const datiFire = {
+        id_utente: currentUser.uid,
+        materia: Materia_messaggio,
+        contenuto: riassunto_html,
+        dataC: serverTimestamp()
+    };
+
+    // 4. BLOCCO TRY...CATCH...FINALLY per il salvataggio
+    try {
+        // Eseguiamo il salvataggio
+        await addDoc(collection(db, "riassunti"), datiFire);
+
+        // Se siamo qui, il salvataggio è andato a buon fine!
+        alert("Riassunto salvato con successo nella tua bacheca! 🎉");
+
+    } catch (error) {
+        // Se c'è un errore, lo comunichiamo
+        console.error("Errore durante il salvataggio:", error);
+        alert("Errore tecnico durante il salvataggio: " + error.message);
+    } finally {
+        // QUESTA PARTE VIENE ESEGUITA SEMPRE, sia in caso di successo che di errore.
+        // È il posto perfetto per riattivare il bottone.
+        if (saveToDashboardBtn) {
+            saveToDashboardBtn.disabled = false;
+            saveToDashboardBtn.textContent = "Salva il riassunto nella tua bacheca";
         }
     }
+}
 });
