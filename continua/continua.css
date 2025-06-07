@@ -10,32 +10,33 @@
 }
 
 :root {
-    --colore-sfondo: #171A1F; /* Un blu-grigio molto scuro */
-    --colore-quaderno: #22272E; /* Superficie leggermente più chiara per il quaderno */
-    --colore-copertina: #2D333B; /* Colore per la "copertina" stilizzata */
-    --colore-bordo-quaderno: #3E444D;
-    --colore-spirale: #6E7681; /* Spirale più discreta */
-    --colore-testo-primario: #CDD5DF;
-    --colore-testo-secondario: #9DA5B0;
-    --colore-accento: #539BF5; /* Un blu più vivace per accenti */
-    --colore-accento-hover: #6AA6F7;
+    /* Palette moderna basata sull'immagine */
+    --colore-sfondo: #000000;
+    --colore-quaderno: #121212;
+    --colore-copertina: #1E1E1E;
+    --colore-bordo-quaderno: #2A2A2A;
+    --colore-spirale: #5A5A5A;
+    --colore-testo-primario: #F5F5F5;
+    --colore-testo-secondario: #8A8A8A;
+    --colore-accento: #0D69FF;
+    --colore-accento-hover: #3B82F6;
 
     --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-titolo-pagina: 'font_titolo_cel', var(--font-ui);
 
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
 
-    --shadow-quaderno: 0 4px 10px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.15);
-    --shadow-quaderno-hover: 0 8px 20px rgba(0,0,0,0.25), 0 3px 7px rgba(0,0,0,0.2);
+    --shadow-quaderno: 0 6px 20px rgba(0,0,0,0.3);
+    --shadow-quaderno-hover: 0 10px 30px rgba(0,0,0,0.4);
 
     --transition-speed: 0.25s;
 }
 
 @font-face {
     font-family: 'font_titolo_cel';
-    src: url('../fonts/CelsiusFlower.otf'); /* AGGIORNA QUESTO PERCORSO! */
+    src: url('../fonts/CelsiusFlower.otf');
     font-display: swap;
 }
 
@@ -51,21 +52,20 @@ body {
     background-color: var(--colore-sfondo);
     line-height: 1.6;
     min-height: 100vh;
-    padding-bottom: 3rem;
+    padding: 0 1rem 3rem 1rem;
 }
 
 /* === HEADER & PAGE TITLE === */
 .page-header {
-    padding: 2.5rem 1rem 2rem; /* Ridotto leggermente il padding top */
+    padding: 3rem 0;
     text-align: center;
-    /* border-bottom: 1px solid var(--colore-bordo-quaderno); Rimosso bordo per un look più pulito */
     margin-bottom: 2rem;
 }
 
 .titolo-pagina {
     font-family: var(--font-titolo-pagina);
-    font-size: clamp(2rem, 4.5vw + 0.5rem, 3.2rem);
-    color: var(--colore-accento);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    color: var(--colore-testo-primario);
     font-weight: 600;
     letter-spacing: 0.5px;
 }
@@ -74,16 +74,16 @@ body {
 .contenitore-principale {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1rem;
 }
 
-/* === GRIGLIA QUADERNI (PAGINAZIONE) === */
+/* === GRIGLIA QUADERNI (CON FIX PER ELEMENTO SINGOLO) === */
 .paginazione {
     display: grid;
-    /* Responsive grid: le colonne saranno tra 180px e 220px */
+    /* CHIAVE DELLA SOLUZIONE 1: Le colonne non possono crescere all'infinito (non c'è '1fr') */
     grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
-    gap: 1.5rem; /* O il valore che preferisci */
-    justify-content: center; /* Centra la griglia di quaderni */
+    gap: 1.5rem;
+    /* CHIAVE DELLA SOLUZIONE 2: Centra l'intera griglia di elementi */
+    justify-content: center;
 }
 
 /* === QUADERNO STILIZZATO === */
@@ -92,69 +92,63 @@ body {
     background-color: var(--colore-quaderno);
     border-radius: var(--radius-md);
     border: 1px solid var(--colore-bordo-quaderno);
-    padding: 0.75rem; /* Padding interno generale */
-    padding-left: 1.5rem; /* Più spazio a sx per la "spirale" */
-    aspect-ratio: 2 / 2.8; /* Proporzioni simili a un quaderno, leggermente più slanciato */
+    padding: 0.75rem;
+    padding-left: 1.5rem;
+    aspect-ratio: 2 / 2.8;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra la copertina */
-    justify-content: flex-start; /* Allinea la copertina in alto */
+    align-items: center;
+    justify-content: flex-start;
     cursor: pointer;
     transition: transform var(--transition-speed) ease,
                 box-shadow var(--transition-speed) ease;
     box-shadow: var(--shadow-quaderno);
-    overflow: hidden; /* Per contenere elementi interni */
+    overflow: hidden;
 }
 
 .quaderno:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-quaderno-hover);
 }
 
 /* === "COPERTINA" STILIZZATA === */
 .copertina {
     width: 100%;
-    height: auto; /* L'altezza sarà determinata dal contenuto, padding e font size */
-    min-height: 60px; /* Altezza minima per la copertina */
+    min-height: 50px;
     background-color: var(--colore-copertina);
     border-radius: var(--radius-sm);
-    padding: 0.8rem 0.6rem; /* Padding interno per il testo */
+    padding: 0.6rem;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-top: 0.5rem; /* Spazio dall'alto del quaderno */
-    overflow: hidden; /* Per gestire l'overflow del testo */
+    margin-top: 0.5rem;
+    border: 1px solid #333;
 }
 
 /* === TESTO MATERIA === */
 .materia {
     font-family: var(--font-ui);
-    font-weight: 600; /* Testo più marcato */
-    font-size: clamp(0.8rem, 2.8vw, 1rem); /* Responsive font-size per la materia */
+    font-weight: 600;
+    font-size: 0.9rem;
     color: var(--colore-testo-primario);
     line-height: 1.3;
     width: 100%;
     
-    /* Gestione multi-line ellipsis */
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3; /* Limita a 3 righe, aggiusta per mobile */
+    -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* Un'altezza massima teorica per aiutare il line-clamp. */
-    /* Potrebbe essere necessario regolarla in base al font-size e line-height effettivi */
-    max-height: calc(1em * 1.3 * 3 + 0.2em); /* font-size * line-height * num_lines + piccolo buffer */
 }
 
 /* === "SPIRALE" STILIZZATA === */
 .spirale {
     position: absolute;
-    left: 0.6rem; /* Spostata leggermente dentro il padding */
+    left: 0.6rem;
     top: 50%;
-    transform: translateY(-50%); /* Centrata verticalmente */
-    height: 75%; /* Più corta e centrata */
+    transform: translateY(-50%);
+    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -162,84 +156,39 @@ body {
 }
 
 .spirale div {
-    width: 5px; /* Anelli più sottili */
-    height: 5px;
+    width: 4px;
+    height: 4px;
     background-color: var(--colore-spirale);
     border-radius: 50%;
-    margin: 2px 0; /* Spazio tra gli anelli */
-    opacity: 0.8;
 }
 
-/* ID non visibile */
+/* === ID non visibile === */
 .id {
     display: none !important;
 }
 
 /* === MESSAGGI DI STATO === */
-.nessuna-materia, .errore-caricamento { /* Stili per quando non ci sono quaderni */
+.nessuna-materia, .errore-caricamento {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 2rem 1rem;
-    font-size: 1.05rem;
+    padding: 3rem 1rem;
+    font-size: 1.1rem;
     color: var(--colore-testo-secondario);
-    background-color: var(--colore-quaderno); /* Sfondo coerente */
     border: 1px dashed var(--colore-bordo-quaderno);
     border-radius: var(--radius-md);
 }
 .errore-caricamento {
-    color: var(--colore-accento); /* Usa accento per errori, o un rosso se preferisci */
+    color: var(--colore-accento);
     border-color: var(--colore-accento);
 }
 
-/* === RESPONSIVE ADJUSTMENTS === */
-
-@media (min-width: 600px) { /* Quando c'è più spazio, più colonne */
+/* === RESPONSIVE ADJUSTMENTS PER SCHERMI PIÙ GRANDI === */
+@media (min-width: 992px) {
     .paginazione {
-        /* min 180px, permette più colonne su tablet/desktop piccoli */
-        grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
-        gap: 1.75rem;
-    }
-     .materia {
-        -webkit-line-clamp: 3;
-    }
-}
-
-@media (min-width: 992px) { /* Desktop */
-    .paginazione {
-        /* min 200px, per layout desktop più ariosi */
         grid-template-columns: repeat(auto-fit, minmax(200px, 240px));
         gap: 2rem;
     }
-    .materia {
-        font-size: clamp(0.9rem, 1.5vw, 1.1rem); /* Leggermente più grande su desktop */
-         -webkit-line-clamp: 3;
-    }
-}
-
-/* Nessuna media query specifica per mobile perché la base è già pensata per mobile-first
-   con grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
-   Questo dovrebbe dare 2 colonne sulla maggior parte dei telefoni.
-   Se vuoi una singola colonna su telefoni molto piccoli (es. < 380px), puoi aggiungere:
-*/
-@media (max-width: 380px) {
-    .paginazione {
-        grid-template-columns: 1fr; /* Forza una singola colonna */
-        gap: 1.25rem;
-    }
-    .quaderno {
-        padding: 0.6rem;
-        padding-left: 1.25rem;
-        aspect-ratio: 2 / 2.6; /* Leggermente meno alto se in singola colonna */
-    }
-    .materia {
-        font-size: clamp(0.75rem, 3.5vw, 0.9rem);
-        -webkit-line-clamp: 4; /* Più spazio per il testo in singola colonna */
-    }
-    .spirale {
-        left: 0.4rem;
-    }
-    .spirale div {
-        width: 4px;
-        height: 4px;
+     .materia {
+        font-size: 1rem;
     }
 }

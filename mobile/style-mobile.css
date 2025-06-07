@@ -14,7 +14,7 @@ html::-webkit-scrollbar {
 
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #0A0A0A;
+    background-color: #000000;
     color: #EAEAEA;
     margin: 0;
     padding: 0;
@@ -23,7 +23,7 @@ body {
     /* justify-content: center; */
     /* align-items: center; */
     overflow: hidden;
-    background: linear-gradient(135deg, #000000 0%, #0c0811 50%, #181818 100%);
+    
     background-size: 400% 400%;
     animation: gradientBackgroundMobile 20s ease infinite alternate;
 }
@@ -72,11 +72,13 @@ body {
     font-family: 'font_titolo_mobile', sans-serif;
     position: fixed; /* Fisso rispetto alla viewport */
     top: 22px;    /* Posizione finale Y */
-    left: 20px;   /* Posizione finale X */
-    font-size: clamp(1.6em, 6vw, 2.1em); /* Dimensione finale */
+    left: 50%;    /* Posizione finale X */
+    transform: translateX(-50%);
+    font-size: clamp(1.6em, 8vw, 2.1em); /* Dimensione finale */
     color: #FFFFFF;
     margin: 0;
     line-height: 1.1;
+    
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
     z-index: 10; /* Sopra il main content */
     pointer-events: auto; /* Permette interazioni se necessario */
@@ -112,14 +114,14 @@ body {
 }
 
 .mobile-action-card {
-    background-color: rgba(20, 20, 30, 0.6);
-    border: 1px solid rgba(100, 80, 130, 0.5);
+    background-color: #1376b84b;
+    border: 1px solid rgba(80, 114, 130, 0.5);
     border-radius: 12px;
     padding: 20px 15px;
     text-align: center;
     cursor: pointer;
     transition: transform 0.25s ease-out, background-color 0.25s ease-out, box-shadow 0.25s ease-out;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(65, 95, 112, 0.596);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,8 +133,9 @@ body {
 
 .mobile-action-card:hover, .mobile-action-card:active {
     transform: translateY(-3px) scale(1.02);
-    background-color: rgba(30, 20, 50, 0.7);
-    box-shadow: 0 6px 20px rgba(100, 80, 130, 0.3);
+    background-color: #0a43ffad;
+    box-shadow: 0 6px 30px rgba(69, 77, 194, 0.692);
+    
 }
 
 .mobile-action-card h2 {
@@ -152,5 +155,7 @@ body {
     line-height: 1.6;
     max-width: 90%;
     opacity: 0;
+    font-family: 'font_titolo_mobile', sans-serif;
+
     transform: translateY(10px);
 }

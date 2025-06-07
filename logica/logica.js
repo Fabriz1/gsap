@@ -127,7 +127,8 @@ Un "argomento" è la più piccola unità di conoscenza discreta elencata nel doc
 L'output deve essere una SINGOLA STRINGA DI TESTO, senza introduzioni, commenti o markdown. La struttura è la seguente:
 \`NumeroTotaleArgomenti;Argomento1 (Contesto1);Argomento2 (Contesto2);...;ArgomentoN (ContestoN);MateriaPrincipale\`
 **ESEMPIO PRATICO DI OUTPUT ATTESO:**
-\`152;La belle époque: definizione e caratteristiche (da Storia - Unità 1);Il concetto di Fair Play: rispetto, lealtà, integrazione (da Scienze Motorie - AREA TEORICA);Derivata di una funzione (da Matematica - DERIVATE);Comprendere il modello client-server (da Tecnologie - FASE/UdA: Architettura di rete);...;Il Neorealismo (da Italiano);Italiano\``;
+\`152;La belle époque: definizione e caratteristiche (da Storia - Unità 1);Il concetto di Fair Play: rispetto, lealtà, integrazione (da Scienze Motorie - AREA TEORICA);Derivata di una funzione (da Matematica - DERIVATE);Comprendere il modello client-server (da Tecnologie - FASE/UdA: Architettura di rete);...;Il Neorealismo (da Italiano);Italiano\`
+Sappi che questra stringa verrà passata ad un file javascript e verra utilizzata per creare tanti riassunti quanti sono gli argomenti, sii preciso`;
 
     let firstPromptContents = [];
     if (programData.sourceType === 'file' && programData.isBase64) {
@@ -199,9 +200,9 @@ L'output deve essere una SINGOLA STRINGA DI TESTO, senza introduzioni, commenti 
                 case 0: lunghezzaDescrittivaPrompt = "BREVISSIMO devi scrivere prorpio due informazioni. 50 circa parole."; requestedMaxTokens = 60000; break;
                 case 1: lunghezzaDescrittivaPrompt = "BREVE i conmcetti principali circa 100 parole."; requestedMaxTokens = 60000; break;
                 case 2: lunghezzaDescrittivaPrompt = "STANDARD. 200 parole."; requestedMaxTokens = 60000; break;
-                case 3: lunghezzaDescrittivaPrompt = "DETTAGLIATO. 400 parole."; requestedMaxTokens = 60000; break;
-                case 4: lunghezzaDescrittivaPrompt = "LUNGO. 700 parole."; requestedMaxTokens = 60000; break;
-                case 5: lunghezzaDescrittivaPrompt = "ESAUSTIVO. 1000."; requestedMaxTokens = 60000; break;
+                case 3: lunghezzaDescrittivaPrompt = "DETTAGLIATO. scrivi abbastanza ma non troppo circa 400 parole."; requestedMaxTokens = 60000; break;
+                case 4: lunghezzaDescrittivaPrompt = "LUNGO. approfondisci senza esagerare circa 700 parole."; requestedMaxTokens = 60000; break;
+                case 5: lunghezzaDescrittivaPrompt = "ESAUSTIVO. approfondisci circa 1000."; requestedMaxTokens = 60000; break;
                 default: lunghezzaDescrittivaPrompt = "STANDARD."; requestedMaxTokens = 60000;
             }
             if (requestedMaxTokens >= MODEL_OUTPUT_TOKEN_LIMIT) requestedMaxTokens = MODEL_OUTPUT_TOKEN_LIMIT - 100;
@@ -220,7 +221,7 @@ Preferenze Utente (Scala 0-5):
 *   Complessità del Lessico (Valore: ${prefLessico}): (0=molto semplice; 3=standard; 5=ricco e preciso, termini tecnici spiegati)
 *   Uso di Colori (Valore: ${prefColori}): (0=no colori; 5=uso frequente e strategico. Usa <span> con style="color: #..."; scegli colori leggibili su sfondo scuro come lightblue, lightgreen, gold, lightpink, lightcoral, e anche altri, tutti i colori che vuoi.)
 *   Creatività Espositiva (Valore: ${prefCreativita}): (0=fattuale; 5=coinvolgente, con analogie/collegamenti, mantenendo rigore)
-*   Struttura Schematica (Valore: ${prefSchematico}): (0=discorsivo; 5=molto strutturato con h1,h2,h3,h4, liste, paragrafi brevi. Usa tabelle se utili.)
+*   Struttura Schematica (Valore: ${prefSchematico}): (0=discorsivo; 5=molto strutturato con h1,h2,h3,h4, liste, paragrafi brevi. Usa tabelle se utili, e usa molti elenchi puntati.)
 
 Output Richiesto (HTML):
 *   Inizia DIRETTAMENTE con un tag <h1> contenente il titolo: "${argomento}".
@@ -228,6 +229,7 @@ Output Richiesto (HTML):
 *   Produci HTML valido e semanticamente corretto.
 *   Il contenuto deve essere accurato e adatto a studenti liceali.
 *   NON includere \`\`\`html o commenti personali/introduttivi.
+*   Se l'argomento fornito non da la possibilità di creare un riasssunto rispondere con un h1 con dentro scritto "${argomento} non trovato" 
 `;
 
             return generateSummaryWithRetry(argomento, globalIndex, summaryAPIConfig, secondPromptText);
@@ -359,67 +361,67 @@ document.addEventListener('DOMContentLoaded', () => {
     // Importa questo in cima al tuo file logica.js se non l'hai già fatto
 
 
-// ...
+    // ...
 
-async function salva() {
-    // Elementi UI
-    const saveToDashboardBtn = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
+    async function salva() {
+        // Elementi UI
+        const saveToDashboardBtn = document.getElementById(SAVE_TO_DASHBOARD_BUTTON_ID);
 
-    // 1. CONTROLLO DI SICUREZZA: L'utente è loggato?
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-        alert("Errore: Utente non trovato. Per favore, effettua di nuovo il login per salvare.");
-        return;
-    }
-
-    // Disabilita il bottone per prevenire doppi click
-    if (saveToDashboardBtn) {
-        saveToDashboardBtn.disabled = true;
-        saveToDashboardBtn.textContent = "Salvataggio..."; // Feedback visivo
-    }
-
-    // 2. PREPARAZIONE DEI DATI
-    const Materia_messaggio = materia || "materia non specificata";
-    const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
-    const riassunto_html = resultsContainer ? resultsContainer.innerHTML : "";
-
-    if (!riassunto_html.trim()) {
-        alert("Nessun contenuto da salvare.");
-        if (saveToDashboardBtn) { // Riattiva il bottone se non c'è niente da salvare
-            saveToDashboardBtn.disabled = false;
-            saveToDashboardBtn.textContent = "Salva il riassunto nella tua bacheca";
+        // 1. CONTROLLO DI SICUREZZA: L'utente è loggato?
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            alert("Errore: Utente non trovato. Per favore, effettua di nuovo il login per salvare.");
+            return;
         }
-        return;
-    }
 
-    // 3. CREAZIONE DELL'OGGETTO PER FIRESTORE
-    // (Ho usato i tuoi nomi di campo, vanno benissimo!)
-    const datiFire = {
-        id_utente: currentUser.uid,
-        materia: Materia_messaggio,
-        contenuto: riassunto_html,
-        dataC: serverTimestamp()
-    };
-
-    // 4. BLOCCO TRY...CATCH...FINALLY per il salvataggio
-    try {
-        // Eseguiamo il salvataggio
-        await addDoc(collection(db, "riassunti"), datiFire);
-
-        // Se siamo qui, il salvataggio è andato a buon fine!
-        alert("Riassunto salvato con successo nella tua bacheca! 🎉");
-
-    } catch (error) {
-        // Se c'è un errore, lo comunichiamo
-        console.error("Errore durante il salvataggio:", error);
-        alert("Errore tecnico durante il salvataggio: " + error.message);
-    } finally {
-        // QUESTA PARTE VIENE ESEGUITA SEMPRE, sia in caso di successo che di errore.
-        // È il posto perfetto per riattivare il bottone.
+        // Disabilita il bottone per prevenire doppi click
         if (saveToDashboardBtn) {
-            saveToDashboardBtn.disabled = false;
-            saveToDashboardBtn.textContent = "Salva il riassunto nella tua bacheca";
+            saveToDashboardBtn.disabled = true;
+            saveToDashboardBtn.textContent = "Salvataggio..."; // Feedback visivo
+        }
+
+        // 2. PREPARAZIONE DEI DATI
+        const Materia_messaggio = materia || "materia non specificata";
+        const resultsContainer = document.getElementById(RESULTS_CONTAINER_ID);
+        const riassunto_html = resultsContainer ? resultsContainer.innerHTML : "";
+
+        if (!riassunto_html.trim()) {
+            alert("Nessun contenuto da salvare.");
+            if (saveToDashboardBtn) { // Riattiva il bottone se non c'è niente da salvare
+                saveToDashboardBtn.disabled = false;
+                saveToDashboardBtn.textContent = "Salva il riassunto nella tua bacheca";
+            }
+            return;
+        }
+
+        // 3. CREAZIONE DELL'OGGETTO PER FIRESTORE
+        // (Ho usato i tuoi nomi di campo, vanno benissimo!)
+        const datiFire = {
+            id_utente: currentUser.uid,
+            materia: Materia_messaggio,
+            contenuto: riassunto_html,
+            dataC: serverTimestamp()
+        };
+
+        // 4. BLOCCO TRY...CATCH...FINALLY per il salvataggio
+        try {
+            // Eseguiamo il salvataggio
+            await addDoc(collection(db, "riassunti"), datiFire);
+
+            // Se siamo qui, il salvataggio è andato a buon fine!
+            alert("Riassunto salvato con successo nella tua bacheca! 🎉");
+
+        } catch (error) {
+            // Se c'è un errore, lo comunichiamo
+            console.error("Errore durante il salvataggio:", error);
+            alert("Errore tecnico durante il salvataggio: " + error.message);
+        } finally {
+            // QUESTA PARTE VIENE ESEGUITA SEMPRE, sia in caso di successo che di errore.
+            // È il posto perfetto per riattivare il bottone.
+            if (saveToDashboardBtn) {
+                saveToDashboardBtn.disabled = false;
+                saveToDashboardBtn.textContent = "Salva il riassunto nella tua bacheca";
+            }
         }
     }
-}
 });

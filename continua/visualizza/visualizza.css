@@ -1,5 +1,3 @@
-
-
 @font-face {
     font-family: 'font_titolo';
     src: url('../fonts/CelsiusFlower.otf') format('opentype');
@@ -7,27 +5,30 @@
 }
 
 :root {
-    --colore-sfondo: #0A0A0A; /* Very dark grey, almost black */
-    --colore-superficie: #141414; /* Slightly lighter for cards/containers */
-    --colore-superficie-light: #1E1E1E; /* For elements within surfaces, like #controls */
-    --colore-bordo: #2C2C2C; /* Softer border color */
-    --colore-testo-primario: #EAEAEA;
-    --colore-testo-secondario: #A0A0A0;
-    --colore-accento: #4A90E2; /* A vibrant, modern blue */
-    --colore-accento-hover: #6AACF8;
-    --colore-errore: #FF6B6B; /* Brighter red for errors */
-    --colore-sfondo-input: #252525;
-    --colore-input-focus-glow: rgba(74, 144, 226, 0.3); /* Glow matching accent color */
+    /* New palette based on the image */
+    --colore-sfondo: #000000; /* Pure black background */
+    --colore-superficie: #121212; /* Very dark grey for containers */
+    --colore-superficie-light: #1E1E1E; /* Kept for consistency, can be used for hover states */
+    --colore-bordo: #2A2A2A; /* Subtle border for elements that need it */
+    --colore-testo-primario: #F5F5F5; /* Off-white for primary text */
+    --colore-testo-secondario: #8A8A8A; /* Grey for secondary/placeholder text */
+    --colore-accento: #0D69FF; /* A vibrant, modern blue like in the image */
+    --colore-accento-hover: #3B82F6; /* Lighter blue for hover */
+    --colore-errore: #FF6B6B;
+    --colore-sfondo-input: #1F1F1F; /* Darker grey for input fields */
+    --colore-input-focus-glow: rgba(13, 105, 255, 0.35); /* Glow matching new accent color */
 
     --font-corpo: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --font-display: 'font_titolo', "Inter", sans-serif; /* Fallback for title font */
+    --font-display: 'font_titolo', "Inter", sans-serif;
 
-    --border-radius-sm: 6px;
-    --border-radius-md: 10px;
-    --border-radius-lg: 16px;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px; /* More pronounced rounding */
+    --border-radius-pill: 999px; /* For pill-shaped buttons */
 
-    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --shadow-glow-accent: 0 0 15px 2px rgba(13, 105, 255, 0.2);
 }
 
 /* Basic Reset & Global Styles */
@@ -40,51 +41,50 @@
 }
 
 html {
-    font-size: 16px; /* Base font size for rem units */
+    font-size: 16px;
 }
 
 body {
     font-family: var(--font-corpo);
     background-color: var(--colore-sfondo);
     color: var(--colore-testo-primario);
-    line-height: 1.65;
-    padding: 2rem 1rem; /* Responsive padding */
+    line-height: 1.6;
+    padding: 3rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
 }
 
-/* Main Container */
+/* Main Container - Styled like the main card in the image */
 .container {
     width: 100%;
-    max-width: 960px; /* Slightly wider for a more spacious feel */
+    max-width: 960px;
     background-color: var(--colore-superficie);
-    padding: 2rem 2.5rem;
+    padding: 3rem 3.5rem;
     border-radius: var(--border-radius-lg);
-    border: 1px solid var(--colore-bordo);
+    border: none; /* Removed border to match the image */
     box-shadow: var(--shadow-md);
     text-align: center;
     margin-bottom: 2.5rem;
 }
 
-/* Header */
+/* Header - Title styling */
 header h1 {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 5vw, 3.5rem); /* Responsive font size */
-    color: var(--colore-accento);
-    margin-bottom: 2rem;
+    font-size: clamp(3rem, 6vw, 4rem);
+    color: var(--colore-testo-primario); /* Changed to white as per image */
+    margin-bottom: 3rem; /* Increased spacing */
     letter-spacing: 0.5px;
-    font-weight: 600; /* CelsiusFlower might be thin, Inter will provide weight */
+    font-weight: 500;
 }
 
-/* Controls Section */
+/* Controls Section - Integrated into the container */
 #controls {
-    margin-bottom: 2rem;
-    padding: 1.75rem;
-    background-color: var(--colore-superficie-light);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--colore-bordo);
+    margin-bottom: 2.5rem;
+    padding: 0; /* Remove padding, it's now in .container */
+    background-color: transparent; /* Seamless with container */
+    border: none; /* Seamless with container */
 }
 
 #controls label {
@@ -96,62 +96,65 @@ header h1 {
     text-align: left;
 }
 
+/* Input styled to look like the "Scegli File" area */
 #controls input[type="password"] {
     width: 100%;
-    padding: 0.9rem 1rem;
-    margin-bottom: 1.25rem;
-    border-radius: var(--border-radius-sm);
+    height: 60px; /* Taller input */
+    padding: 0 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius-md);
     border: 1px solid var(--colore-bordo);
     background-color: var(--colore-sfondo-input);
     color: var(--colore-testo-primario);
     font-size: 1rem;
     font-family: var(--font-corpo);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    text-align: center; /* Center placeholder text */
 }
 
 #controls input[type="password"]::placeholder {
-    color: #777;
+    color: var(--colore-testo-secondario);
 }
 
 #controls input[type="password"]:focus {
     outline: none;
     border-color: var(--colore-accento);
-    box-shadow: 0 0 0 3px var(--colore-input-focus-glow);
+    box-shadow: 0 0 0 4px var(--colore-input-focus-glow);
 }
 
-/* Buttons (Shared Styles) */
+/* Buttons (Shared Styles) - Pill shape and vibrant blue */
 #controls button, #downloadPdfButtonvero, #saveToDashboardButton {
-    padding: 0.8rem 1.8rem;
+    padding: 0.9rem 2.2rem;
     font-size: 1rem;
     font-weight: 600;
-    color: #FFFFFF; /* White text on accent background */
+    color: #FFFFFF;
     background-color: var(--colore-accento);
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-pill); /* Pill shape */
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-    font-family: var(--font-display); /* Keeping custom font for buttons */
+    font-family: var(--font-corpo); /* Using body font for better readability */
     letter-spacing: 0.5px;
-    text-transform: uppercase; /* Common in modern UIs */
-    box-shadow: var(--shadow-sm);
+    text-transform: uppercase;
+    box-shadow: var(--shadow-glow-accent);
 }
 
 #controls button:hover, #downloadPdfButtonvero:hover, #saveToDashboardButton:hover {
     background-color: var(--colore-accento-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(13, 105, 255, 0.3);
 }
 
 #controls button:active, #downloadPdfButtonvero:active, #saveToDashboardButton:active {
-    transform: translateY(0px);
-    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow-accent);
 }
 
 #controls button:disabled,
-#downloadPdfButtonvero:disabled, /* Added for consistency if JS disables it */
-#saveToDashboardButton:disabled { /* Added for consistency if JS disables it */
-    background-color: #333;
-    color: #777;
+#downloadPdfButtonvero:disabled,
+#saveToDashboardButton:disabled {
+    background-color: #252525;
+    color: #666;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -161,37 +164,34 @@ header h1 {
 #statusMessage {
     margin: 2rem 0;
     padding: 1rem 1.25rem;
-    background-color: var(--colore-superficie-light);
+    background-color: var(--colore-sfondo-input);
     border-left: 4px solid var(--colore-accento);
     font-size: 1rem;
     text-align: left;
     border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
-    color: var(--colore-testo-primario); /* Changed from secondary for better visibility */
+    color: var(--colore-testo-primario);
 }
 
 #statusMessage[style*="border-color: rgb(255, 107, 107)"],
-#statusMessage[style*="border-color: #ff6b6b"], /* Existing JS uses #ff6b6b */
-#statusMessage[style*="border-color: #FF6B6B"] { /* Case-insensitive */
-    border-left-color: var(--colore-errore) !important; /* Important to override inline style's specificity if JS sets border-color */
+#statusMessage[style*="border-color: #ff6b6b"],
+#statusMessage[style*="border-color: #FF6B6B"] {
+    border-left-color: var(--colore-errore) !important;
     background-color: rgba(255, 107, 107, 0.1);
     color: var(--colore-errore);
 }
-/* Ensure the color property for error messages is also set correctly if JS only sets border-color */
 #statusMessage[style*="color: rgb(255, 107, 107)"] {
     color: var(--colore-errore) !important;
 }
-
 
 /* Results Container */
 #resultsContainer {
     margin-top: 2rem;
     text-align: left;
     border: 1px solid var(--colore-bordo);
-    padding: 1.75rem 2rem;
+    padding: 2rem 2.5rem;
     border-radius: var(--border-radius-md);
-    background-color: var(--colore-superficie); /* Same as main container, could be slightly different if needed */
+    background-color: var(--colore-superficie);
     min-height: 150px;
-    box-shadow: var(--shadow-sm);
 }
 
 /* Buttons Group below results */
@@ -201,7 +201,7 @@ header h1 {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 1rem; /* Spacing between buttons */
+    gap: 1.5rem;
 }
 
 /* Individual Argument Summary (within results) */
@@ -210,7 +210,6 @@ header h1 {
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--colore-bordo);
 }
-
 .argomento-summary:last-child {
     border-bottom: none;
     margin-bottom: 0;
@@ -219,7 +218,7 @@ header h1 {
 /* Styles for AI-Generated HTML Content */
 #resultsContainer h1 {
     font-family: var(--font-display);
-    font-size: clamp(1.8rem, 4vw, 2.2rem); /* Responsive */
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
     color: var(--colore-accento);
     margin-top: 0;
     margin-bottom: 1.5rem;
@@ -231,7 +230,7 @@ header h1 {
 
 #resultsContainer h2 {
     font-family: var(--font-display);
-    font-size: clamp(1.5rem, 3vw, 1.8rem); /* Responsive */
+    font-size: clamp(1.5rem, 3vw, 1.8rem);
     color: var(--colore-testo-primario);
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -240,7 +239,7 @@ header h1 {
 
 #resultsContainer h3 {
     font-family: var(--font-display);
-    font-size: clamp(1.2rem, 2.5vw, 1.4rem); /* Responsive */
+    font-size: clamp(1.2rem, 2.5vw, 1.4rem);
     color: var(--colore-testo-primario);
     font-weight: 500;
     margin-top: 1.5rem;
@@ -251,14 +250,13 @@ header h1 {
     font-size: 1rem;
     margin-bottom: 1rem;
     color: var(--colore-testo-secondario);
-    text-align: left;
-    line-height: 1.7; /* Improved readability for paragraphs */
+    line-height: 1.7;
 }
 
 #resultsContainer ul,
 #resultsContainer ol {
     margin-left: 0;
-    padding-left: 1.5rem; /* Standard indent */
+    padding-left: 1.5rem;
     margin-bottom: 1rem;
     color: var(--colore-testo-secondario);
 }
@@ -267,145 +265,112 @@ header h1 {
     margin-bottom: 0.5rem;
     padding-left: 0.25rem;
 }
-#resultsContainer ul li::marker {
-    color: var(--colore-accento); /* Style list bullets */
-}
+#resultsContainer ul li::marker,
 #resultsContainer ol li::marker {
-    color: var(--colore-accento); /* Style list numbers */
+    color: var(--colore-accento);
 }
 
 #resultsContainer strong, #resultsContainer b {
     color: var(--colore-testo-primario);
     font-weight: 600;
 }
-
 #resultsContainer em, #resultsContainer i {
-    color: var(--colore-accento-hover); /* Make italics stand out a bit more with accent */
+    color: var(--colore-accento-hover);
     font-style: italic;
 }
-
-#resultsContainer span[style*="color"] {
-    padding: 0 0.15em;
-    border-radius: 3px;
-}
-
 #resultsContainer code {
-    background-color: var(--colore-sfondo-input); /* Consistent with input background */
+    background-color: var(--colore-sfondo-input);
     color: var(--colore-accento-hover);
     padding: 0.2em 0.4em;
     border-radius: var(--border-radius-sm);
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 0.9em;
 }
-
 #resultsContainer pre {
-    background-color: #0D0D0D; /* Even darker for code blocks */
+    background-color: #0D0D0D;
     border: 1px solid var(--colore-bordo);
     color: #D0D0D0;
     padding: 1.25rem;
     border-radius: var(--border-radius-md);
     overflow-x: auto;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 0.9em;
-    line-height: 1.6;
     margin: 1.25rem 0;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 }
-
 #resultsContainer blockquote {
     border-left: 3px solid var(--colore-accento);
     margin: 1.25rem 0;
     padding: 0.75rem 1.25rem;
     color: var(--colore-testo-secondario);
     font-style: italic;
-    background-color: var(--colore-superficie-light); /* Subtle background */
+    background-color: var(--colore-sfondo-input);
     border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
 }
-
 #resultsContainer table {
     width: 100%;
     border-collapse: collapse;
     margin: 1.5rem 0;
     font-size: 0.95rem;
-    box-shadow: var(--shadow-sm);
     border-radius: var(--border-radius-sm);
-    overflow: hidden; /* To make border-radius work on table */
+    overflow: hidden;
 }
-
 #resultsContainer th, #resultsContainer td {
     border: 1px solid var(--colore-bordo);
     padding: 0.75rem 1rem;
-    text-align: left;
 }
-
 #resultsContainer th {
-    background-color: var(--colore-superficie-light);
+    background-color: var(--colore-sfondo-input);
     color: var(--colore-accento);
     font-weight: 600;
-    font-family: var(--font-corpo); /* Using body font for table headers for clarity */
+    font-family: var(--font-corpo);
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.5px;
 }
 
-/* Initial state for JS-controlled buttons */
-#downloadPdfButtonvero, #saveToDashboardButton {
-    margin-top: 1rem; /* Reduced from 40px, gap in .bottoni handles more */
-    /* display: none; is handled by JS and inline styles, keep it that way */
-}
-
-
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     body {
-        padding: 1.5rem 0.75rem;
+        padding: 2rem 0.75rem;
     }
     .container {
-        padding: 1.5rem 1.25rem;
+        padding: 2rem 1.5rem;
     }
     header h1 {
-        margin-bottom: 1.5rem;
-    }
-    #controls {
-        padding: 1.25rem;
+        margin-bottom: 2rem;
     }
     #resultsContainer {
-        padding: 1.25rem 1rem;
-    }
-    #controls button, #downloadPdfButtonvero, #saveToDashboardButton {
-        padding: 0.7rem 1.5rem;
-        font-size: 0.95rem;
+        padding: 1.5rem 1.25rem;
     }
     .bottoni {
-        flex-direction: column; /* Stack buttons on smaller screens */
-        align-items: stretch; /* Make buttons full width */
+        flex-direction: column;
+        align-items: stretch;
     }
     .bottoni button {
         width: 100%;
-        margin-bottom: 0.5rem; /* Add some space when stacked */
-    }
-    .bottoni button:last-child {
-        margin-bottom: 0;
     }
 }
 
 @media (max-width: 480px) {
     html {
-        font-size: 15px; /* Slightly smaller base for very small screens */
+        font-size: 15px;
     }
     body {
         padding: 1rem 0.5rem;
     }
     .container {
-        padding: 1rem;
+        padding: 1.5rem 1rem;
         border-radius: var(--border-radius-md);
     }
     #controls input[type="password"] {
-        padding: 0.8rem 0.9rem;
+        height: 50px;
+        padding: 0 1rem;
+    }
+    #controls button, #downloadPdfButtonvero, #saveToDashboardButton {
+        padding: 0.8rem 1.8rem;
     }
 }
 
-/* Print Styles (largely kept, minor tweaks for better default experience) */
+/* Print Styles */
 @media print {
     body {
         background-color: #ffffff !important; color: #000000 !important;
@@ -432,11 +397,10 @@ header h1 {
     #resultsContainer span[style*="color"] {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        /* Ensure the color is actually printed, not converted to black */
     }
     #resultsContainer h1, #resultsContainer h2, #resultsContainer h3 {
         page-break-after: avoid !important;
-        color: #000000 !important; /* Ensure headings are black for print */
+        color: #000000 !important;
     }
     #resultsContainer p, #resultsContainer li, #resultsContainer table {
         page-break-inside: avoid !important;
@@ -461,13 +425,12 @@ header h1 {
         background-color: #eeeeee !important;
         color: #000000 !important;
     }
-    #resultsContainer a { /* Style links for print */
+    #resultsContainer a {
         color: #0000FF !important;
         text-decoration: underline !important;
     }
-    #resultsContainer a[href^="http"]:after { /* Show full URLs for external links */
+    #resultsContainer a[href^="http"]:after {
         content: " (" attr(href) ")";
         font-size: 90%;
     }
 }
-
